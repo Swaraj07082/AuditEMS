@@ -3,3 +3,11 @@ pdf2image
 opencv-python
 pdfplumber
 tabulate
+pandas
+langchain 
+faiss-cpu 
+streamlit
+flask 
+openpyxl  
+fuzzywuzzy 
+python-Levenshtein

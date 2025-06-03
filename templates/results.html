@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audit Results</title>
+    <style>
+        .critical { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Audit Results</h1>
+    <h2>Extracted Text (Preview)</h2>
+    <pre>{{ text }}</pre>
+    <h2>Inconsistencies Detected</h2>
+    <h3>Critical Issues</h3>
+    <ul>
+        {% for inconsistency in inconsistencies %}
+            {% if 'mismatch' in inconsistency.lower() %}
+                <li class="critical">{{ inconsistency }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h3>Warnings</h3>
+    <ul>
+        {% for inconsistency in inconsistencies %}
+            {% if 'mismatch' not in inconsistency.lower() %}
+                <li class="warning">{{ inconsistency }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h2>Audit Summary</h2>
+    <p>{{ summary }}</p>
+    <a href="/">Upload another document</a>
+</body>
+</html>
