@@ -8,12 +8,12 @@ __pycache__/
 *.log
 
 # === Node.js / Next.js (frontend) ===
-frontend/node_modules/
-frontend/.next/
-frontend/.env.local
-frontend/.env
-frontend/.turbo/
-frontend/.vercel/
+frontend/delloite-frontend/node_modules/
+frontend/delloite-frontend/.next/
+frontend/delloite-frontend/.env.local
+frontend/delloite-frontend/.env
+frontend/delloite-frontend/.turbo/
+frontend/delloite-frontend/.vercel/
 
 # === Output / Artifacts ===
 Uploads/
