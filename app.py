@@ -33,17 +33,21 @@ def upload_file():
         text, tables = extract_text_and_tables(file_path)
         
         # Check for inconsistencies
-        inconsistencies = check_inconsistencies(text, tables)
+        inconsistencies_dict = check_inconsistencies(text, tables)
         
         # Generate summary
-        summary = generate_audit_summary(text, inconsistencies)
+        summary = generate_audit_summary(text, inconsistencies_dict)
         
         # Clean up uploaded file
         os.remove(file_path)
         
         return render_template('results.html', 
                              text=text[:1000],  # Limit text for display
-                             inconsistencies=inconsistencies,
+                             inconsistencies=inconsistencies_dict['basic_inconsistencies'],
+                             rag_analysis=inconsistencies_dict.get('rag_analysis', ''),
+                             recommendations=inconsistencies_dict.get('recommendations', ''),
+                             enhanced=inconsistencies_dict.get('enhanced', False),
+                             error=inconsistencies_dict.get('error', ''),
                              summary=summary)
     
     return "Error processing file", 500

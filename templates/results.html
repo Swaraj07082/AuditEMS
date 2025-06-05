@@ -2,34 +2,44 @@
 <html>
 <head>
     <title>Audit Results</title>
-    <style>
-        .critical { color: red; }
-        .warning { color: orange; }
-    </style>
 </head>
 <body>
     <h1>Audit Results</h1>
-    <h2>Extracted Text (Preview)</h2>
+    
+    <h2>Extracted Text (First 1000 Characters)</h2>
     <pre>{{ text }}</pre>
-    <h2>Inconsistencies Detected</h2>
-    <h3>Critical Issues</h3>
-    <ul>
+    
+    <h2>Detected Inconsistencies</h2>
+    {% if inconsistencies %}
+        <ul>
         {% for inconsistency in inconsistencies %}
-            {% if 'mismatch' in inconsistency.lower() %}
-                <li class="critical">{{ inconsistency }}</li>
-            {% endif %}
+            <li>{{ inconsistency }}</li>
         {% endfor %}
-    </ul>
-    <h3>Warnings</h3>
-    <ul>
-        {% for inconsistency in inconsistencies %}
-            {% if 'mismatch' not in inconsistency.lower() %}
-                <li class="warning">{{ inconsistency }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+        </ul>
+    {% else %}
+        <p>No inconsistencies detected.</p>
+    {% endif %}
+    
+    <h2>RAG-Enhanced Analysis</h2>
+    {% if rag_analysis %}
+        <p>{{ rag_analysis }}</p>
+    {% else %}
+        <p>No RAG analysis available.</p>
+    {% endif %}
+    
+    <h2>Recommendations</h2>
+    {% if recommendations %}
+        <p>{{ recommendations }}</p>
+    {% else %}
+        <p>No recommendations provided.</p>
+    {% endif %}
+    
+    <h2>RAG Enhancement Status</h2>
+    <p>{{ 'Successful' if enhanced else 'Failed' + (': ' + error if error else '') }}</p>
+    
     <h2>Audit Summary</h2>
     <p>{{ summary }}</p>
-    <a href="/">Upload another document</a>
+    
+    <a href="{{ url_for('index') }}">Upload Another File</a>
 </body>
 </html>

@@ -1,11 +1,11 @@
 import ollama
 
-def generate_audit_summary(text, inconsistencies):
+def generate_audit_summary(text, inconsistencies_dict):
     """
     Generate a human-readable summary of audit findings using LLaMA 3.
     Args:
         text (str): Extracted text from the financial document.
-        inconsistencies (list): List of detected inconsistencies.
+        inconsistencies_dict (dict): Dictionary containing inconsistencies, RAG analysis, and recommendations.
     Returns:
         str: Summary of audit findings.
     """
@@ -16,13 +16,24 @@ def generate_audit_summary(text, inconsistencies):
         if not any(model['name'] == model_name for model in available_models):
             raise ValueError(f"Model '{model_name}' not found. Available models: {[m['name'] for m in available_models]}")
         
+        # Extract components from inconsistencies_dict
+        basic_inconsistencies = inconsistencies_dict.get('basic_inconsistencies', ['None'])
+        rag_analysis = inconsistencies_dict.get('rag_analysis', '')
+        recommendations = inconsistencies_dict.get('recommendations', '')
+        enhanced = inconsistencies_dict.get('enhanced', False)
+        error = inconsistencies_dict.get('error', '')
+
         # Prepare prompt
         prompt = (
-            "You are a financial auditor. Below is the extracted text from a financial document "
-            "and detected inconsistencies. Provide a concise, professional summary of the findings, "
-            "highlighting key issues and suggesting actions. Keep the summary under 300 words.\n\n"
+            "You are a financial auditor. Below is the extracted text from a financial document, "
+            "detected inconsistencies, RAG-enhanced analysis, and recommendations. Provide a concise, "
+            "professional summary of the findings, highlighting key issues and incorporating RAG analysis "
+            "and recommendations. Keep the summary under 300 words.\n\n"
             f"Extracted Text (first 1000 chars):\n{text[:1000]}\n\n"
-            f"Detected Inconsistencies:\n{'; '.join(inconsistencies) if inconsistencies else 'None'}\n\n"
+            f"Detected Inconsistencies:\n{'; '.join(basic_inconsistencies) if basic_inconsistencies else 'None'}\n\n"
+            f"RAG-Enhanced Analysis:\n{rag_analysis if rag_analysis else 'Not available'}\n\n"
+            f"Recommendations:\n{recommendations if recommendations else 'None provided'}\n\n"
+            f"RAG Enhancement Status: {'Successful' if enhanced else 'Failed' + (f' due to: {error}' if error else '')}\n\n"
             "Summary:"
         )
         
@@ -34,31 +45,3 @@ def generate_audit_summary(text, inconsistencies):
     except Exception as e:
         print(f"Error generating summary: {str(e)}")
         return f"Error: Could not generate summary. Ensure Ollama server is running and model '{model_name}' is installed. ({str(e)})"
-
-if __name__ == "__main__":
-    sample_text = """Sample Company - Balance Sheet (FY 2023)
-Total Assets: INR 1,500,000
-Liabilities: INR 600,000
-Equity: INR 700,000
-Cash: INR 200,000
-Accounts Receivable: INR 400,000
-Inventory: INR 300,000
-Property, Plant & Equipment: INR 500,000
-Accounts Payable: INR 700,000
-Revenue: INR 1,000,000
-Expenses: INR 1,200,000
-Retained Earnings: -INR 50,000
-Loan Payable: -INR 100,000"""
-    sample_inconsistencies = [
-        "Balance sheet mismatch: Assets (1500000.0) ≠ Liabilities (600000.0) + Equity (700000.0)",
-        "Asset composition mismatch: Sum of assets (1400000.0) ≠ Total Assets (1500000.0)",
-        "Negative values detected in Retained Earnings (-INR 50,000)",
-        "Negative values detected in Loan Payable (-INR 100,000)",
-        "Revenue or Expenses detected on balance sheet, which typically belong on an income statement",
-        "Negative Loan Payable is unusual and may indicate a misclassification or error",
-        "Accounts Payable (700000.0) exceeds Total Liabilities (600000.0), which is unusual",
-        "Negative net income detected: Expenses (1200000.0) exceed Revenue (1000000.0)",
-        "Potential loss or deficit mentioned in text"
-    ]
-    summary = generate_audit_summary(sample_text, sample_inconsistencies)
-    print("Audit Summary:", summary)

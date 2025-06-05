@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from rag_system import EnhancedFinancialAuditor
 
 def check_inconsistencies(text, tables):
     """
@@ -162,7 +163,41 @@ def check_inconsistencies(text, tables):
         print(f"Error checking inconsistencies: {str(e)}")
         inconsistencies.append(f"Error during inconsistency checks: {str(e)}")
     
-    return inconsistencies if inconsistencies else ["No inconsistencies detected"]
+    basic_inconsistencies = inconsistencies if inconsistencies else ["No inconsistencies detected"]
+
+    try:
+        audiotr = EnhancedFinancialAuditor()
+        rag_results = audiotr.audit_with_rag(text , basic_inconsistencies)
+
+        return{
+            "basic_inconsistencies" : basic_inconsistencies,
+            "rag_analysis": rag_results.get("rag_enhanced_analysis", ""),
+            "recommendations": rag_results.get("recommendations", ""),
+            "enhanced": True
+        }
+
+    except Exception as e:
+        print(f"RAG enhancement failed: {e}")
+
+        return {
+                "basic_inconsistencies": basic_inconsistencies,
+                "rag_analysis": "",
+                "recommendations": "",
+                "enhanced": False,
+                "error": str(e)
+            }
+
+    except Exception as e:
+        print(f"Error checking inconsistencies: {str(e)}")
+        
+        return {
+            "basic_inconsistencies": ["Error during inconsistency checks"],
+            "rag_analysis": "",
+            "recommendations": "",
+            "enhanced": False,
+            "error": str(e)
+        }
+
 
 if __name__ == "__main__":
     sample_text = """Sample Company - Balance Sheet (FY 2023)
