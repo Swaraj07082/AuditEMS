@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Audit Management System</title>
+    <title>Financial Audit System</title>
 </head>
 <body>
     <h1>Upload Financial Document</h1>
-    <form method="post" action="/upload" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".pdf,.txt" required>
-        <input type="submit" value="Upload and Audit">
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
+        <input type="file" name="file" accept=".pdf">
+        <input type="submit" value="Upload PDF">
     </form>
 </body>
 </html>

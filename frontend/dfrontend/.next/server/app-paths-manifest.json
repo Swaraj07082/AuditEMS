@@ -1,5 +1,9 @@
 {
+<<<<<<< Updated upstream:frontend/dfrontend/.next/server/app-paths-manifest.json
   "/auditVerify/page": "app/auditVerify/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+=======
+  "/login/page": "app/login/page.js",
+>>>>>>> Stashed changes:frontend/delloite-frontend/.next/server/app-paths-manifest.json
   "/page": "app/page.js"
 }

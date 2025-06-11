@@ -1,203 +1,220 @@
-import pandas as pd
 import re
-from rag_system import EnhancedFinancialAuditor
+import logging
+from typing import List, Dict, Any
+from rag_system import FinancialRAGSystem  # Import from Delloite/rag_system.py
 
-def check_inconsistencies(text, tables):
-    """
-    Analyze extracted text and tables for financial inconsistencies.
-    Args:
-        text (str): Extracted text from the document.
-        tables (list): List of pandas DataFrames from extracted tables.
-    Returns:
-        list: List of detected inconsistencies.
-    """
-    inconsistencies = []
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class IntegratedFinancialAuditor:
+    """Integrated financial auditor that combines basic checks with RAG enhancement"""
     
-    try:
-        # Helper function to parse INR values
-        def parse_inr(value):
-            if value is None:
-                return None
-            # Remove commas and convert to float
-            return float(value.replace(',', '')) if value else 0.0
+    def __init__(self, rag_model_name: str = "llama3:8b"):
+        try:
+            self.rag_system = FinancialRAGSystem(model_name=rag_model_name)
+            self.rag_available = True
+        except Exception as e:
+            logger.error(f"RAG system initialization failed: {e}")
+            self.rag_system = None
+            self.rag_available = False
         
-        # Check 1: Balance Sheet Equation (Assets = Liabilities + Equity)
-        assets = liabilities = equity = None
-        asset_match = re.search(r'Total Assets: INR\s*([\d,]+)', text)
-        liabilities_match = re.search(r'Liabilities: INR\s*([\d,]+)', text)
-        equity_match = re.search(r'Equity: INR\s*([\d,]+)', text)
-        
-        if asset_match and liabilities_match and equity_match:
-            assets = parse_inr(asset_match.group(1))
-            liabilities = parse_inr(liabilities_match.group(1))
-            equity = parse_inr(equity_match.group(1))
-            if not abs(assets - (liabilities + equity)) < 0.01:
-                inconsistencies.append(f"Balance sheet mismatch: Assets ({assets:,.0f}) ≠ Liabilities ({liabilities:,.0f}) + Equity ({equity:,.0f}) = {liabilities + equity:,.0f}")
-        
-        # Check 2: Asset Composition
-        cash_match = re.search(r'Cash: INR\s*([\d,]+)', text)
-        receivables_match = re.search(r'Accounts Receivable: INR\s*([\d,]+)', text)
-        inventory_match = re.search(r'Inventory: INR\s*([\d,]+)', text)
-        ppe_match = re.search(r'Property, Plant & Equipment: INR\s*([\d,]+)', text)
-        
-        cash = parse_inr(cash_match.group(1)) if cash_match else None
-        receivables = parse_inr(receivables_match.group(1)) if receivables_match else None
-        inventory = parse_inr(inventory_match.group(1)) if inventory_match else None
-        ppe = parse_inr(ppe_match.group(1)) if ppe_match else None
-        
-        if all(v is not None for v in [cash, receivables, inventory, ppe, assets]):
-            asset_sum = cash + receivables + inventory + ppe
-            if not abs(assets - asset_sum) < 0.01:
-                inconsistencies.append(f"Asset composition mismatch: Sum of individual assets ({asset_sum:,.0f}) ≠ Total Assets ({assets:,.0f})")
-        
-        # Check 3: Negative balances - Fixed regex pattern
-        # Look for patterns like "Account Name: -INR amount"
-        negative_matches = re.findall(r'([^:\n]+?):\s*-INR\s*([\d,]+(?:\.\d+)?)', text)
-        for account, value in negative_matches:
-            account = account.strip()
-            parsed_value = parse_inr(value)
-            # Check if it's an account that shouldn't typically be negative
-            if any(keyword in account.lower() for keyword in ['cash', 'revenue', 'assets']):
-                inconsistencies.append(f"Negative values detected in {account} (-INR {parsed_value:,.0f})")
-            elif 'retained earnings' in account.lower():
-                inconsistencies.append(f"Negative Retained Earnings detected (-INR {parsed_value:,.0f}) - indicates accumulated losses")
-            elif 'loan payable' in account.lower():
-                inconsistencies.append(f"Negative Loan Payable detected (-INR {parsed_value:,.0f}) - unusual, may indicate misclassification")
-        
-        # Check 4: Misplaced income statement items
-        if re.search(r'\b(Revenue|Expenses)\b', text, re.IGNORECASE):
-            inconsistencies.append("Revenue or Expenses detected on balance sheet, which typically belong on an income statement")
-        
-        # Check 5: Liabilities composition and validation
-        accounts_payable_match = re.search(r'Accounts Payable: INR\s*([\d,]+)', text)
-        loan_payable_match = re.search(r'Loan Payable: (-?)INR\s*([\d,]+)', text)
-        
-        accounts_payable = parse_inr(accounts_payable_match.group(1)) if accounts_payable_match else None
-        
-        # Handle loan payable - check if it has negative sign
-        loan_payable = None
-        if loan_payable_match:
-            loan_amount = parse_inr(loan_payable_match.group(2))
-            if loan_payable_match.group(1) == '-':
-                loan_payable = -loan_amount  # Keep as negative if explicitly negative
-            else:
-                loan_payable = loan_amount
-        
-        # Check liabilities composition
-        if accounts_payable is not None and loan_payable is not None and liabilities is not None:
-            # For liability calculation, loan payable should be positive (it's a liability)
-            loan_payable_for_calc = abs(loan_payable) if loan_payable < 0 else loan_payable
-            liability_sum = accounts_payable + loan_payable_for_calc
-            
-            if not abs(liabilities - liability_sum) < 0.01:
-                inconsistencies.append(f"Liabilities composition mismatch: Sum of liabilities ({liability_sum:,.0f}) ≠ Total Liabilities ({liabilities:,.0f})")
-            
-            # Check if accounts payable exceeds total liabilities (unusual)
-            if accounts_payable > liabilities:
-                inconsistencies.append(f"Accounts Payable ({accounts_payable:,.0f}) exceeds Total Liabilities ({liabilities:,.0f}), which is unusual")
-
-        # Check if accounts payable is unusually high relative to assets
-        if accounts_payable is not None and assets is not None and accounts_payable > 0.5 * assets:
-            inconsistencies.append(f"Accounts Payable ({accounts_payable:,.0f}) is unusually high relative to Total Assets ({assets:,.0f})")        
-        
-        # Check 6: Net income analysis
-        revenue_match = re.search(r'Revenue: INR\s*([\d,]+)', text)
-        expenses_match = re.search(r'Expenses: INR\s*([\d,]+)', text)
-        
-        revenue = parse_inr(revenue_match.group(1)) if revenue_match else None
-        expenses = parse_inr(expenses_match.group(1)) if expenses_match else None
-        
-        if revenue is not None and expenses is not None:
-            net_income = revenue - expenses
-            if net_income < 0:
-                inconsistencies.append(f"Negative net income detected: Revenue ({revenue:,.0f}) - Expenses ({expenses:,.0f}) = {net_income:,.0f}")
-        
-        # Check 7: Consistency between negative retained earnings and net loss
-        retained_earnings_match = re.search(r'Retained Earnings:\s*-INR\s*([\d,]+)', text)
-        if retained_earnings_match and revenue is not None and expenses is not None and expenses > revenue:
-            inconsistencies.append("Negative Retained Earnings is consistent with reported net loss")
-        
-        # Check 8: Table-based checks (if tables exist)
-        for i, table in enumerate(tables):
-            try:
-                # Convert table to numeric where possible
-                numeric_table = table.apply(pd.to_numeric, errors='coerce')
-                
-                # Check for negative values in inappropriate accounts
-                for col in numeric_table.columns:
-                    if any(keyword in str(col).lower() for keyword in ['cash', 'revenue']) and not 'retained' in str(col).lower():
-                        negative_values = numeric_table[col] < 0
-                        if negative_values.any():
-                            inconsistencies.append(f"Negative values detected in table column '{col}'")
-                
-                # Check balance sheet equation in tables
-                assets_col = liabilities_col = equity_col = None
-                for col in numeric_table.columns:
-                    col_lower = str(col).lower()
-                    if 'asset' in col_lower and 'total' in col_lower:
-                        assets_col = col
-                    elif 'liabilit' in col_lower and 'total' in col_lower:
-                        liabilities_col = col
-                    elif 'equity' in col_lower and 'total' in col_lower:
-                        equity_col = col
-                
-                if assets_col and liabilities_col and equity_col:
-                    table_assets = numeric_table[assets_col].sum()
-                    table_liabilities = numeric_table[liabilities_col].sum()
-                    table_equity = numeric_table[equity_col].sum()
-                    
-                    if not abs(table_assets - (table_liabilities + table_equity)) < 0.01:
-                        inconsistencies.append(f"Balance sheet mismatch in table {i+1}: Assets ({table_assets:,.0f}) ≠ Liabilities ({table_liabilities:,.0f}) + Equity ({table_equity:,.0f})")
-                        
-            except Exception as e:
-                inconsistencies.append(f"Error processing table {i+1}: {str(e)}")
-        
-        # Check 9: Missing or zero values in tables
-        for i, table in enumerate(tables):
-            if table.empty:
-                inconsistencies.append(f"Empty table {i+1} detected")
-            elif table.isna().all().all():
-                inconsistencies.append(f"Table {i+1} contains only missing values")
+    def parse_inr(self, value: str) -> float:
+        """Helper function to parse INR values"""
+        if value is None:
+            return None
+        return float(value.replace(',', '')) if value else 0.0
     
-    except Exception as e:
-        print(f"Error checking inconsistencies: {str(e)}")
-        inconsistencies.append(f"Error during inconsistency checks: {str(e)}")
-    
-    basic_inconsistencies = inconsistencies if inconsistencies else ["No inconsistencies detected"]
-
-    try:
-        audiotr = EnhancedFinancialAuditor()
-        rag_results = audiotr.audit_with_rag(text , basic_inconsistencies)
-
-        return{
-            "basic_inconsistencies" : basic_inconsistencies,
-            "rag_analysis": rag_results.get("rag_enhanced_analysis", ""),
-            "recommendations": rag_results.get("recommendations", ""),
-            "enhanced": True
-        }
-
-    except Exception as e:
-        print(f"RAG enhancement failed: {e}")
-
-        return {
-                "basic_inconsistencies": basic_inconsistencies,
-                "rag_analysis": "",
-                "recommendations": "",
-                "enhanced": False,
-                "error": str(e)
+    def detect_basic_inconsistencies(self, text: str, tables: list) -> List[Dict[str, Any]]:
+        """Detect basic inconsistencies and return structured data"""
+        inconsistencies = []
+        financial_data = {}
+        
+        try:
+            # Extract financial values
+            patterns = {
+                'assets': r'Total Assets: INR\s*([\d,]+)',
+                'liabilities': r'Liabilities: INR\s*([\d,]+)', 
+                'equity': r'Equity: INR\s*([\d,]+)',
+                'cash': r'Cash: INR\s*([\d,]+)',
+                'receivables': r'Accounts Receivable: INR\s*([\d,]+)',
+                'inventory': r'Inventory: INR\s*([\d,]+)',
+                'ppe': r'Property, Plant & Equipment: INR\s*([\d,]+)',
+                'accounts_payable': r'Accounts Payable: INR\s*([\d,]+)',
+                'loan_payable': r'Loan Payable: (-?)INR\s*([\d,]+)',
+                'revenue': r'Revenue: INR\s*([\d,]+)',
+                'expenses': r'Expenses: INR\s*([\d,]+)',
+                'retained_earnings': r'Retained Earnings:\s*(-?)INR\s*([\d,]+)'
             }
-
-    except Exception as e:
-        print(f"Error checking inconsistencies: {str(e)}")
+            
+            # Extract all financial values
+            for key, pattern in patterns.items():
+                match = re.search(pattern, text)
+                if match:
+                    if key == 'loan_payable':
+                        amount = self.parse_inr(match.group(2))
+                        financial_data[key] = -amount if match.group(1) == '-' else amount
+                    elif key == 'retained_earnings':
+                        amount = self.parse_inr(match.group(2))
+                        financial_data[key] = -amount if match.group(1) == '-' else amount
+                    else:
+                        financial_data[key] = self.parse_inr(match.group(1))
+            
+            # Check 1: Balance Sheet Equation
+            if all(k in financial_data for k in ['assets', 'liabilities', 'equity']):
+                assets = financial_data['assets']
+                liabilities = financial_data['liabilities'] 
+                equity = financial_data['equity']
+                
+                if not abs(assets - (liabilities + equity)) < 0.01:
+                    inconsistencies.append({
+                        'type': 'balance_sheet_equation',
+                        'severity': 'high',
+                        'description': f"Balance sheet equation violation: Assets ({assets:,.0f}) ≠ Liabilities ({liabilities:,.0f}) + Equity ({equity:,.0f})",
+                        'values': {'assets': assets, 'liabilities': liabilities, 'equity': equity},
+                        'difference': assets - (liabilities + equity)
+                    })
+            
+            # Check 2: Asset Composition Mismatch
+            if all(k in financial_data for k in ['cash', 'receivables', 'inventory', 'ppe', 'assets']):
+                asset_sum = sum(financial_data[k] for k in ['cash', 'receivables', 'inventory', 'ppe'])
+                if not abs(financial_data['assets'] - asset_sum) < 0.01:
+                    inconsistencies.append({
+                        'type': 'asset_composition',
+                        'severity': 'medium',
+                        'description': f"Asset composition mismatch: Individual assets sum ({asset_sum:,.0f}) ≠ Total Assets ({financial_data['assets']:,.0f})",
+                        'values': {k: financial_data[k] for k in ['cash', 'receivables', 'inventory', 'ppe', 'assets']},
+                        'difference': financial_data['assets'] - asset_sum
+                    })
+            
+            # Check 3: Misplaced Income Statement Items
+            misplaced_items = []
+            if 'revenue' in financial_data:
+                misplaced_items.append('revenue')
+            if 'expenses' in financial_data:
+                misplaced_items.append('expenses')
+            if misplaced_items:
+                inconsistencies.append({
+                    'type': 'misplaced_accounts',
+                    'severity': 'high',
+                    'description': f"Income statement items found on balance sheet: {', '.join(misplaced_items)}",
+                    'values': {k: financial_data[k] for k in misplaced_items}
+                })
+            
+            # Store financial data for RAG context
+            self.current_financial_data = financial_data
+            
+        except Exception as e:
+            logger.error(f"Error during basic inconsistency detection: {e}")
+            inconsistencies.append({
+                'type': 'processing_error',
+                'severity': 'high',
+                'description': f"Error during basic inconsistency detection: {str(e)}",
+                'error': str(e)
+            })
         
+        return inconsistencies
+    
+    def enhance_with_rag(self, text: str, basic_inconsistencies: List[Dict], tables: list) -> Dict[str, Any]:
+        """Use RAG to enhance and expand inconsistency detection"""
+        if not self.rag_available:
+            logger.warning("RAG system not available")
+            return {
+                'basic_inconsistencies': [inc['description'] for inc in basic_inconsistencies],
+                'rag_analysis': "RAG enhancement not available - using basic analysis only",
+                'recommendations': self._generate_basic_recommendations(basic_inconsistencies),
+                'context_sources': 0,
+                'financial_data': getattr(self, 'current_financial_data', {}),
+                'enhanced': False
+            }
+        
+        try:
+            # RAG enhancement logic
+            basic_issues = [inc['description'] for inc in basic_inconsistencies]
+            
+            # Generate enhanced analysis
+            enhanced_response = self.rag_system.generate_rag_response(text, basic_issues)
+            
+            # Generate recommendations
+            recommendation_prompt = f"""Based on these inconsistencies: {basic_issues}
+Provide 5 specific audit recommendations:"""
+            
+            recommendations = self.rag_system.call_llama3(recommendation_prompt, temperature=0.2)
+            
+            return {
+                'basic_inconsistencies': [inc['description'] for inc in basic_inconsistencies],
+                'rag_analysis': enhanced_response['response'],
+                'recommendations': recommendations,
+                'context_sources': enhanced_response['context_sources'],
+                'financial_data': getattr(self, 'current_financial_data', {}),
+                'enhanced': True
+            }
+        
+        except Exception as e:
+            logger.error(f"RAG enhancement failed: {str(e)}")
+            return {
+                'basic_inconsistencies': [inc['description'] for inc in basic_inconsistencies],
+                'rag_analysis': f"RAG enhancement failed: {str(e)}",
+                'recommendations': self._generate_basic_recommendations(basic_inconsistencies),
+                'context_sources': 0,
+                'financial_data': getattr(self, 'current_financial_data', {}),
+                'enhanced': False,
+                'error': str(e)
+            }
+    
+    def _generate_basic_recommendations(self, inconsistencies: List[Dict]) -> str:
+        """Generate basic recommendations when RAG is not available"""
+        if not inconsistencies:
+            return "No specific recommendations - financial statements appear consistent."
+        
+        recommendations = ["AUDIT RECOMMENDATIONS:\n"]
+        
+        for i, inc in enumerate(inconsistencies[:5], 1):
+            if inc['type'] == 'balance_sheet_equation':
+                recommendations.append(f"{i}. Reconcile balance sheet equation - verify all account balances")
+            elif inc['type'] == 'asset_composition':
+                recommendations.append(f"{i}. Verify individual asset accounts to reconcile total assets")
+            elif inc['type'] == 'misplaced_accounts':
+                recommendations.append(f"{i}. Reclassify income statement items to proper statements")
+            elif inc['type'] == 'negative_balance':
+                recommendations.append(f"{i}. Investigate negative balance in {inc.get('account', 'account')}")
+            else:
+                recommendations.append(f"{i}. Review and verify {inc['type'].replace('_', ' ')}")
+        
+        return "\n".join(recommendations)
+    
+    def comprehensive_audit(self, text: str, tables: list = None) -> Dict[str, Any]:
+        """Perform comprehensive audit combining basic checks with RAG enhancement"""
+        if tables is None:
+            tables = []
+            
+        # Step 1: Detect basic inconsistencies
+        basic_inconsistencies = self.detect_basic_inconsistencies(text, tables)
+        
+        if not basic_inconsistencies:
+            basic_inconsistencies = [{'type': 'no_issues', 'severity': 'info', 'description': 'No basic inconsistencies detected'}]
+        
+        # Step 2: Enhance with RAG
+        enhanced_results = self.enhance_with_rag(text, basic_inconsistencies, tables)
+        
+        return enhanced_results
+
+def check_inconsistencies(text: str, tables: list = None) -> Dict[str, Any]:
+    """Main function for inconsistency checking"""
+    try:
+        auditor = IntegratedFinancialAuditor()
+        results = auditor.comprehensive_audit(text, tables)
+        return results
+        
+    except Exception as e:
+        logger.error(f"Error in integrated audit: {str(e)}")
         return {
-            "basic_inconsistencies": ["Error during inconsistency checks"],
-            "rag_analysis": "",
-            "recommendations": "",
+            "basic_inconsistencies": [f"Failed audit check: {str(e)}"],
+            "rag_analysis": "Analysis failed due to system error",
+            "recommendations": "Please check system configuration and try again",
             "enhanced": False,
             "error": str(e)
         }
-
 
 if __name__ == "__main__":
     sample_text = """Sample Company - Balance Sheet (FY 2023)
@@ -212,17 +229,18 @@ Accounts Payable: INR 700,000
 Revenue: INR 1,000,000
 Expenses: INR 1,200,000
 Retained Earnings: -INR 50,000
-Loan Payable: -INR 100,000
-Page 1 | Generated on 2025-05-31"""
+Loan Payable: -INR 100,000"""
     
-    sample_table = pd.DataFrame({
-        'Assets': [1500000, None],
-        'Liabilities': [600000, None],
-        'Equity': [700000, None],
-        'Cash': [-500, 1000]
-    })
+    logger.info("Testing Fixed Financial Audit System")
+    logger.info("=" * 50)
     
-    inconsistencies = check_inconsistencies(sample_text, [sample_table])
-    print("Detected Inconsistencies:")
-    for i, inconsistency in enumerate(inconsistencies, 1):
-        print(f"{i}. {inconsistency}")
+    # Test inconsistency detection
+    results = check_inconsistencies(sample_text, [])
+    
+    logger.info(f"Enhanced: {results['enhanced']}")
+    logger.info(f"Basic Inconsistencies Found: {len(results['basic_inconsistencies'])}")
+    
+    for i, inc in enumerate(results['basic_inconsistencies'], 1):
+        logger.info(f"{i}. {inc}")
+    
+    logger.info(f"\nRAG Analysis: {results['rag_analysis'][:200]}...")
