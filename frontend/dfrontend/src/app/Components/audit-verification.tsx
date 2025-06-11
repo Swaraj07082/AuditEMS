@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+import { useRef } from "react";
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -33,6 +34,7 @@ export default function AuditVerification() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [verificationResults, setVerificationResults] = useState<any>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -96,13 +98,16 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 };
 
 
-  const resetForm = () => {
-    setSelectedFile(null)
-    setSelectedStandard("")
-    setVerificationResults(null)
-    setUploadProgress(0)
-    setIsProcessing(false)
-  }
+const resetForm = () => {
+    setSelectedFile(null);
+    setSelectedStandard("");
+    setVerificationResults(null);
+    setUploadProgress(0);
+    setIsProcessing(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
