@@ -42,44 +42,59 @@ export default function AuditVerification() {
     }
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    if (!selectedFile || !selectedStandard) {
-      return
+  if (!selectedFile || !selectedStandard) {
+    return;
+  }
+
+  setIsProcessing(true);
+  setUploadProgress(0);
+
+  // Prepare the form data
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+
+  try {
+    // Send the file to the FastAPI backend
+    const response = await fetch("http://localhost:8000/upload/", {
+      method: "POST",
+      body: formData,
+      // Do NOT set Content-Type header; browser sets it automatically for FormData
+    });
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
     }
 
-    setIsProcessing(true)
-    setUploadProgress(0)
+    // Optionally handle progress here if you use Axios or advanced fetch APIs
 
-    // Simulate upload progress
-    const progressInterval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval)
-          return 90
-        }
-        return prev + 10
-      })
-    }, 200)
+    const data = await response.json();
 
-    // Simulate processing
+    setUploadProgress(100);
     setTimeout(() => {
-      setUploadProgress(100)
-      setTimeout(() => {
-        setIsProcessing(false)
-        setVerificationResults({
-          compliance: 87,
-          totalChecks: 156,
-          passed: 136,
-          failed: 12,
-          warnings: 8,
-          criticalIssues: 3,
-          recommendations: 15,
-        })
-      }, 1000)
-    }, 2000)
-  }
+      setIsProcessing(false);
+      setVerificationResults({
+        compliance: 87, // Replace with actual backend response if available
+        totalChecks: 156,
+        passed: 136,
+        failed: 12,
+        warnings: 8,
+        criticalIssues: 3,
+        recommendations: 15,
+        filename: data.filename,
+      });
+    }, 1000);
+  } catch (error) {
+  setIsProcessing(false);
+  if (error instanceof Error) {
+    alert("Error uploading file: " + error.message);
+  } else {
+    alert("An unknown error occurred during upload.");
+  }}
+};
+
 
   const resetForm = () => {
     setSelectedFile(null)
