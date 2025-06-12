@@ -230,7 +230,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 text-blue-400" />
@@ -241,89 +241,40 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Security
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Integrations
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            
 
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          <h3 className="font-semibold mb-4">Support</h3>
+          <ul className="flex space-x-4 text-slate-400">
+            <li>
+              <Link href="#" className="hover:text-white transition-colors">
+                Help Center
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-white transition-colors">
+                Documentation
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-white transition-colors">
+                API Reference
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-white transition-colors">
+                Status
+              </Link>
+            </li>
+          </ul>
+        </div>
 
-            <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    API Reference
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Status
-                  </Link>
-                </li>
-              </ul>
-            </div>
           </div>
 
           <Separator className="bg-slate-700 mb-8" />
 
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-slate-400 text-sm">© 2024 Audit Management System. All rights reserved.</div>
+            <div className="text-slate-400 text-sm">© 2025 Audit Evidence Management System. All rights reserved.</div>
             <div className="flex space-x-6 text-sm text-slate-400">
               <Link href="#" className="hover:text-white transition-colors">
                 Privacy Policy
