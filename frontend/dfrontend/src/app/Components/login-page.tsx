@@ -4,13 +4,14 @@ import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Shield, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"
-
+import { signIn, useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
+
 
 export default function LoginPage() {
   const router = useRouter()
@@ -88,16 +89,24 @@ export default function LoginPage() {
 
   // Handle Sign In submit
   const handleSignInSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validateSignIn()) return
+  e.preventDefault()
+  if (!validateSignIn()) return
 
-    setIsLoading(true)
-    // Simulate login API call
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/audit-verification")
-    }, 1500)
+  setIsLoading(true)
+  const res = await signIn("credentials", {
+    redirect: false,
+    email: formData.email,
+    password: formData.password,
+  })
+  setIsLoading(false)
+
+  if (res?.error) {
+    setErrors({ password: "Invalid email or password" })
+  } else {
+    router.push("/auditVerify")
   }
+}
+
 
   // Handle Sign Up submit
   const handleSignUpSubmit = async (e: React.FormEvent) => {
