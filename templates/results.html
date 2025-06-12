@@ -5,40 +5,34 @@
 </head>
 <body>
     <h1>Audit Results</h1>
-    
-    <h2>Extracted Text (First 1000 Characters)</h2>
+    <h2>Extracted Text (Preview)</h2>
     <pre>{{ text }}</pre>
     
-    <h2>Detected Inconsistencies</h2>
-    {% if inconsistencies %}
-        <ul>
-        {% for inconsistency in inconsistencies %}
-            <li>{{ inconsistency }}</li>
+    <h2>Inconsistencies Found</h2>
+    <ul>
+        {% for inc in inconsistencies %}
+            <li>{{ inc }}</li>
         {% endfor %}
-        </ul>
-    {% else %}
-        <p>No inconsistencies detected.</p>
-    {% endif %}
+        {% if not inconsistencies %}
+            <li>No inconsistencies detected</li>
+        {% endif %}
+    </ul>
     
-    <h2>RAG-Enhanced Analysis</h2>
-    {% if rag_analysis %}
-        <p>{{ rag_analysis }}</p>
-    {% else %}
-        <p>No RAG analysis available.</p>
-    {% endif %}
+    <h2>RAG Analysis</h2>
+    <p>{{ rag_analysis or "No additional analysis available" }}</p>
     
     <h2>Recommendations</h2>
-    {% if recommendations %}
-        <p>{{ recommendations }}</p>
-    {% else %}
-        <p>No recommendations provided.</p>
+    <p>{{ recommendations or "No specific recommendations" }}</p>
+    
+    <h2>Summary</h2>
+    <p>{{ summary }}</p>
+    
+    {% if error %}
+        <h2>Error</h2>
+        <p>{{ error }}</p>
     {% endif %}
     
-    <h2>RAG Enhancement Status</h2>
-    <p>{{ 'Successful' if enhanced else 'Failed' + (': ' + error if error else '') }}</p>
-    
-    <h2>Audit Summary</h2>
-    <p>{{ summary }}</p>
+    <p>Enhanced Analysis: {{ enhanced }}</p>
     
     <a href="{{ url_for('index') }}">Upload Another File</a>
 </body>

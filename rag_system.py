@@ -1,397 +1,240 @@
-import os
-import json
-import numpy as np
-from typing import List, Dict, Any, Optional
-import pandas as pd
-from dataclasses import dataclass
-import requests
-import sqlite3
-from datetime import datetime
 import logging
+import ollama
+import json
+from typing import Dict, List, Any
+from sentence_transformers import SentenceTransformer
+import chromadb
 
-# Vector database imports
-try:
-    import chromadb
-    from chromadb.config import Settings
-except ImportError:
-    print("ChromaDB not installed. Install with: pip install chromadb")
-
-# Text processing imports
-try:
-    from sentence_transformers import SentenceTransformer
-except ImportError:
-    print("SentenceTransformers not installed. Install with: pip install sentence-transformers")
-
-@dataclass
-class FinancialDocument:
-    """Structure for financial documents"""
-    id: str
-    content: str
-    doc_type: str  # balance_sheet, income_statement, cash_flow
-    company_name: str
-    year: str
-    metadata: Dict[str, Any]
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class FinancialRAGSystem:
-    """RAG system for financial audit using Llama3"""
-    
-    def __init__(self, 
-                 ollama_base_url: str = "http://localhost:11434",
-                 model_name: str = "llama3:8b",
-                 embedding_model: str = "all-MiniLM-L6-v2"):
-        
-        self.ollama_url = ollama_base_url
+    def __init__(self, model_name: str = "llama3:8b"):
         self.model_name = model_name
-        self.embedding_model_name = embedding_model
-        
-        # Initialize embedding model
+        self.available_models = []
+        self.selected_model = None
+        self._initialize_model()
+
+        # Initialize ChromaDB
+        self.chroma_client = chromadb.Client()
+        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.collection = self.chroma_client.get_or_create_collection(name="financial_docs")
+
+        # Knowledge base
+        self.knowledge_base = {
+            "balance_sheet_rules": [
+                "Assets must equal Liabilities plus Equity",
+                "All asset accounts should have positive balances unless specifically contra accounts",
+                "Current assets should be listed before non-current assets",
+                "Liabilities should be classified as current or non-current"
+            ],
+            "common_errors": [
+                "Misclassification of income statement items on balance sheet",
+                "Incorrect calculation of totals and subtotals",
+                "Missing or incorrect account balances",
+                "Improper presentation of negative balances"
+            ],
+            "audit_procedures": [
+                "Verify mathematical accuracy of all calculations",
+                "Confirm proper account classifications",
+                "Review supporting documentation for significant balances",
+                "Assess reasonableness of account balances"
+            ]
+        }
+
+    def _initialize_model(self):
         try:
-            self.embedding_model = SentenceTransformer(embedding_model)
+            available_models = ollama.list()
+            self.available_models = [model['name'] for model in available_models.get('models', [])]
+            logger.info(f"Available Ollama models: {self.available_models}")
+
+            model_variants = [
+                self.model_name,
+                f"{self.model_name}:latest",
+                "llama3:8b",
+                "llama3:latest",
+                "llama3.1:8b",
+                "llama3.1:latest",
+                "llama3.2:3b"
+            ]
+            for variant in model_variants:
+                if variant in self.available_models:
+                    self.selected_model = variant
+                    logger.info(f"Selected model: {self.selected_model}")
+                    break
+
+            if not self.selected_model:
+                raise ValueError("No suitable Ollama model found.")
         except Exception as e:
-            print(f"Error loading embedding model: {e}")
-            self.embedding_model = None
-            
-        # Initialize vector database
-        self.setup_vector_db()
-        
-        # Initialize knowledge base
-        self.setup_knowledge_base()
-        
-        # Setup logging
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
-    
-    def setup_vector_db(self):
-        """Initialize ChromaDB for vector storage"""
+            logger.error(f"Model initialization failed: {e}")
+            raise
+
+    def call_llama3(self, prompt: str, temperature: float = 0.7, max_tokens: int = 500) -> str:
+        if not self.selected_model:
+            raise ValueError("No model available")
+
         try:
-            # Create ChromaDB client
-            self.chroma_client = chromadb.PersistentClient(path="./financial_rag_db")
-            
-            # Create collections for different document types
-            self.collections = {
-                'financial_docs': self.chroma_client.get_or_create_collection(
-                    name="financial_documents",
-                    metadata={"description": "Financial statements and reports"}
-                ),
-                'audit_rules': self.chroma_client.get_or_create_collection(
-                    name="audit_rules",
-                    metadata={"description": "Accounting standards and audit rules"}
-                ),
-                'inconsistency_patterns': self.chroma_client.get_or_create_collection(
-                    name="inconsistency_patterns",
-                    metadata={"description": "Known financial inconsistency patterns"}
-                )
-            }
-            
-        except Exception as e:
-            print(f"Error setting up vector database: {e}")
-            self.collections = {}
-    
-    def setup_knowledge_base(self):
-        """Initialize knowledge base with financial audit rules"""
-        audit_rules = [
-            {
-                "rule": "Balance Sheet Equation",
-                "content": "Assets must equal Liabilities plus Equity (A = L + E). Any deviation indicates fundamental accounting errors.",
-                "category": "fundamental_equation"
-            },
-            {
-                "rule": "Asset Classification",
-                "content": "Current assets should be convertible to cash within one year. Non-current assets are long-term investments.",
-                "category": "classification"
-            },
-            {
-                "rule": "Liability Recognition",
-                "content": "Liabilities represent obligations to pay. They should typically have positive balances. Negative liabilities may indicate errors.",
-                "category": "liability_rules"
-            },
-            {
-                "rule": "Retained Earnings",
-                "content": "Retained earnings can be negative (accumulated deficit) if company has cumulative losses over time.",
-                "category": "equity_rules"
-            },
-            {
-                "rule": "Revenue Recognition",
-                "content": "Revenue should be recognized when earned, not when cash is received. Revenue belongs on Income Statement, not Balance Sheet.",
-                "category": "revenue_rules"
-            },
-            {
-                "rule": "Expense Matching",
-                "content": "Expenses should be matched with related revenues in the same period. Expenses belong on Income Statement.",
-                "category": "expense_rules"
-            }
-        ]
-        
-        self.add_audit_rules(audit_rules)
-    
-    def add_financial_document(self, document: FinancialDocument):
-        """Add financial document to vector database"""
-        try:
-            if not self.embedding_model or 'financial_docs' not in self.collections:
-                return False
-                
-            # Create embeddings
-            embedding = self.embedding_model.encode(document.content).tolist()
-            
-            # Add to ChromaDB
-            self.collections['financial_docs'].add(
-                embeddings=[embedding],
-                documents=[document.content],
-                metadatas=[{
-                    'doc_type': document.doc_type,
-                    'company_name': document.company_name,
-                    'year': document.year,
-                    **document.metadata
-                }],
-                ids=[document.id]
+            response = ollama.generate(
+                model=self.selected_model,
+                prompt=prompt,
+                options={
+                    'temperature': temperature,
+                    'num_predict': max_tokens,
+                    'top_p': 0.9,
+                    'stop': ['</response>', '\n\n---']
+                }
             )
-            
-            self.logger.info(f"Added document {document.id} to vector database")
-            return True
-            
+            return response['response'].strip()
         except Exception as e:
-            self.logger.error(f"Error adding document: {e}")
-            return False
-    
-    def add_audit_rules(self, rules: List[Dict]):
-        """Add audit rules to knowledge base"""
+            logger.error(f"Llama3 call failed: {e}")
+            raise
+
+    def get_relevant_context(self, inconsistencies: List[str]) -> Dict[str, List[str]]:
+        relevant_context = {
+            "rules": [],
+            "errors": [],
+            "procedures": []
+        }
+
+        for inconsistency in inconsistencies:
+            inconsistency_lower = inconsistency.lower()
+            if any(k in inconsistency_lower for k in ['balance sheet', 'assets', 'liabilities', 'equity']):
+                relevant_context["rules"].extend(self.knowledge_base["balance_sheet_rules"])
+            if any(k in inconsistency_lower for k in ['mismatch', 'violation', 'misplaced']):
+                relevant_context["errors"].extend(self.knowledge_base["common_errors"])
+            relevant_context["procedures"].extend(self.knowledge_base["audit_procedures"])
+
+        for key in relevant_context:
+            relevant_context[key] = list(set(relevant_context[key]))
+        return relevant_context
+
+    def store_in_chroma(self, text: str, metadata: dict = None):
+        """Embed and store a document chunk in ChromaDB"""
+        embedding = self.embedding_model.encode(text).tolist()
+        self.collection.add(
+            documents=[text],
+            embeddings=[embedding],
+            ids=[f"doc_{str(hash(text))}"],
+            metadatas=[metadata or {}]
+        )
+
+    def query_chroma(self, query: str, top_k: int = 3) -> List[str]:
+        """Query ChromaDB for semantically similar chunks"""
+        embedding = self.embedding_model.encode(query).tolist()
+        result = self.collection.query(query_embeddings=[embedding], n_results=top_k)
+        return result["documents"][0] if result.get("documents") else []
+
+    def generate_rag_response(self, document_text: str, inconsistencies: List[str]) -> Dict[str, Any]:
         try:
-            if not self.embedding_model or 'audit_rules' not in self.collections:
-                return False
-                
-            for i, rule in enumerate(rules):
-                embedding = self.embedding_model.encode(rule['content']).tolist()
-                
-                self.collections['audit_rules'].add(
-                    embeddings=[embedding],
-                    documents=[rule['content']],
-                    metadatas=[{
-                        'rule_name': rule['rule'],
-                        'category': rule['category']
-                    }],
-                    ids=[f"rule_{i}_{rule['category']}"]
-                )
-                
-            self.logger.info(f"Added {len(rules)} audit rules to knowledge base")
-            return True
-            
+            context = self.get_relevant_context(inconsistencies)
+            retrieved_chunks = self.query_chroma(" ".join(inconsistencies))
+
+            prompt = f"""You are a financial auditing expert. Analyze the following financial document and inconsistencies:
+
+DOCUMENT EXCERPT:
+{document_text[:1500]}
+
+IDENTIFIED INCONSISTENCIES:
+{chr(10).join(f'• {inc}' for inc in inconsistencies)}
+
+RETRIEVED KNOWLEDGE:
+{chr(10).join(f'• {chunk}' for chunk in retrieved_chunks)}
+
+AUDITING CONTEXT:
+Rules: {'; '.join(context['rules'][:3])}
+Errors: {'; '.join(context['errors'][:3])}
+Procedures: {'; '.join(context['procedures'][:3])}
+
+Provide a comprehensive analysis that:
+1. Explains the significance of each inconsistency
+2. Identifies potential root causes
+3. Assesses the impact on financial statement reliability
+4. Suggests specific corrective actions
+
+Keep response under 400 words and focus on practical audit insights."""
+
+            enhanced_analysis = self.call_llama3(prompt, temperature=0.3, max_tokens=400)
+            return {
+                'response': enhanced_analysis,
+                'context_sources': len(context['rules']) + len(context['errors']) + len(context['procedures']),
+                'model_used': self.selected_model
+            }
+
         except Exception as e:
-            self.logger.error(f"Error adding audit rules: {e}")
-            return False
-    
-    def retrieve_relevant_context(self, query: str, n_results: int = 5) -> Dict[str, List]:
-        """Retrieve relevant context from vector database"""
+            logger.error(f"RAG response generation failed: {e}")
+            return {
+                'response': f"Enhanced analysis unavailable: {str(e)}",
+                'context_sources': 0,
+                'model_used': None,
+                'error': str(e)
+            }
+
+    def generate_recommendations(self, inconsistencies: List[str]) -> str:
         try:
-            if not self.embedding_model:
-                return {"documents": [], "metadatas": []}
-                
-            # Create query embedding
-            query_embedding = self.embedding_model.encode(query).tolist()
-            
-            # Search across all collections
-            all_results = {"documents": [], "metadatas": [], "sources": []}
-            
-            for collection_name, collection in self.collections.items():
-                try:
-                    results = collection.query(
-                        query_embeddings=[query_embedding],
-                        n_results=min(n_results, collection.count() if collection.count() > 0 else 1)
-                    )
-                    
-                    if results['documents'] and results['documents'][0]:
-                        all_results["documents"].extend(results['documents'][0])
-                        all_results["metadatas"].extend(results['metadatas'][0])
-                        all_results["sources"].extend([collection_name] * len(results['documents'][0]))
-                        
-                except Exception as e:
-                    self.logger.warning(f"Error querying collection {collection_name}: {e}")
-                    continue
-            
-            return all_results
-            
+            context = self.get_relevant_context(inconsistencies)
+            prompt = f"""As a financial auditing expert, provide 5 specific, actionable audit recommendations for these inconsistencies:
+
+INCONSISTENCIES:
+{chr(10).join(f'• {inc}' for inc in inconsistencies)}
+
+AUDIT CONTEXT:
+{chr(10).join(f'• {proc}' for proc in context['procedures'][:5])}
+
+Format your response as:
+1. [Specific recommendation]
+2. [Specific recommendation]
+...
+
+Focus on practical, implementable actions that address root causes."""
+
+            recommendations = self.call_llama3(prompt, temperature=0.2, max_tokens=300)
+            return recommendations
+
         except Exception as e:
-            self.logger.error(f"Error retrieving context: {e}")
-            return {"documents": [], "metadatas": [], "sources": []}
-    
-    def call_llama3(self, prompt: str, temperature: float = 0.1) -> str:
-        """Call Llama3 via Ollama API"""
-        try:
-            response = requests.post(
-                f"{self.ollama_url}/api/generate",
-                json={
-                    "model": self.model_name,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {
-                        "temperature": temperature,
-                        "top_p": 0.9,
-                        "max_tokens": 2048
-                    }
-                },
-                timeout=120
-            )
-            
-            if response.status_code == 200:
-                return response.json().get('response', '')
+            logger.error(f"Recommendation generation failed: {e}")
+            return self._generate_fallback_recommendations(inconsistencies)
+
+    def _generate_fallback_recommendations(self, inconsistencies: List[str]) -> str:
+        recommendations = []
+        for i, inconsistency in enumerate(inconsistencies[:5], 1):
+            if 'balance sheet equation' in inconsistency.lower():
+                recommendations.append(f"{i}. Reconcile all balance sheet accounts to ensure mathematical accuracy")
+            elif 'asset composition' in inconsistency.lower():
+                recommendations.append(f"{i}. Verify individual asset account balances and reclassify if necessary")
+            elif 'income statement' in inconsistency.lower():
+                recommendations.append(f"{i}. Review account classifications and move income statement items to proper statements")
+            elif 'negative' in inconsistency.lower():
+                recommendations.append(f"{i}. Investigate and correct negative account balances")
             else:
-                self.logger.error(f"Ollama API error: {response.status_code}")
-                return "Error: Unable to get response from Llama3"
-                
-        except Exception as e:
-            self.logger.error(f"Error calling Llama3: {e}")
-            return f"Error: {str(e)}"
-    
-    def generate_rag_response(self, 
-                            financial_data: str, 
-                            inconsistencies: List[str],
-                            question: str = None) -> str:
-        """Generate RAG-enhanced audit response"""
-        
-        # Create search query from inconsistencies and financial data
-        search_query = f"financial audit inconsistencies balance sheet {' '.join(inconsistencies[:3])}"
-        
-        # Retrieve relevant context
-        context = self.retrieve_relevant_context(search_query, n_results=5)
-        
-        # Build context string
-        context_str = ""
-        if context["documents"]:
-            context_str = "\n\nRelevant Audit Knowledge:\n"
-            for i, (doc, metadata, source) in enumerate(zip(context["documents"], 
-                                                           context["metadatas"], 
-                                                           context["sources"])):
-                context_str += f"\n{i+1}. [{source}] {doc[:200]}...\n"
-        
-        # Create enhanced prompt
-        prompt = f"""You are a financial audit expert analyzing a company's financial statements.
+                recommendations.append(f"{i}. Review and verify the accuracy of reported financial data")
+        return "\n".join(recommendations) if recommendations else "No specific recommendations available"
 
-FINANCIAL DATA:
-{financial_data}
 
-DETECTED INCONSISTENCIES:
-{chr(10).join(f'• {inc}' for inc in inconsistencies)}
-{context_str}
+# -------- Test Script --------
+def test_rag_system():
+    rag = FinancialRAGSystem()
 
-TASK: Provide a comprehensive audit analysis that:
-1. Explains each inconsistency in detail
-2. Assesses the severity and potential impact
-3. Suggests possible causes and corrections
-4. Recommends next steps for the auditor
-5. References relevant accounting standards where applicable
+    # Store context samples
+    rag.store_in_chroma("Assets must always equal liabilities and equity in a balance sheet")
+    rag.store_in_chroma("A negative asset balance must be reviewed, especially if it’s not a contra asset")
+    rag.store_in_chroma("Misclassification of income leads to misleading profit metrics")
 
-Focus on being precise, professional, and actionable. Use the provided audit knowledge to support your analysis.
-
-AUDIT ANALYSIS:"""
-
-        # Generate response using Llama3
-        response = self.call_llama3(prompt, temperature=0.1)
-        
-        return response
-    
-    def process_financial_document_with_rag(self, 
-                                          document_content: str,
-                                          inconsistencies: List[str],
-                                          doc_metadata: Dict = None) -> Dict[str, Any]:
-        """Process financial document with RAG enhancement"""
-        
-        # Add document to vector database for future reference
-        if doc_metadata:
-            doc = FinancialDocument(
-                id=f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                content=document_content,
-                doc_type=doc_metadata.get('doc_type', 'unknown'),
-                company_name=doc_metadata.get('company_name', 'Unknown'),
-                year=doc_metadata.get('year', '2023'),
-                metadata=doc_metadata
-            )
-            self.add_financial_document(doc)
-        
-        # Generate RAG-enhanced analysis
-        rag_analysis = self.generate_rag_response(
-            document_content, 
-            inconsistencies
-        )
-        
-        # Generate specific recommendations
-        recommendation_prompt = f"""Based on these financial inconsistencies:
-{chr(10).join(f'• {inc}' for inc in inconsistencies)}
-
-Provide 5 specific, actionable recommendations for the auditor:"""
-        
-        recommendations = self.call_llama3(recommendation_prompt, temperature=0.2)
-        
-        return {
-            "rag_analysis": rag_analysis,
-            "recommendations": recommendations,
-            "context_used": len(self.retrieve_relevant_context(
-                f"audit inconsistencies {' '.join(inconsistencies[:2])}"
-            )["documents"]),
-            "timestamp": datetime.now().isoformat()
-        }
-
-# Example usage and integration
-class EnhancedFinancialAuditor:
-    """Enhanced financial auditor with RAG capabilities"""
-    
-    def __init__(self):
-        self.rag_system = FinancialRAGSystem()
-        
-    def audit_with_rag(self, financial_text: str, detected_inconsistencies: List[str]) -> Dict:
-        """Perform audit with RAG enhancement"""
-        
-        # Process with RAG
-        rag_results = self.rag_system.process_financial_document_with_rag(
-            document_content=financial_text,
-            inconsistencies=detected_inconsistencies,
-            doc_metadata={
-                'doc_type': 'balance_sheet',
-                'company_name': 'Sample Company',
-                'year': '2023',
-                'audit_date': datetime.now().isoformat()
-            }
-        )
-        
-        return {
-            "original_inconsistencies": detected_inconsistencies,
-            "rag_enhanced_analysis": rag_results["rag_analysis"],
-            "recommendations": rag_results["recommendations"],
-            "context_sources_used": rag_results["context_used"]
-        }
-
-# Example usage
-if __name__ == "__main__":
-    # Sample data from your current system
+    sample_inconsistencies = [
+        "Balance sheet equation violation: Assets (1,500,000) ≠ Liabilities (600,000) + Equity (700,000)",
+        "Asset composition mismatch: Individual assets sum (1,400,000) ≠ Total Assets (1,500,000)"
+    ]
     sample_text = """Sample Company - Balance Sheet (FY 2023)
 Total Assets: INR 1,500,000
 Liabilities: INR 600,000
-Equity: INR 700,000
-Cash: INR 200,000
-Accounts Receivable: INR 400,000
-Inventory: INR 300,000
-Property, Plant & Equipment: INR 500,000
-Accounts Payable: INR 700,000
-Revenue: INR 1,000,000
-Expenses: INR 1,200,000
-Retained Earnings: -INR 50,000
-Loan Payable: -INR 100,000"""
-    
-    sample_inconsistencies = [
-        "Balance sheet mismatch: Assets (1,500,000) ≠ Liabilities (600,000) + Equity (700,000) = 1,300,000",
-        "Asset composition mismatch: Sum of individual assets (1,400,000) ≠ Total Assets (1,500,000)",
-        "Liabilities composition mismatch: Sum of liabilities (800,000) ≠ Total Liabilities (600,000)",
-        "Negative Retained Earnings detected (-INR 50,000) - indicates accumulated losses",
-        "Revenue or Expenses detected on balance sheet, which typically belong on an income statement"
-    ]
-    
-    # Initialize enhanced auditor
-    auditor = EnhancedFinancialAuditor()
-    
-    # Perform RAG-enhanced audit
-    results = auditor.audit_with_rag(sample_text, sample_inconsistencies)
-    
-    print("RAG-Enhanced Audit Results:")
-    print("=" * 50)
-    print(results["rag_enhanced_analysis"])
-    print("\n" + "=" * 50)
-    print("Recommendations:")
-    print(results["recommendations"])
+Equity: INR 700,000"""
+
+    result = rag.generate_rag_response(sample_text, sample_inconsistencies)
+    print("🧠 RAG Analysis:\n", result['response'])
+    print("🔎 Context Sources Used:", result['context_sources'])
+
+    recs = rag.generate_recommendations(sample_inconsistencies)
+    print("\n✅ Recommendations:\n", recs)
+
+if __name__ == "__main__":
+    test_rag_system()
