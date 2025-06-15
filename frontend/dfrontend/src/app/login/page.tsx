@@ -1,8 +1,12 @@
-import React from 'react'
-import LoginPage from '../Components/login-page'
+import { SigninPage } from "../Components/signin-page";
 
-export default function login() {
+
+export default function SignIn() {
   return (
-    <LoginPage/>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <SigninPage/>
+      </div>
+    </div>
   )
 }
