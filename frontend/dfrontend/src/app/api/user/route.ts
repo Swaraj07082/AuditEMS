@@ -4,12 +4,13 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
+import { userSchema } from "@/app/schema/userSchema";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { email, name, password } = body;
+    const { email, name, password } = userSchema.parse(body);
 
     if (!email || !password || !name) {
       console.log("Missing required fields");
