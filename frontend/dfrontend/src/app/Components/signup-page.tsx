@@ -55,6 +55,7 @@ export function SignUpPage({
 
     if (response.ok) {
       router.push("/login");
+      console.log('user created')
     } else {
       console.error("Registration failed");
     }

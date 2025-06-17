@@ -537,10 +537,6 @@
     margin-left: calc(var(--spacing) * 2);
   }
 
-  .ml-auto {
-    margin-left: auto;
-  }
-
   .flex {
     display: flex;
   }
@@ -638,6 +634,10 @@
 
   .min-h-svh {
     min-height: 100svh;
+  }
+
+  .w-2\/3 {
+    width: 66.6667%;
   }
 
   .w-3 {
