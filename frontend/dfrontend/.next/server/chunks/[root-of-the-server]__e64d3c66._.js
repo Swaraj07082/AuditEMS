@@ -223,6 +223,7 @@ const authOptions = {
                 if (!passwordMatch) {
                     return null;
                 }
+                console.log(credentials.email);
                 return {
                     id: `${existingUser.id}`,
                     name: existingUser.name,

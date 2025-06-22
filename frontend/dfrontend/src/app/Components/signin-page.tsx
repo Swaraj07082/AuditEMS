@@ -40,6 +40,8 @@ export function SigninPage({
     const signindata = await signIn("credentials", {
       email: values.email,
       password: values.password,
+      redirect : true,
+      callbackUrl : "/"
     });
 
     console.log(signindata);

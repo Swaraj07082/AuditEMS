@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        console.log(credentials.email + "is logged in")
         return {
           id: `${existingUser.id}`,
           name: existingUser.name,
