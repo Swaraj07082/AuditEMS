@@ -15,7 +15,7 @@ def generate_audit_summary(text: str, inconsistencies_dict: Dict[str, Any], mode
         # Check if Ollama is available and get models
         try:
             available_models = ollama.list()
-            model_names = [model['name'] for model in available_models.get('models', [])]
+            model_names = [model.model for model in available_models.get('models', []) if hasattr(model , 'model')]
             logger.info(f"Available models: {model_names}")
         except Exception as e:
             logger.error(f"Failed to get available models: {e}")

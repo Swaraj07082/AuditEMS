@@ -46,7 +46,9 @@ class FinancialRAGSystem:
     def _initialize_model(self):
         try:
             available_models = ollama.list()
-            self.available_models = [model['name'] for model in available_models.get('models', [])]
+            print("Raw ollama response :" , available_models)
+            self.available_models = [model.model for model in available_models.get('models', []) if hasattr(model , 'model')]
+
             logger.info(f"Available Ollama models: {self.available_models}")
 
             model_variants = [
