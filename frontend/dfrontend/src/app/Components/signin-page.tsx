@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+
 export function SigninPage({
   className,
   ...props
@@ -41,8 +42,10 @@ export function SigninPage({
       email: values.email,
       password: values.password,
       redirect : true,
-      callbackUrl : "/"
+      callbackUrl : "/dashboard"
     });
+
+
 
     console.log(signindata);
   }
