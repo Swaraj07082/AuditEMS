@@ -1,5 +1,11 @@
 {
-  "/auditVerify/page": "app/auditVerify/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/user/route": "app/api/user/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/page": "app/page.js"
+  "/auditVerify/page": "app/auditVerify/page.js",
+  "/page": "app/page.js",
+  "/signup/page": "app/signup/page.js"
 }

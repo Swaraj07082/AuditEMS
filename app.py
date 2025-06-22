@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 import pdfplumber  # Placeholder for PDF extraction
 from llama.generate_summary import generate_audit_summary  # Updated import
 from auditing.check_logic import check_inconsistencies  # Updated import
+from flask_cors import CORS  # Fixed CORS import
+from flask import jsonify
 
 # Debug: Print module search path
 logger = logging.getLogger(__name__)
@@ -15,6 +17,10 @@ logger.info("Python module search path: %s", sys.path)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
+
+# Setup CORS properly for Flask
+CORS(app, origins=["http://localhost:3000"])  # Add your Next.js dev server URL
+
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "Uploads")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -45,21 +51,15 @@ def extract_text_and_tables(file_path: str) -> tuple[str, list]:
         logger.error("Error extracting text and tables: %s", str(e))
         raise
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
     try:
         if 'file' not in request.files:
-            logger.warning("No file uploaded in request")
-            return render_template('error.html', message="No file uploaded"), 400
+            return jsonify({'error': "No file uploaded"}), 400
         
         file = request.files['file']
         if file.filename == '':
-            logger.warning("No file selected")
-            return render_template('error.html', message="No file selected"), 400
+            return jsonify({"error": "No file selected"}), 400
         
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -68,28 +68,28 @@ def upload_file():
             
             try:
                 # Extract text and tables
-                logger.info("Extracting text and tables from %s", file_path)
                 text, tables = extract_text_and_tables(file_path)
                 
                 # Check for inconsistencies
-                logger.info("Checking inconsistencies")
                 inconsistencies_dict = check_inconsistencies(text, tables)
                 
                 # Generate summary
-                logger.info("Generating audit summary")
                 summary = generate_audit_summary(text, inconsistencies_dict, model_name="llama3:8b")
                 
-                # Render results
-                return render_template(
-                    'results.html',
-                    text=text[:2000],  # Increased limit for display
-                    inconsistencies=inconsistencies_dict.get('basic_inconsistencies', []),
-                    rag_analysis=inconsistencies_dict.get('rag_analysis', ''),
-                    recommendations=inconsistencies_dict.get('recommendations', ''),
-                    enhanced=inconsistencies_dict.get('enhanced', False),
-                    error=inconsistencies_dict.get('error', ''),
-                    summary=summary
-                )
+                # Return JSON response - Fixed syntax errors
+                response_data = {
+                    "text": text[:2000],  # Fixed syntax
+                    "inconsistencies": inconsistencies_dict.get('basic_inconsistencies', []),
+                    "rag_analysis": inconsistencies_dict.get('rag_analysis', ''),
+                    "recommendations": inconsistencies_dict.get('recommendations', ''),  # Fixed syntax
+                    "enhanced": inconsistencies_dict.get('enhanced', False),
+                    "error": inconsistencies_dict.get('error', ''),
+                    "summary": summary,
+                    "status": "success"
+                }
+                
+                logger.info("Sending response: %s", response_data)
+                return jsonify(response_data), 200
             
             finally:
                 # Clean up uploaded file
@@ -102,11 +102,11 @@ def upload_file():
         
         else:
             logger.warning("Invalid file type: %s", file.filename)
-            return render_template('error.html', message="Only PDF files are allowed"), 400
+            return jsonify({"error": "Only PDF files are allowed"}), 400
     
     except Exception as e:
         logger.error("Error processing request: %s", str(e))
-        return render_template('error.html', message=f"Error processing file: {str(e)}"), 500
+        return jsonify({"error": f"Error processing file: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(
