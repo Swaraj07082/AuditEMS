@@ -14,22 +14,32 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String   @unique
-  password  String
-  pdfs      PDF[]   
+  id       String @id @default(uuid())
+  email    String @unique
+  name     String @unique
+  password String
+  pdfs     PDF[]
 }
 
 model PDF {
-  id          String   @id @default(uuid())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  filename    String
-  textExtract String
-  findings    String
-  standard    String
-  uploadedAt  DateTime @default(now())
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+  text            String
+  inconsistencies String
+  rag_analysis    String
+  recommendations String
+  enhanced        String
+  error           String
+  summary         String
+  filename        String
+  status          Status
+  uploadedAt      DateTime @default(now())
+}
+
+enum Status {
+  VERIFIED
+  PENDING
+  FAILED
 }

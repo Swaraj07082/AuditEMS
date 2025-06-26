@@ -85,6 +85,7 @@ def upload_file():
                     "enhanced": inconsistencies_dict.get('enhanced', False),
                     "error": inconsistencies_dict.get('error', ''),
                     "summary": summary,
+                    "filename" : filename,
                     "status": "success"
                 }
                 
