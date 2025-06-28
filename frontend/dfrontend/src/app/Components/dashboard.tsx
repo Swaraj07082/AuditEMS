@@ -12,6 +12,9 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { signOut, useSession } from "next-auth/react"
+import { LogOut } from "lucide-react"
+
 
 const samplePDFs = [
   {
@@ -72,6 +75,13 @@ const samplePDFs = [
 
 export default function PDFDashboard() {
   const router = useRouter();
+  const { data: session, status } = useSession()
+
+if (status === "loading") return null // Or a spinner
+if (!session) {
+  if (typeof window !== "undefined") window.location.href = "/api/auth/signin"
+  return null
+}
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -115,6 +125,12 @@ export default function PDFDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
+        <div className="flex justify-end mb-6">
+  <Button variant="outline" onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center">
+    <LogOut className="h-4 w-4 mr-2" />
+    Logout
+  </Button>
+</div>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">PDF Dashboard</h1>
