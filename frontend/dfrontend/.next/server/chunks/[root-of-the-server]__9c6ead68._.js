@@ -216,14 +216,9 @@ const authOptions = {
                         email: credentials.email
                     }
                 });
-                if (!existingUser) {
-                    return null;
-                }
+                if (!existingUser) return null;
                 const passwordMatch = await (0, __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__$28$bcrypt$2c$__cjs$29$__["compare"])(credentials.password, existingUser.password);
-                if (!passwordMatch) {
-                    return null;
-                }
-                console.log(credentials.email + "is logged in");
+                if (!passwordMatch) return null;
                 return {
                     id: `${existingUser.id}`,
                     name: existingUser.name,
@@ -231,7 +226,31 @@ const authOptions = {
                 };
             }
         })
-    ]
+    ],
+    callbacks: {
+        async jwt ({ token, user }) {
+            console.log('JWT callback:', {
+                user,
+                token
+            });
+            if (user) {
+                token.id = user.id;
+            }
+            console.log('JWT token after:', token);
+            return token;
+        },
+        async session ({ session, token }) {
+            console.log('Session callback:', {
+                session,
+                token
+            });
+            if (token && session.user) {
+                session.user.id = token.id;
+            }
+            console.log('Session after:', session);
+            return session;
+        }
+    }
 };
 }}),
 "[project]/src/app/api/savepdf/route.ts [app-route] (ecmascript)": ((__turbopack_context__) => {

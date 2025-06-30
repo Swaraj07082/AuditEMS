@@ -128,14 +128,9 @@ const authOptions = {
                         email: credentials.email
                     }
                 });
-                if (!existingUser) {
-                    return null;
-                }
+                if (!existingUser) return null;
                 const passwordMatch = await (0, __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__$28$bcrypt$2c$__cjs$29$__["compare"])(credentials.password, existingUser.password);
-                if (!passwordMatch) {
-                    return null;
-                }
-                console.log(credentials.email + "is logged in");
+                if (!passwordMatch) return null;
                 return {
                     id: `${existingUser.id}`,
                     name: existingUser.name,
@@ -143,7 +138,31 @@ const authOptions = {
                 };
             }
         })
-    ]
+    ],
+    callbacks: {
+        async jwt ({ token, user }) {
+            console.log('JWT callback:', {
+                user,
+                token
+            });
+            if (user) {
+                token.id = user.id;
+            }
+            console.log('JWT token after:', token);
+            return token;
+        },
+        async session ({ session, token }) {
+            console.log('Session callback:', {
+                session,
+                token
+            });
+            if (token && session.user) {
+                session.user.id = token.id;
+            }
+            console.log('Session after:', session);
+            return session;
+        }
+    }
 };
 }}),
 "[externals]/util [external] (util, cjs)": (function(__turbopack_context__) {
@@ -253,12 +272,23 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$serv
 ;
 async function GET() {
     const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getServerSession"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authOptions"]);
+    console.log('Session:', session);
+    console.log('User ID:', session?.user?.id);
+    // Add explicit validation
+    if (!session || !session.user || !session.user.id) {
+        console.log('No valid session or user ID found');
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: 'Unauthorized'
+        }, {
+            status: 401
+        });
+    }
     const pdfs = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].pDF.findMany({
         where: {
-            userId: session?.user.id
+            userId: session.user.id
         }
     });
-    console.log(pdfs);
+    console.log(`Found ${pdfs.length} PDFs for user ${session.user.id}`);
     return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
         pdfs
     });

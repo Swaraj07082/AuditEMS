@@ -1,0 +1,3 @@
+{
+  "/dashboard/[pdfid]/page": "app/dashboard/[pdfid]/page.js"
+}
