@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Upload,
   FileText,
@@ -27,6 +27,10 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { stat } from "fs";
+import AuthCheck from "./authcheck";
 
 // const auditStandards = [
 //   { value: "iso-27001", label: "ISO 27001 - Information Security Management" },
@@ -42,16 +46,33 @@ import { useSession } from "next-auth/react";
 // ]
 
 export default function AuditVerification() {
-  // const {data : session} = useSession()
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // if (!session) return <p>Please log in</p>;
+  // console.log(session);
 
+  // useEffect(() => {
+  //   if (status == "unauthenticated") {
+  //     toast("Login to access this page", {
+  //       // description: "Login to access this page",
+  //       // action: {
+  //       //   label: "Undo",
+  //       //   onClick: () => console.log("Undo"),
+  //       // },
+  //     });
+  //     router.push("/login");
+  //   }
+  // }, [status]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   // const [selectedStandard, setSelectedStandard] = useState<string>("")
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [verificationResults, setVerificationResults] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  if (status === "loading") {
+    return <div>Loading</div>;
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -165,58 +186,59 @@ export default function AuditVerification() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Audit Report Verification
-          </h1>
-          <p className="text-muted-foreground">
-            Upload your audit report for analysis and verification.
-          </p>
-        </div>
+  if (status == "authenticated") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Audit Report Verification
+            </h1>
+            <p className="text-muted-foreground">
+              Upload your audit report for analysis and verification.
+            </p>
+          </div>
 
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Upload & Verify Report
-            </CardTitle>
-            <CardDescription>
-              Select your audit report file for analysis
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="audit-file">Audit Report File</Label>
-                <div className="flex items-center gap-4">
-                  <Input
-                    id="audit-file"
-                    type="file"
-                    accept=".pdf,.doc,.docx,.txt"
-                    onChange={handleFileChange}
-                    className="flex-1"
-                    ref={fileInputRef}
-                  />
-                  {selectedFile && (
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      <FileText className="w-3 h-3" />
-                      {selectedFile.name}
-                    </Badge>
-                  )}
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Upload & Verify Report
+              </CardTitle>
+              <CardDescription>
+                Select your audit report file for analysis
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="audit-file">Audit Report File</Label>
+                  <div className="flex items-center gap-4">
+                    <Input
+                      id="audit-file"
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={handleFileChange}
+                      className="flex-1"
+                      ref={fileInputRef}
+                    />
+                    {selectedFile && (
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        <FileText className="w-3 h-3" />
+                        {selectedFile.name}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Supported formats: PDF, DOC, DOCX, TXT (Max 10MB)
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Supported formats: PDF, DOC, DOCX, TXT (Max 10MB)
-                </p>
-              </div>
 
-              {/* Commented out compliance standard selection */}
-              {/* <div className="space-y-2">
+                {/* Commented out compliance standard selection */}
+                {/* <div className="space-y-2">
                 <Label htmlFor="standard">Compliance Standard</Label>
                 <Select value={selectedStandard} onValueChange={setSelectedStandard}>
                   <SelectTrigger>
@@ -232,209 +254,218 @@ export default function AuditVerification() {
                 </Select>
               </div> */}
 
-              {isProcessing && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Processing audit report...</span>
-                    <span>{uploadProgress}%</span>
+                {isProcessing && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Processing audit report...</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <Progress value={uploadProgress} className="w-full" />
                   </div>
-                  <Progress value={uploadProgress} className="w-full" />
-                </div>
-              )}
+                )}
 
-              <div className="flex gap-3">
-                <Button
-                  type="submit"
-                  disabled={!selectedFile || isProcessing}
-                  className="flex items-center gap-2"
-                >
-                  {isProcessing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Upload className="w-4 h-4" />
-                  )}
-                  {isProcessing ? "Processing..." : "Verify Report"}
-                </Button>
-
-                {(selectedFile || verificationResults) && (
-                  <Button type="button" variant="outline" onClick={resetForm}>
-                    Reset
+                <div className="flex gap-3">
+                  <Button
+                    type="submit"
+                    disabled={!selectedFile || isProcessing}
+                    className="flex items-center gap-2"
+                  >
+                    {isProcessing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
+                    {isProcessing ? "Processing..." : "Verify Report"}
                   </Button>
-                )}
-              </div>
-            </form>
-          </CardContent>
-        </Card>
 
-        {verificationResults && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                Verification Results
-              </CardTitle>
-              <CardDescription>
-                Analysis results for your audit report
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Summary Section */}
-              {verificationResults.summary && (
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <h3 className="font-semibold text-green-800 mb-2">Summary</h3>
-                  <p className="text-green-700">
-                    {verificationResults.summary}
-                  </p>
+                  {(selectedFile || verificationResults) && (
+                    <Button type="button" variant="outline" onClick={resetForm}>
+                      Reset
+                    </Button>
+                  )}
                 </div>
-              )}
-
-              {/* Extracted Text Preview */}
-              {verificationResults.text && (
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <h3 className="font-semibold text-gray-800 mb-2">
-                    Extracted Text (Preview)
-                  </h3>
-                  <p className="text-gray-700 text-sm whitespace-pre-wrap">
-                    {verificationResults.text}
-                  </p>
-                </div>
-              )}
-
-              {/* Inconsistencies */}
-              {verificationResults.inconsistencies &&
-                verificationResults.inconsistencies.length > 0 && (
-                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                    <h3 className="font-semibold text-yellow-800 mb-2">
-                      Inconsistencies Found
-                    </h3>
-                    <ul className="list-disc list-inside text-yellow-700 space-y-1">
-                      {verificationResults.inconsistencies.map(
-                        (inconsistency: string, index: number) => (
-                          <li key={index} className="text-sm">
-                            {inconsistency}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-              {/* RAG Analysis */}
-              {verificationResults.rag_analysis && (
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="font-semibold text-blue-800 mb-2">
-                    RAG Analysis
-                  </h3>
-                  <p className="text-blue-700 text-sm">
-                    {verificationResults.rag_analysis}
-                  </p>
-                </div>
-              )}
-
-              {/* Recommendations */}
-              {verificationResults.recommendations_detail && (
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                  <h3 className="font-semibold text-purple-800 mb-2">
-                    Recommendations
-                  </h3>
-                  <p className="text-purple-700 text-sm">
-                    {verificationResults.recommendations_detail}
-                  </p>
-                </div>
-              )}
-
-              {/* Enhanced Analysis Indicator */}
-              {verificationResults.enhanced && (
-                <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                  <p className="text-indigo-700 text-sm">
-                    ✓ Enhanced analysis completed
-                  </p>
-                </div>
-              )}
-
-              {/* Error Display */}
-              {verificationResults.error && (
-                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                  <h3 className="font-semibold text-red-800 mb-2">Error</h3>
-                  <p className="text-red-700 text-sm">
-                    {verificationResults.error}
-                  </p>
-                </div>
-              )}
-
-              <Separator />
-
-              {/* Original metrics section - kept for reference */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="text-2xl font-bold text-green-700">
-                    {verificationResults.compliance}%
-                  </div>
-                  <div className="text-sm text-green-600">
-                    Overall Compliance
-                  </div>
-                </div>
-
-                <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="text-2xl font-bold text-blue-700">
-                    {verificationResults.passed}
-                  </div>
-                  <div className="text-sm text-blue-600">Checks Passed</div>
-                </div>
-
-                <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
-                  <div className="text-2xl font-bold text-red-700">
-                    {verificationResults.failed}
-                  </div>
-                  <div className="text-sm text-red-600">Issues Found</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Total Checks:</span>
-                  <span className="font-medium">
-                    {verificationResults.totalChecks}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Warnings:</span>
-                  <Badge variant="secondary">
-                    {verificationResults.warnings}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Critical Issues:
-                  </span>
-                  <Badge variant="destructive">
-                    {verificationResults.criticalIssues}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Recommendations:
-                  </span>
-                  <Badge variant="outline">
-                    {verificationResults.recommendations}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  Download Full Report
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  View Issues
-                </Button>
-              </div>
+              </form>
             </CardContent>
           </Card>
-        )}
+
+          {verificationResults && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  Verification Results
+                </CardTitle>
+                <CardDescription>
+                  Analysis results for your audit report
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Summary Section */}
+                {verificationResults.summary && (
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h3 className="font-semibold text-green-800 mb-2">
+                      Summary
+                    </h3>
+                    <p className="text-green-700">
+                      {verificationResults.summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Extracted Text Preview */}
+                {verificationResults.text && (
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 className="font-semibold text-gray-800 mb-2">
+                      Extracted Text (Preview)
+                    </h3>
+                    <p className="text-gray-700 text-sm whitespace-pre-wrap">
+                      {verificationResults.text}
+                    </p>
+                  </div>
+                )}
+
+                {/* Inconsistencies */}
+                {verificationResults.inconsistencies &&
+                  verificationResults.inconsistencies.length > 0 && (
+                    <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                      <h3 className="font-semibold text-yellow-800 mb-2">
+                        Inconsistencies Found
+                      </h3>
+                      <ul className="list-disc list-inside text-yellow-700 space-y-1">
+                        {verificationResults.inconsistencies.map(
+                          (inconsistency: string, index: number) => (
+                            <li key={index} className="text-sm">
+                              {inconsistency}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* RAG Analysis */}
+                {verificationResults.rag_analysis && (
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h3 className="font-semibold text-blue-800 mb-2">
+                      RAG Analysis
+                    </h3>
+                    <p className="text-blue-700 text-sm">
+                      {verificationResults.rag_analysis}
+                    </p>
+                  </div>
+                )}
+
+                {/* Recommendations */}
+                {verificationResults.recommendations_detail && (
+                  <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                    <h3 className="font-semibold text-purple-800 mb-2">
+                      Recommendations
+                    </h3>
+                    <p className="text-purple-700 text-sm">
+                      {verificationResults.recommendations_detail}
+                    </p>
+                  </div>
+                )}
+
+                {/* Enhanced Analysis Indicator */}
+                {verificationResults.enhanced && (
+                  <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                    <p className="text-indigo-700 text-sm">
+                      ✓ Enhanced analysis completed
+                    </p>
+                  </div>
+                )}
+
+                {/* Error Display */}
+                {verificationResults.error && (
+                  <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <h3 className="font-semibold text-red-800 mb-2">Error</h3>
+                    <p className="text-red-700 text-sm">
+                      {verificationResults.error}
+                    </p>
+                  </div>
+                )}
+
+                <Separator />
+
+                {/* Original metrics section - kept for reference */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="text-2xl font-bold text-green-700">
+                      {verificationResults.compliance}%
+                    </div>
+                    <div className="text-sm text-green-600">
+                      Overall Compliance
+                    </div>
+                  </div>
+
+                  <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-2xl font-bold text-blue-700">
+                      {verificationResults.passed}
+                    </div>
+                    <div className="text-sm text-blue-600">Checks Passed</div>
+                  </div>
+
+                  <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <div className="text-2xl font-bold text-red-700">
+                      {verificationResults.failed}
+                    </div>
+                    <div className="text-sm text-red-600">Issues Found</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Total Checks:</span>
+                    <span className="font-medium">
+                      {verificationResults.totalChecks}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Warnings:</span>
+                    <Badge variant="secondary">
+                      {verificationResults.warnings}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">
+                      Critical Issues:
+                    </span>
+                    <Badge variant="destructive">
+                      {verificationResults.criticalIssues}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">
+                      Recommendations:
+                    </span>
+                    <Badge variant="outline">
+                      {verificationResults.recommendations}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Download Full Report
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    View Issues
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <>
+        <AuthCheck />
+      </>
+    );
+  }
 }

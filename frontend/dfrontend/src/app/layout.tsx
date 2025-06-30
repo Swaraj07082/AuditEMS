@@ -7,6 +7,7 @@ import { ThemeProvider } from "./Components/theme-provider";
 import Provider from "./Components/provider";
 import SessionWrapper from "./Components/sessionwrapper";
 import "./globals.css";
+import Navbar from "./Components/Navbar";
 
 // Load fonts
 const geistSans = Geist({
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <SessionWrapper>
+            <Navbar/>
             <Provider>{children}</Provider>
           </SessionWrapper>
         </ThemeProvider>
