@@ -62,25 +62,25 @@ export default function PDFDashboard() {
         setLoading(true);
         setError(null);
         const res = await fetch("/api/getpdfs");
-        
+
         if (!res.ok) {
           throw new Error(`Failed to fetch PDFs: ${res.status}`);
         }
-        
+
         const data = await res.json();
-        
+
         // Debug: Log the actual response to understand the structure
         console.log("API Response:", data);
         console.log("Type of response:", typeof data);
         console.log("Is array:", Array.isArray(data));
-        
+
         // Handle different possible response formats
-        let pdfsArray: any[] = [];
-        
+        let pdfsArray: PDF[] = [];
+
         if (Array.isArray(data)) {
           // Direct array response
           pdfsArray = data;
-        } else if (data && typeof data === 'object') {
+        } else if (data && typeof data === "object") {
           // Check for common response wrapper patterns
           if (Array.isArray(data.pdfs)) {
             pdfsArray = data.pdfs;
@@ -93,31 +93,40 @@ export default function PDFDashboard() {
           } else {
             // If it's an object but not a wrapper, log it for debugging
             console.error("Unexpected API response structure:", data);
-            throw new Error(`Unexpected API response format. Expected array or object with pdfs/data/results/files property. Got: ${JSON.stringify(data)}`);
+            throw new Error(
+              `Unexpected API response format. Expected array or object with pdfs/data/results/files property. Got: ${JSON.stringify(
+                data
+              )}`
+            );
           }
         } else {
-          throw new Error(`Invalid data format received from API. Expected array or object, got: ${typeof data}`);
+          throw new Error(
+            `Invalid data format received from API. Expected array or object, got: ${typeof data}`
+          );
         }
-        
+
         // Validate PDF objects have required properties
-        const validatedPDFs = pdfsArray.filter((pdf: any) => {
-          const isValid = pdf && 
-                 typeof pdf.id !== 'undefined' && 
-                 typeof pdf.filename === 'string' && 
-                 typeof pdf.status === 'string';
-          
+        const validatedPDFs = pdfsArray.filter((pdf: PDF) => {
+          const isValid =
+            pdf &&
+            typeof pdf.id !== "undefined" &&
+            typeof pdf.filename === "string" &&
+            typeof pdf.status === "string";
+
           if (!isValid) {
             console.warn("Invalid PDF object:", pdf);
           }
-          
+
           return isValid;
         });
-        
+
         console.log("Validated PDFs:", validatedPDFs);
         setsamplePDFS(validatedPDFs);
       } catch (error) {
         console.error("Failed to fetch PDFs:", error);
-        setError(error instanceof Error ? error.message : "Failed to fetch PDFs");
+        setError(
+          error instanceof Error ? error.message : "Failed to fetch PDFs"
+        );
         setsamplePDFS([]); // Ensure it's always an array
       } finally {
         setLoading(false);
@@ -151,9 +160,7 @@ export default function PDFDashboard() {
             <p className="text-lg font-medium">Error loading PDFs</p>
             <p className="text-sm">{error}</p>
           </div>
-          <Button onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
         </div>
       </div>
     );
@@ -161,19 +168,26 @@ export default function PDFDashboard() {
 
   // Filter PDFs based on search and filters
   // Add safety check to ensure samplePDFs is an array
-  const filteredPDFs = Array.isArray(samplePDFs) ? samplePDFs.filter((pdf) => {
-    // Safety check for pdf object and required properties
-    if (!pdf || typeof pdf.filename !== 'string' || typeof pdf.status !== 'string') {
-      return false;
-    }
-    
-    const matchesSearch = pdf.filename
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || pdf.status === statusFilter;
+  const filteredPDFs = Array.isArray(samplePDFs)
+    ? samplePDFs.filter((pdf) => {
+        // Safety check for pdf object and required properties
+        if (
+          !pdf ||
+          typeof pdf.filename !== "string" ||
+          typeof pdf.status !== "string"
+        ) {
+          return false;
+        }
 
-    return matchesSearch && matchesStatus;
-  }) : [];
+        const matchesSearch = pdf.filename
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesStatus =
+          statusFilter === "all" || pdf.status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+      })
+    : [];
 
   // Helper functions
   const getStatusColor = (status: string) => {
@@ -192,13 +206,34 @@ export default function PDFDashboard() {
   const handleDelete = async (pdf: PDF) => {
     if (window.confirm(`Are you sure you want to delete "${pdf.filename}"?`)) {
       try {
-        // Replace with actual delete API call
-        console.log(`Deleting ${pdf.filename}`);
+        const response = await fetch("/api/deletepdfs", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: pdf.id }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || `Failed to delete PDF: ${response.status}`
+          );
+        }
+
         // Remove from local state after successful deletion
-        setsamplePDFS(prevPDFs => prevPDFs.filter(p => p.id !== pdf.id));
+        setsamplePDFS((prevPDFs) => prevPDFs.filter((p) => p.id !== pdf.id));
+
+        console.log(`Successfully deleted ${pdf.filename}`);
+        // Optional: Add toast notification here if you have toast setup
+        // toast.success(`Deleted: ${pdf.filename}`);
       } catch (error) {
         console.error("Delete error:", error);
-        // Handle error appropriately
+        setError(
+          error instanceof Error ? error.message : "Failed to delete PDF"
+        );
+        // Optional: Add toast notification for error
+        // toast.error("Failed to delete file");
       }
     }
   };
@@ -370,17 +405,15 @@ export default function PDFDashboard() {
                   <div className="space-y-3">
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar className="h-4 w-4 mr-2" />
-                      {pdf.uploadedAt ? new Date(pdf.uploadedAt).toLocaleDateString() : 'Unknown date'}
+                      {pdf.uploadedAt
+                        ? new Date(pdf.uploadedAt).toLocaleDateString()
+                        : "Unknown date"}
                     </div>
 
                     <Separator />
 
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                      >
+                      <Button variant="outline" size="sm" className="flex-1">
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Button>
