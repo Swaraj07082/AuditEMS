@@ -40,67 +40,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { signOut, useSession } from "next-auth/react";
-import { toast } from "sonner"; // Optional: for better user feedback
-import { stat } from "fs";
 import AuthCheck from "./authcheck";
-
-const samplePDFs = [
-  {
-    id: "1",
-    name: "Annual Audit Report 2024.pdf",
-    size: "2.4 MB",
-    uploadDate: "2024-01-15",
-    status: "verified",
-    type: "Annual Report",
-    url: "/placeholder.pdf",
-  },
-  {
-    id: "2",
-    name: "Financial Statement Q3.pdf",
-    size: "1.8 MB",
-    uploadDate: "2024-01-12",
-    status: "pending",
-    type: "Financial Statement",
-    url: "/placeholder.pdf",
-  },
-  {
-    id: "3",
-    name: "Compliance Audit 2023.pdf",
-    size: "3.2 MB",
-    uploadDate: "2024-01-10",
-    status: "verified",
-    type: "Compliance Report",
-    url: "/placeholder.pdf",
-  },
-  {
-    id: "4",
-    name: "Internal Controls Review.pdf",
-    size: "1.5 MB",
-    uploadDate: "2024-01-08",
-    status: "failed",
-    type: "Internal Audit",
-    url: "/placeholder.pdf",
-  },
-  {
-    id: "5",
-    name: "Risk Assessment Report.pdf",
-    size: "2.1 MB",
-    uploadDate: "2024-01-05",
-    status: "verified",
-    type: "Risk Assessment",
-    url: "/placeholder.pdf",
-  },
-  {
-    id: "6",
-    name: "Vendor Audit Summary.pdf",
-    size: "900 KB",
-    uploadDate: "2024-01-03",
-    status: "pending",
-    type: "Vendor Audit",
-    url: "/placeholder.pdf",
-  },
-];
+import { useSession } from "next-auth/react";
+import { PDF } from "../types/pdf";
 
 export default function PDFDashboard() {
   const { data: session, status } = useSession();
@@ -109,12 +51,86 @@ export default function PDFDashboard() {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isLoading, setIsLoading] = useState(false);
+  const [samplePDFs, setsamplePDFS] = useState<PDF[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPDFs = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch("/api/getpdfs");
+        
+        if (!res.ok) {
+          throw new Error(`Failed to fetch PDFs: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        
+        // Debug: Log the actual response to understand the structure
+        console.log("API Response:", data);
+        console.log("Type of response:", typeof data);
+        console.log("Is array:", Array.isArray(data));
+        
+        // Handle different possible response formats
+        let pdfsArray: any[] = [];
+        
+        if (Array.isArray(data)) {
+          // Direct array response
+          pdfsArray = data;
+        } else if (data && typeof data === 'object') {
+          // Check for common response wrapper patterns
+          if (Array.isArray(data.pdfs)) {
+            pdfsArray = data.pdfs;
+          } else if (Array.isArray(data.data)) {
+            pdfsArray = data.data;
+          } else if (Array.isArray(data.results)) {
+            pdfsArray = data.results;
+          } else if (Array.isArray(data.files)) {
+            pdfsArray = data.files;
+          } else {
+            // If it's an object but not a wrapper, log it for debugging
+            console.error("Unexpected API response structure:", data);
+            throw new Error(`Unexpected API response format. Expected array or object with pdfs/data/results/files property. Got: ${JSON.stringify(data)}`);
+          }
+        } else {
+          throw new Error(`Invalid data format received from API. Expected array or object, got: ${typeof data}`);
+        }
+        
+        // Validate PDF objects have required properties
+        const validatedPDFs = pdfsArray.filter((pdf: any) => {
+          const isValid = pdf && 
+                 typeof pdf.id !== 'undefined' && 
+                 typeof pdf.filename === 'string' && 
+                 typeof pdf.status === 'string';
+          
+          if (!isValid) {
+            console.warn("Invalid PDF object:", pdf);
+          }
+          
+          return isValid;
+        });
+        
+        console.log("Validated PDFs:", validatedPDFs);
+        setsamplePDFS(validatedPDFs);
+      } catch (error) {
+        console.error("Failed to fetch PDFs:", error);
+        setError(error instanceof Error ? error.message : "Failed to fetch PDFs");
+        setsamplePDFS([]); // Ensure it's always an array
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (status === "authenticated") {
+      fetchPDFs();
+    }
+  }, [status]);
 
   // Loading state
-  if (status === "loading") {
+  if (status === "loading" || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -125,15 +141,39 @@ export default function PDFDashboard() {
     );
   }
 
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">
+            <FileText className="h-12 w-12 mx-auto mb-2" />
+            <p className="text-lg font-medium">Error loading PDFs</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   // Filter PDFs based on search and filters
-  const filteredPDFs = samplePDFs.filter((pdf) => {
-    const matchesSearch = pdf.name
+  // Add safety check to ensure samplePDFs is an array
+  const filteredPDFs = Array.isArray(samplePDFs) ? samplePDFs.filter((pdf) => {
+    // Safety check for pdf object and required properties
+    if (!pdf || typeof pdf.filename !== 'string' || typeof pdf.status !== 'string') {
+      return false;
+    }
+    
+    const matchesSearch = pdf.filename
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || pdf.status === statusFilter;
-    const matchesType = typeFilter === "all" || pdf.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
-  });
+
+    return matchesSearch && matchesStatus;
+  }) : [];
 
   // Helper functions
   const getStatusColor = (status: string) => {
@@ -149,66 +189,16 @@ export default function PDFDashboard() {
     }
   };
 
-  const calculateTotalSize = () => {
-    return samplePDFs
-      .reduce((total, pdf) => {
-        const size = parseFloat(pdf.size.replace(/[^\d.]/g, ""));
-        const unit = pdf.size.includes("KB") ? 0.001 : 1;
-        return total + size * unit;
-      }, 0)
-      .toFixed(1);
-  };
-
-  // Event handlers
-  // const handleLogout = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     await signOut({ callbackUrl: "/" });
-  //   } catch (error) {
-  //     console.error("Logout error:", error);
-  //     // toast.error("Failed to logout. Please try again.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  const handleDownload = async (pdf: (typeof samplePDFs)[0]) => {
-    try {
-      // Replace with actual download logic
-      console.log(`Downloading ${pdf.name}`);
-      // toast.success(`Starting download: ${pdf.name}`);
-
-      // Simulate download
-      const link = document.createElement("a");
-      link.href = pdf.url;
-      link.download = pdf.name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Download error:", error);
-      // toast.error("Failed to download file");
-    }
-  };
-
-  const handleView = (pdf: (typeof samplePDFs)[0]) => {
-    try {
-      window.open(pdf.url, "_blank", "noopener,noreferrer");
-    } catch (error) {
-      console.error("View error:", error);
-      // toast.error("Failed to open file");
-    }
-  };
-
-  const handleDelete = async (pdf: (typeof samplePDFs)[0]) => {
-    if (window.confirm(`Are you sure you want to delete "${pdf.name}"?`)) {
+  const handleDelete = async (pdf: PDF) => {
+    if (window.confirm(`Are you sure you want to delete "${pdf.filename}"?`)) {
       try {
         // Replace with actual delete API call
-        console.log(`Deleting ${pdf.name}`);
-        // toast.success(`Deleted: ${pdf.name}`);
+        console.log(`Deleting ${pdf.filename}`);
+        // Remove from local state after successful deletion
+        setsamplePDFS(prevPDFs => prevPDFs.filter(p => p.id !== pdf.id));
       } catch (error) {
         console.error("Delete error:", error);
-        // toast.error("Failed to delete file");
+        // Handle error appropriately
       }
     }
   };
@@ -216,10 +206,9 @@ export default function PDFDashboard() {
   const clearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
-    setTypeFilter("all");
   };
 
-  if (status == "authenticated") {
+  if (status === "authenticated") {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
@@ -233,15 +222,6 @@ export default function PDFDashboard() {
                 <p className="text-gray-600">Welcome, {session.user.name}</p>
               )}
             </div>
-            {/* <Button
-            variant="outline"
-            onClick={handleLogout}
-            disabled={isLoading}
-            className="flex items-center"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            {isLoading ? "Logging out..." : "Logout"}
-          </Button> */}
           </div>
 
           {/* Description */}
@@ -286,20 +266,6 @@ export default function PDFDashboard() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Storage Used
-                </CardTitle>
-                <HardDrive className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {calculateTotalSize()} MB
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Controls */}
@@ -327,30 +293,7 @@ export default function PDFDashboard() {
                 </SelectContent>
               </Select>
 
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Annual Report">Annual Report</SelectItem>
-                  <SelectItem value="Financial Statement">
-                    Financial Statement
-                  </SelectItem>
-                  <SelectItem value="Compliance Report">
-                    Compliance Report
-                  </SelectItem>
-                  <SelectItem value="Internal Audit">Internal Audit</SelectItem>
-                  <SelectItem value="Risk Assessment">
-                    Risk Assessment
-                  </SelectItem>
-                  <SelectItem value="Vendor Audit">Vendor Audit</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {(searchTerm ||
-                statusFilter !== "all" ||
-                typeFilter !== "all") && (
+              {(searchTerm || statusFilter !== "all") && (
                 <Button variant="outline" onClick={clearFilters} size="sm">
                   <Filter className="h-4 w-4 mr-1" />
                   Clear
@@ -389,7 +332,7 @@ export default function PDFDashboard() {
           </div>
 
           {/* Results Summary */}
-          {(searchTerm || statusFilter !== "all" || typeFilter !== "all") && (
+          {(searchTerm || statusFilter !== "all") && (
             <div className="mb-4">
               <p className="text-sm text-gray-600">
                 Showing {filteredPDFs.length} of {samplePDFs.length} PDFs
@@ -410,16 +353,16 @@ export default function PDFDashboard() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg truncate" title={pdf.name}>
-                        {pdf.name}
+                      <CardTitle
+                        className="text-lg truncate"
+                        title={pdf.filename}
+                      >
+                        {pdf.filename}
                       </CardTitle>
-                      <CardDescription className="mt-1">
-                        {pdf.type}
-                      </CardDescription>
                     </div>
-                    <Badge className={getStatusColor(pdf.status)}>
+                    {/* <Badge className={getStatusColor(pdf.status)}>
                       {pdf.status}
-                    </Badge>
+                    </Badge> */}
                   </div>
                 </CardHeader>
 
@@ -427,12 +370,7 @@ export default function PDFDashboard() {
                   <div className="space-y-3">
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar className="h-4 w-4 mr-2" />
-                      {new Date(pdf.uploadDate).toLocaleDateString()}
-                    </div>
-
-                    <div className="flex items-center text-sm text-gray-600">
-                      <HardDrive className="h-4 w-4 mr-2" />
-                      {pdf.size}
+                      {pdf.uploadedAt ? new Date(pdf.uploadedAt).toLocaleDateString() : 'Unknown date'}
                     </div>
 
                     <Separator />
@@ -441,7 +379,6 @@ export default function PDFDashboard() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleView(pdf)}
                         className="flex-1"
                       >
                         <Eye className="h-4 w-4 mr-1" />
@@ -455,10 +392,6 @@ export default function PDFDashboard() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleDownload(pdf)}>
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDelete(pdf)}
                             className="text-red-600"
@@ -483,13 +416,11 @@ export default function PDFDashboard() {
                 No PDFs found
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchTerm || statusFilter !== "all" || typeFilter !== "all"
+                {searchTerm || statusFilter !== "all"
                   ? "Try adjusting your search or filters"
                   : "Upload your first PDF to get started"}
               </p>
-              {(searchTerm ||
-                statusFilter !== "all" ||
-                typeFilter !== "all") && (
+              {(searchTerm || statusFilter !== "all") && (
                 <Button variant="outline" onClick={clearFilters}>
                   Clear Filters
                 </Button>
