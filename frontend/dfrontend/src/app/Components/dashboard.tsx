@@ -15,6 +15,8 @@ import {
   Grid3X3,
   List,
   Filter,
+  Flag,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,7 +53,7 @@ export default function PDFDashboard() {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [samplePDFs, setsamplePDFS] = useState<PDF[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -243,6 +245,21 @@ export default function PDFDashboard() {
     setStatusFilter("all");
   };
 
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  const viewDocument = (pdfid: string) => {
+    router.push(`/dashboard/${pdfid}`);
+  };
+
   if (status === "authenticated") {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
@@ -285,7 +302,7 @@ export default function PDFDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-600">
-                  {samplePDFs.filter((pdf) => pdf.status === "verified").length}
+                  {samplePDFs.filter((pdf) => pdf.status === "VERIFIED").length}
                 </div>
               </CardContent>
             </Card>
@@ -297,7 +314,7 @@ export default function PDFDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-yellow-600">
-                  {samplePDFs.filter((pdf) => pdf.status === "pending").length}
+                  {samplePDFs.filter((pdf) => pdf.status === "PENDING").length}
                 </div>
               </CardContent>
             </Card>
@@ -386,55 +403,73 @@ export default function PDFDashboard() {
             {filteredPDFs.map((pdf) => (
               <Card key={pdf.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <CardTitle
-                        className="text-lg truncate"
-                        title={pdf.filename}
-                      >
-                        {pdf.filename}
-                      </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <FileText className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">
+                          {pdf.filename}
+                        </CardTitle>
+                        <CardDescription className="flex items-center space-x-4 mt-1">
+                          <span className="flex items-center space-x-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>Uploaded {formatDate(pdf.uploadedAt)}</span>
+                          </span>
+                          {pdf.lastFlagged && (
+                            <span className="flex items-center space-x-1 text-orange-600">
+                              <Flag className="w-3 h-3" />
+                              <span>
+                                Last flagged {formatDate(pdf.lastFlagged)}
+                              </span>
+                            </span>
+                          )}
+                        </CardDescription>
+                      </div>
                     </div>
-                    {/* <Badge className={getStatusColor(pdf.status)}>
+                    <Badge className={getStatusColor(pdf.status)}>
                       {pdf.status}
-                    </Badge> */}
+                    </Badge>
                   </div>
                 </CardHeader>
-
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      {pdf.uploadedAt
-                        ? new Date(pdf.uploadedAt).toLocaleDateString()
-                        : "Unknown date"}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-6">
+                      <div className="flex items-center space-x-2">
+                        <Flag className="w-4 h-4 text-red-500" />
+                        <span className="text-sm font-medium">
+                          {pdf.flagCount}{" "}
+                          {pdf.flagCount === 1 ? "Flag" : "Flags"}
+                        </span>
+                        {pdf.flagCount > 0 && (
+                          <Badge variant="destructive" className="text-xs">
+                            {pdf.flagCount}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <MessageSquare className="w-4 h-4 text-blue-500" />
+                        <span className="text-sm font-medium">
+                          {pdf.commentCount}{" "}
+                          {pdf.commentCount === 1 ? "Comment" : "Comments"}
+                        </span>
+
+                        {pdf.commentCount > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {pdf.commentCount}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
 
-                    <Separator />
-
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1" onClick={() => {router.push(`/dashboard/${pdf.id}`)}}>
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(pdf)}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                    <Button
+                      onClick={() => viewDocument(pdf.id)}
+                      className="flex items-center space-x-2"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>View Document</span>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

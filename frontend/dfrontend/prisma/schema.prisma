@@ -1,6 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
@@ -18,13 +17,16 @@ model User {
   id       String @id @default(uuid())
   email    String @unique
   name     String @unique
-  password String
+  password String 
   pdfs     PDF[]
+  flags    Flag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model PDF {
-  id              String   @id @default(uuid())
-  user            User     @relation(fields: [userId], references: [id])
+  id              String @id @default(uuid())
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
   text            String
   inconsistencies String
@@ -36,10 +38,78 @@ model PDF {
   filename        String
   status          Status
   uploadedAt      DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastFlagged     DateTime? // When this PDF was last flagged
+  commentCount    Int @default(0) // Count of comments (FLAG type)
+  flagCount       Int @default(0) // Count of flags (COMMENT, QUESTION, CRITICAL types)
+  
+  // Relations
+  flags           Flag[]
+  
+  // Indexes
+  @@index([userId])
+  @@index([status])
+  @@index([uploadedAt])
+  @@index([lastFlagged])
+  @@index([commentCount])
+  @@index([flagCount])
+}
+
+model Flag {
+  id          String   @id @default(uuid())
+  // Relations
+  pdf         PDF      @relation(fields: [pdfId], references: [id], onDelete: Cascade)
+  pdfId       String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  // Flag content
+  text        String   // The selected text that was flagged
+  comment     String   // User's comment/note about the flag
+  type        FlagType // Whether it's a flag or comment
+  section     String   // Which section of the document (originalData, analysis, etc.)
+  // Position tracking
+  startIndex  Int      // Start position of the flagged text
+  endIndex    Int      // End position of the flagged text
+  // Status and metadata
+  status      FlagStatus @default(ACTIVE)
+  priority    Priority   @default(MEDIUM)
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  resolvedAt  DateTime?
+  resolvedBy  String?   // User ID who resolved the flag
+  // Indexes for performance
+  @@index([pdfId])
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([section])
+  @@index([createdAt])
 }
 
 enum Status {
   VERIFIED
   PENDING
   FAILED
+}
+
+enum FlagType {
+  FLAG     // Issues/problems
+  COMMENT  // General comments/notes
+  QUESTION // Questions that need answers
+  CRITICAL // Critical issues requiring immediate attention
+}
+
+enum FlagStatus {
+  ACTIVE    // Flag is active and needs attention
+  RESOLVED  // Flag has been addressed
+  DISMISSED // Flag was dismissed as not relevant
+  IN_REVIEW // Flag is being reviewed
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
