@@ -71,6 +71,14 @@ export default function AuditReportPage() {
   const [flagType, setFlagType] = useState<FlagType>(FlagType.FLAG);
   const [flagPriority, setFlagPriority] = useState<Priority>(Priority.MEDIUM);
 
+  const [editingFlag, setEditingFlag] = useState<Flag | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editComment, setEditComment] = useState("");
+  const [editType, setEditType] = useState<FlagType>(FlagType.FLAG);
+  const [editPriority, setEditPriority] = useState<Priority>(Priority.MEDIUM);
+  const [editStatus, setEditStatus] = useState<FlagStatus>(FlagStatus.ACTIVE);
+  const [isUpdatingFlag, setIsUpdatingFlag] = useState(false);
+
   const params = useParams();
   const pdfId = params.pdfid as string;
 
@@ -82,6 +90,8 @@ export default function AuditReportPage() {
   const [auditData, setAuditData] = useState<PDF | null>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [isCreatingFlag, setIsCreatingFlag] = useState(false);
 
   useEffect(() => {
     const fetchAuditData = async () => {
@@ -316,41 +326,104 @@ export default function AuditReportPage() {
     window.getSelection()?.removeAllRanges();
   };
 
-  const handleFlag = () => {
+  const handleFlag = async () => {
     if (!selectedText || !selectedRange) return;
+    setIsCreatingFlag(true);
+    // const newFlag: Flag = {
+    //   id: `flag_${Date.now()}`,
+    //   pdfId: pdfId,
+    //   userId: session.user.id as string,
+    //   text: selectedText,
+    //   comment: flagComment,
+    //   type: flagType,
+    //   section: selectedRange.section,
+    //   startIndex: selectedRange.start,
+    //   endIndex: selectedRange.end,
+    //   status: FlagStatus.ACTIVE,
+    //   priority: flagPriority,
+    //   createdAt: new Date(),
+    //   updatedAt: new Date(),
+    //   resolvedAt: null,
+    //   resolvedBy: null,
+    // };
 
-    const newFlag: Flag = {
-      id: `flag_${Date.now()}`,
-      pdfId: pdfId,
-      userId: session.user.id as string,
-      text: selectedText,
-      comment: flagComment,
-      type: flagType,
-      section: selectedRange.section,
-      startIndex: selectedRange.start,
-      endIndex: selectedRange.end,
-      status: FlagStatus.ACTIVE,
-      priority: flagPriority,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      resolvedAt: null,
-      resolvedBy: null,
-    };
+    try {
+      const response = await fetch("/api/createflags", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pdfId: pdfId,
+          text: selectedText,
+          comment: flagComment,
+          type: flagType,
+          section: selectedRange.section,
+          startIndex: selectedRange.start,
+          endIndex: selectedRange.end,
+          status: FlagStatus.ACTIVE,
+          priority: flagPriority,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      });
 
-    setFlags([...flags, newFlag]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create flag");
+      }
 
-    // setSelectedText("");
-    // setSelectedRange(null);
-    clearSelection();
-    setFlagComment("");
-    setShowFlagDialog(false);
-    setFlagType(FlagType.FLAG);
-    setFlagPriority(Priority.MEDIUM);
-    // window.getSelection()?.removeAllRanges();
+      const { flag } = await response.json();
+
+      const newFlag: Flag = {
+        ...flag,
+        createdAt: new Date(flag.createdAt),
+        updatedAt: new Date(flag.updatedAt),
+        resolvedAt: flag.resolvedAt ? new Date(flag.resolvedAt) : null,
+      };
+
+      setFlags([...flags, newFlag]);
+
+      // setSelectedText("");
+      // setSelectedRange(null);
+      clearSelection();
+      setFlagComment("");
+      setShowFlagDialog(false);
+      setFlagType(FlagType.FLAG);
+      setFlagPriority(Priority.MEDIUM);
+      // window.getSelection()?.removeAllRanges();
+
+      console.log("Flag created successfully");
+    } catch (error) {
+      console.error("Error creating flag:", error);
+      // Optional: Show error message to user
+      alert("Failed to create flag. Please try again.");
+    } finally {
+      setIsCreatingFlag(false);
+    }
   };
 
-  const removeFlag = (flagId: string) => {
+  const removeFlag = async (flagId: string) => {
+    const originalFlags = [...flags];
+
     setFlags(flags.filter((flag) => flag.id !== flagId));
+
+    try {
+      const response = await fetch(`/api/deleteflags/${flagId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        setFlags(originalFlags);
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete Flag");
+      }
+
+      console.log("Flag deleted successfully");
+    } catch (error) {
+      console.error("Error deleting flag:", error);
+      alert("Failed to delete flag. Please try again.");
+    }
   };
 
   const updateFlagStatus = (flagId: string, newStatus: FlagStatus) => {
@@ -366,6 +439,73 @@ export default function AuditReportPage() {
           : flag
       )
     );
+  };
+
+  const handleEditFlag = async () => {
+    if (!editingFlag) return;
+    setIsUpdatingFlag(true);
+
+    try {
+      const response = await fetch("/api/updateflags", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          flagId: editingFlag.id,
+          comment: editComment,
+          type: editType,
+          status: editStatus,
+          priority: editPriority,
+          updatedAt: new Date(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update flag");
+      }
+
+      const { flag } = await response.json();
+
+      const updatedFlag: Flag = {
+        ...editingFlag,
+        comment: editComment,
+        type: editType,
+        priority: editPriority,
+        status: editStatus,
+        updatedAt: new Date(),
+        resolvedAt:
+          editStatus === FlagStatus.RESOLVED
+            ? new Date()
+            : editingFlag.resolvedAt,
+      };
+
+      setFlags(flags.map((f) => (f.id === editingFlag.id ? updatedFlag : f)));
+
+      setEditingFlag(null);
+      setShowEditDialog(false);
+      setEditComment("");
+      setEditType(FlagType.FLAG);
+      setEditPriority(Priority.MEDIUM);
+      setEditStatus(FlagStatus.ACTIVE);
+
+      console.log("Flag updated successfully");
+    } catch (error) {
+      console.error("Error updating flag:", error);
+      alert("Failed to update flag. Please try again.");
+    } finally {
+      setIsUpdatingFlag(false);
+    }
+  };
+
+  const openEditDialog = (flag: Flag) => {
+    setEditingFlag(flag);
+    setEditComment(flag.comment);
+    setEditType(flag.type);
+    setEditPriority(flag.priority);
+    setEditStatus(flag.status);
+    setShowEditDialog(true);
   };
 
   const renderTextWithFLags = (text: string, section: string) => {
@@ -390,64 +530,10 @@ export default function AuditReportPage() {
           key={flag.id}
           className={`relative inline-block ${getFlagTypeColor(
             flag.type
-          )} px-1 rounded cursor-pointer group border-b-2`}
+          )} px-1 rounded cursor-pointer border-b-2`}
           title={flag.comment}
         >
           {flag.text}
-
-          <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block-z-10">
-            <div className="bg-gray-900 text-white text-xs rounded py-2 px-3 max-w-xs">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center space-x-1">
-                  {getFlagTypeIcon(flag.type)}
-                  <span className="font-medium">{flag.type}</span>
-                </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-4 w-4 p-0 text-white hover:text-red-300"
-                  onClick={() => removeFlag(flag.id)}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-              <div className="flex items-center space-x-1 mb-1">
-                {getFlagStatusIcon(flag.status)}
-                <span className="text-xs">{flag.status}</span>
-                <Badge className={`${getPriorityColor(flag.priority)} text-xs`}>
-                  {flag.priority}
-                </Badge>
-              </div>
-              \<p className="mb-1">{flag.comment}</p>
-              <p className="text-gray-400 text-xs ">
-                {flag.createdAt.toLocaleDateString()}
-              </p>
-              {flag.status === FlagStatus.ACTIVE && (
-                <div className="flex space-x-1 mt-2">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-5 text-xs text-green-300 hover:text-green-100"
-                    onClick={() =>
-                      updateFlagStatus(flag.id, FlagStatus.RESOLVED)
-                    }
-                  >
-                    Resolve
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-5 text-xs text-yellow-300 hover:text-yellow-100"
-                    onClick={() =>
-                      updateFlagStatus(flag.id, FlagStatus.IN_REVIEW)
-                    }
-                  >
-                    Review
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
         </span>
       );
 
@@ -486,8 +572,6 @@ export default function AuditReportPage() {
   };
 
   const flagCounts = getFlagCountsByType();
-
-  // ------------------------------------------------------------------
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -674,10 +758,167 @@ export default function AuditReportPage() {
                         </Button>
                         <Button
                           onClick={handleFlag}
-                          disabled={!flagComment.trim()}
+                          disabled={!flagComment.trim() || isCreatingFlag}
                         >
                           <Plus className="w-3 h-3 mr-1" />
                           Add {flagType}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit Flag</DialogTitle>
+                      <DialogDescription>
+                        Update the flag details for: "
+                        {editingFlag?.text.slice(0, 100)}..."
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          variant={
+                            editType === FlagType.FLAG
+                              ? "destructive"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() => setEditType(FlagType.FLAG)}
+                          className="flex items-center space-x-1"
+                        >
+                          <FlagTriangleRight className="w-3 h-3" />
+                          <span>Flag</span>
+                        </Button>
+                        <Button
+                          variant={
+                            editType === FlagType.COMMENT
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() => setEditType(FlagType.COMMENT)}
+                          className="flex items-center space-x-1"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                          <span>Comment</span>
+                        </Button>
+                        <Button
+                          variant={
+                            editType === FlagType.QUESTION
+                              ? "secondary"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() => setEditType(FlagType.QUESTION)}
+                          className="flex items-center space-x-1"
+                        >
+                          <HelpCircle className="w-3 h-3" />
+                          <span>Question</span>
+                        </Button>
+                        <Button
+                          variant={
+                            editType === FlagType.CRITICAL
+                              ? "destructive"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() => setEditType(FlagType.CRITICAL)}
+                          className="flex items-center space-x-1 bg-orange-600 hover:bg-orange-700"
+                        >
+                          <AlertCircleIcon className="w-3 h-3" />
+                          <span>Critical</span>
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">
+                            Priority
+                          </label>
+                          <Select
+                            value={editPriority}
+                            onValueChange={(value) =>
+                              setEditPriority(value as Priority)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={Priority.LOW}>Low</SelectItem>
+                              <SelectItem value={Priority.MEDIUM}>
+                                Medium
+                              </SelectItem>
+                              <SelectItem value={Priority.HIGH}>
+                                High
+                              </SelectItem>
+                              <SelectItem value={Priority.CRITICAL}>
+                                Critical
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Status</label>
+                          <Select
+                            value={editStatus}
+                            onValueChange={(value) =>
+                              setEditStatus(value as FlagStatus)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={FlagStatus.ACTIVE}>
+                                Active
+                              </SelectItem>
+                              <SelectItem value={FlagStatus.IN_REVIEW}>
+                                In Review
+                              </SelectItem>
+                              <SelectItem value={FlagStatus.RESOLVED}>
+                                Resolved
+                              </SelectItem>
+                              <SelectItem value={FlagStatus.DISMISSED}>
+                                Dismissed
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <Textarea
+                        placeholder={`Enter your ${editType.toLowerCase()}...`}
+                        value={editComment}
+                        onChange={(e) => setEditComment(e.target.value)}
+                        rows={3}
+                      />
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowEditDialog(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleEditFlag}
+                          disabled={!editComment.trim() || isUpdatingFlag}
+                        >
+                          {isUpdatingFlag ? (
+                            <>
+                              <Clock className="w-3 h-3 mr-1 animate-spin" />
+                              Updating...
+                            </>
+                          ) : (
+                            <>
+                              <Edit3 className="w-3 h-3 mr-1" />
+                              Update {editType}
+                            </>
+                          )}
                         </Button>
                       </div>
                     </div>
@@ -993,39 +1234,53 @@ export default function AuditReportPage() {
                         </p>
                       )}
                     </div>
-                    <div className="flex space-x-1">
-                      {flag.status === FlagStatus.ACTIVE && (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() =>
-                              updateFlagStatus(flag.id, FlagStatus.RESOLVED)
-                            }
-                            className="text-green-600 hover:text-green-800"
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() =>
-                              updateFlagStatus(flag.id, FlagStatus.IN_REVIEW)
-                            }
-                            className="text-yellow-600 hover:text-yellow-800"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </>
-                      )}
+                    <div className="flex flex-col space-y-2">
                       <Button
                         size="sm"
-                        variant="ghost"
-                        onClick={() => removeFlag(flag.id)}
-                        className="text-gray-400 hover:text-red-600"
+                        variant="outline"
+                        onClick={() => openEditDialog(flag)}
+                        className="text-blue-600 hover:text-blue-800 border-blue-200 hover:bg-blue-50"
                       >
-                        <X className="w-4 h-4" />
+                        <Edit3 className="w-4 h-4 mr-1" />
+                        Edit Flag
                       </Button>
+                      <div className="flex space-x-1">
+                        {flag.status === FlagStatus.ACTIVE && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                updateFlagStatus(flag.id, FlagStatus.RESOLVED)
+                              }
+                              className="text-green-600 hover:text-green-800"
+                              title="Mark as Resolved"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                updateFlagStatus(flag.id, FlagStatus.IN_REVIEW)
+                              }
+                              className="text-yellow-600 hover:text-yellow-800"
+                              title="Mark for Review"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeFlag(flag.id)}
+                          className="text-gray-400 hover:text-red-600"
+                          title="Delete Flag"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

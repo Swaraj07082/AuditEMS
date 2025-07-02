@@ -1,0 +1,3 @@
+{
+  "/api/getflags/[pdfId]/route": "app/api/getflags/[pdfId]/route.js"
+}

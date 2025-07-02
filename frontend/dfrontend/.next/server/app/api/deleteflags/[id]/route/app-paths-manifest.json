@@ -1,0 +1,3 @@
+{
+  "/api/deleteflags/[id]/route": "app/api/deleteflags/[id]/route.js"
+}
