@@ -30,7 +30,10 @@ export default function LoggedIn() {
               Authenticated
             </Badge>
           </div>
-
+           <Button variant="outline" className="w-full bg-transparent">
+            <LogOut className="w-4 h-4 mr-2" />
+            Go to Dashboard
+          </Button>
           <Button variant="outline" className="w-full bg-transparent">
             <LogOut className="w-4 h-4 mr-2" />
             Logout

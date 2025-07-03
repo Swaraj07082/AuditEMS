@@ -522,14 +522,32 @@ function LoggedIn() {
                                     className: "w-4 h-4 mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/Components/logged-in.tsx",
-                                    lineNumber: 35,
+                                    lineNumber: 34,
+                                    columnNumber: 13
+                                }, this),
+                                "Go to Dashboard"
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/Components/logged-in.tsx",
+                            lineNumber: 33,
+                            columnNumber: 12
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                            variant: "outline",
+                            className: "w-full bg-transparent",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
+                                    className: "w-4 h-4 mr-2"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/Components/logged-in.tsx",
+                                    lineNumber: 38,
                                     columnNumber: 13
                                 }, this),
                                 "Logout"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/Components/logged-in.tsx",
-                            lineNumber: 34,
+                            lineNumber: 37,
                             columnNumber: 11
                         }, this)
                     ]
