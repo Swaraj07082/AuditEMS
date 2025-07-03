@@ -34,10 +34,10 @@ export default function LoggedIn() {
             <LogOut className="w-4 h-4 mr-2" />
             Go to Dashboard
           </Button>
-          <Button variant="outline" className="w-full bg-transparent">
+          {/* <Button variant="outline" className="w-full bg-transparent">
             <LogOut className="w-4 h-4 mr-2" />
             Logout
-          </Button>
+          </Button> */}
         </CardContent>
       </Card>
     </div>
