@@ -514,10 +514,15 @@ export default function AuditReportPage() {
       .filter((flag) => flag.section === section)
       .sort((a, b) => a.startIndex - b.startIndex);
 
+    if (sectionFlags.length === 0) {
+      return text; // Return plain text if no flags
+    }
+
     let lastIndex = 0;
     const elements: JSX.Element[] = [];
 
     sectionFlags.forEach((flag, index) => {
+      // Add text before the flag
       if (flag.startIndex > lastIndex) {
         elements.push(
           <span key={`text_${section}_${index}`}>
@@ -526,13 +531,15 @@ export default function AuditReportPage() {
         );
       }
 
+      // Add the flagged text with highlighting
       elements.push(
         <span
           key={flag.id}
           className={`relative inline-block ${getFlagTypeColor(
             flag.type
           )} px-1 rounded cursor-pointer border-b-2`}
-          title={flag.comment}
+          title={`${flag.type}: ${flag.comment}`}
+          onClick={() => openEditDialog(flag)}
         >
           {flag.text}
         </span>
@@ -541,11 +548,13 @@ export default function AuditReportPage() {
       lastIndex = flag.endIndex;
     });
 
+    // Add remaining text after the last flag
     if (lastIndex < text.length) {
       elements.push(
         <span key={`text_${section}_end`}>{text.slice(lastIndex)}</span>
       );
     }
+
     return elements;
   };
 
@@ -955,83 +964,76 @@ export default function AuditReportPage() {
               className="prose max-w-none select-text cursor-text"
               onMouseUp={() => handleTextSelection("summary", summaryRef)}
             >
-              {/* {renderTextWithFLags(auditData.summary, "summary").length > 0 ? (
-                renderTextWithFLags(auditData.summary, "summary")
-              ) : (
-                <div>
-                  {auditData.summary.split("\n").map(
-                    (paragraph, index) =>
-                      paragraph.trim() && (
-                        <p
-                          key={index}
-                          className="mb-3 text-gray-700 leading-relaxed"
-                        >
-                          {paragraph.startsWith("**") &&
-                          paragraph.endsWith("**") ? (
-                            <strong className="text-gray-900">
-                              {paragraph.slice(2, -2)}
-                            </strong>
-                          ) : paragraph.startsWith("**") ? (
-                            <strong className="text-gray-900">
-                              {paragraph.slice(2)}
-                            </strong>
-                          ) : (
-                            paragraph
-                          )}
-                        </p>
-                      )
-                  )}
-                </div>
-              )} */}
               <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                {auditData.summary.split("\n").map((paragraph, index) => {
-                  if (!paragraph.trim()) return null;
+                {(() => {
+                  const renderedText = renderTextWithFLags(
+                    auditData.summary,
+                    "summary"
+                  );
+                  if (Array.isArray(renderedText)) {
+                    // If we have flags, render as a single paragraph with flag highlights
+                    return (
+                      <div className="text-gray-700 leading-relaxed">
+                        {renderedText}
+                      </div>
+                    );
+                  } else {
+                    // If no flags, render with the original paragraph structure
+                    return auditData.summary
+                      .split("\n")
+                      .map((paragraph, index) => {
+                        if (!paragraph.trim()) return null;
 
-                  if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
-                    return (
-                      <h3
-                        key={index}
-                        className="text-lg font-bold text-gray-900 mb-3"
-                      >
-                        {paragraph.slice(2, -2)}
-                      </h3>
-                    );
-                  } else if (paragraph.startsWith("**")) {
-                    return (
-                      <h4
-                        key={index}
-                        className="text-lg font-bold text-gray-900 mb-3"
-                      >
-                        {paragraph.slice(2, -2)}
-                      </h4>
-                    );
-                  } else if (paragraph.trim().match(/^\d+\./)) {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-start space-x-2 mb-2"
-                      >
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-700 leading-relaxed">
-                          {paragraph}
-                        </p>
-                      </div>
-                    );
-                  } else if (paragraph.trim()) {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-start space-x-2 mb-2"
-                      >
-                        <div className="w-2 h-2 bg-gray-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-700 leading-relaxed">
-                          {paragraph}
-                        </p>
-                      </div>
-                    );
+                        if (
+                          paragraph.startsWith("**") &&
+                          paragraph.endsWith("**")
+                        ) {
+                          return (
+                            <h3
+                              key={index}
+                              className="text-lg font-bold text-gray-900 mb-3"
+                            >
+                              {paragraph.slice(2, -2)}
+                            </h3>
+                          );
+                        } else if (paragraph.startsWith("**")) {
+                          return (
+                            <h4
+                              key={index}
+                              className="text-lg font-bold text-gray-900 mb-3"
+                            >
+                              {paragraph.slice(2)}
+                            </h4>
+                          );
+                        } else if (paragraph.trim().match(/^\d+\./)) {
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-start space-x-2 mb-2"
+                            >
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-gray-700 leading-relaxed">
+                                {paragraph}
+                              </p>
+                            </div>
+                          );
+                        } else if (paragraph.trim()) {
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-start space-x-2 mb-2"
+                            >
+                              <div className="w-2 h-2 bg-gray-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-gray-700 leading-relaxed">
+                                {paragraph}
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      });
                   }
-                  return null;
-                })}
+                })()}
               </div>
             </div>
           </CardContent>
@@ -1061,44 +1063,61 @@ export default function AuditReportPage() {
               }
             >
               <div className="space-y-1">
-                {auditData.text.split("\n").map((line, index) => {
-                  if (!line.trim()) return null;
-
-                  if (line.includes("Balance Sheet") || line.includes("FY")) {
+                {(() => {
+                  const renderedText = renderTextWithFLags(
+                    auditData.text,
+                    "originalData"
+                  );
+                  if (Array.isArray(renderedText)) {
                     return (
-                      <h4
-                        key={index}
-                        className="font-bold text-gray-900 mb-2 text-base"
-                      >
-                        {renderTextWithFLags(line, "originalData")}
-                      </h4>
-                    );
-                  } else if (
-                    line.includes("Page") ||
-                    line.includes("Generated")
-                  ) {
-                    return (
-                      <p
-                        key={index}
-                        className="text-xs text-gray-500 mt-2 italic"
-                      >
-                        {renderTextWithFLags(line, "originalData")}
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-start space-x-2 py-1"
-                      >
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-700 font-mono text-sm leading-relaxed">
-                          {renderTextWithFLags(line, "originalData")}
-                        </p>
+                      <div className="text-gray-700 leading-relaxed">
+                        {renderedText}
                       </div>
                     );
+                  } else {
+                    return auditData.text.split("\n").map((line, index) => {
+                      if (!line.trim()) return null;
+
+                      if (
+                        line.includes("Balance Sheet") ||
+                        line.includes("FY")
+                      ) {
+                        return (
+                          <h4
+                            key={index}
+                            className="font-bold text-gray-900 mb-2 text-base"
+                          >
+                            {line}
+                          </h4>
+                        );
+                      } else if (
+                        line.includes("Page") ||
+                        line.includes("Generated")
+                      ) {
+                        return (
+                          <p
+                            key={index}
+                            className="text-xs text-gray-500 mt-2 italic"
+                          >
+                            {line}
+                          </p>
+                        );
+                      } else {
+                        return (
+                          <div
+                            key={index}
+                            className="flex items-start space-x-2 py-1"
+                          >
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700 font-mono text-sm leading-relaxed">
+                              {line}
+                            </p>
+                          </div>
+                        );
+                      }
+                    });
                   }
-                })}
+                })()}
               </div>
             </div>
           </CardContent>
@@ -1145,69 +1164,62 @@ export default function AuditReportPage() {
               className="prose max-w-none select-text cursor-text"
               onMouseUp={() => handleTextSelection("analysis", analysisRef)}
             >
-              {/* {renderTextWithFLags(auditData.rag_analysis, "analysis").length >
-              0 ? (
-                renderTextWithFLags(auditData.rag_analysis, "analysis")
-              ) : (
-                <div>
-                  {auditData.rag_analysis.split("\n").map(
-                    (paragraph, index) =>
-                      paragraph.trim() && (
-                        <div key={index} className="mb-4">
-                          {paragraph.startsWith("**") &&
-                          paragraph.endsWith("**") ? (
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              {paragraph.slice(2, -2)}
-                            </h3>
-                          ) : paragraph.startsWith("**") ? (
-                            <h4 className="font-semibold text-gray-900 mb-1">
-                              {paragraph.slice(2)}
-                            </h4>
-                          ) : (
-                            <p className="text-gray-700 leading-relaxed">
-                              {paragraph}
-                            </p>
-                          )}
-                        </div>
-                      )
-                  )}
-                </div>
-              )} */}
-
               <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                {auditData.rag_analysis.split("\n").map((paragraph, index) => {
-                  if (!paragraph.trim()) return null;
-
-                  if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+                {(() => {
+                  const renderedText = renderTextWithFLags(
+                    auditData.rag_analysis,
+                    "analysis"
+                  );
+                  if (Array.isArray(renderedText)) {
                     return (
-                      <h3
-                        key={index}
-                        className="text-lg font-bold text-purple-900 mb-3"
-                      >
-                        {paragraph.slice(2, -2)}
-                      </h3>
-                    );
-                  } else if (paragraph.startsWith("**")) {
-                    return (
-                      <h4 key={index} className="font-bold text-gray-900 mb-2">
-                        {paragraph.slice(2)}
-                      </h4>
-                    );
-                  } else if (paragraph.trim()) {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-start space-x-2 mb-2"
-                      >
-                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-700 leading-relaxed">
-                          {paragraph}
-                        </p>
+                      <div className="text-gray-700 leading-relaxed">
+                        {renderedText}
                       </div>
                     );
+                  } else {
+                    return auditData.rag_analysis
+                      .split("\n")
+                      .map((paragraph, index) => {
+                        if (!paragraph.trim()) return null;
+
+                        if (
+                          paragraph.startsWith("**") &&
+                          paragraph.endsWith("**")
+                        ) {
+                          return (
+                            <h3
+                              key={index}
+                              className="text-lg font-bold text-purple-900 mb-3"
+                            >
+                              {paragraph.slice(2, -2)}
+                            </h3>
+                          );
+                        } else if (paragraph.startsWith("**")) {
+                          return (
+                            <h4
+                              key={index}
+                              className="font-bold text-gray-900 mb-2"
+                            >
+                              {paragraph.slice(2)}
+                            </h4>
+                          );
+                        } else if (paragraph.trim()) {
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-start space-x-2 mb-2"
+                            >
+                              <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-gray-700 leading-relaxed">
+                                {paragraph}
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      });
                   }
-                  return null;
-                })}
+                })()}
               </div>
             </div>
           </CardContent>
@@ -1236,137 +1248,100 @@ export default function AuditReportPage() {
                 handleTextSelection("recommendations", recommendationsRef)
               }
             >
-              {/* {renderTextWithFLags(auditData.recommendations, "recommendations")
-                .length > 0 ? (
-                renderTextWithFLags(
-                  auditData.recommendations,
-                  "recommendations"
-                )
-              ) : (
-                <div>
-                  {auditData.recommendations.split("\n").map(
-                    (paragraph, index) =>
-                      paragraph.trim() && (
-                        <div key={index} className="mb-4">
-                          {paragraph.startsWith("**Recommendation") ? (
-                            <div className="bg-orange-50 border-l-4 border-orange-400 p-4 mb-4">
-                              <h4 className="font-semibold text-orange-900 mb-2">
-                                {paragraph.slice(2, paragraph.indexOf(":**"))}
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                {(() => {
+                  const renderedText = renderTextWithFLags(
+                    auditData.recommendations,
+                    "recommendations"
+                  );
+                  if (Array.isArray(renderedText)) {
+                    return (
+                      <div className="text-gray-700 leading-relaxed">
+                        {renderedText}
+                      </div>
+                    );
+                  } else {
+                    return auditData.recommendations
+                      .split("\n")
+                      .map((paragraph, index) => {
+                        if (!paragraph.trim()) return null;
+
+                        if (paragraph.startsWith("**Recommendation")) {
+                          const title = paragraph.slice(
+                            2,
+                            paragraph.indexOf(":**")
+                          );
+                          const content = paragraph.slice(
+                            paragraph.indexOf(":**") + 3
+                          );
+
+                          return (
+                            <div key={index} className="mb-3">
+                              <h4 className="font-bold text-orange-900 mb-2">
+                                {title}
                               </h4>
-                              <p className="text-orange-800">
-                                {paragraph.slice(paragraph.indexOf(":**") + 3)}
+                              <div className="flex items-start space-x-2">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <p className="text-gray-700 leading-relaxed">
+                                  {content}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        } else if (paragraph.startsWith("* Task:")) {
+                          return (
+                            <div
+                              key={index}
+                              className="ml-4 flex items-start space-x-2 mb-2"
+                            >
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div>
+                                <span className="font-semibold text-blue-900">
+                                  Task:
+                                </span>
+                                <span className="text-gray-700 ml-1">
+                                  {paragraph.slice(7)}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        } else if (paragraph.startsWith("* Objective:")) {
+                          return (
+                            <div
+                              key={index}
+                              className="ml-4 flex items-start space-x-2 mb-3"
+                            >
+                              <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div>
+                                <span className="font-semibold text-green-900">
+                                  Objective:
+                                </span>
+                                <span className="text-gray-700 ml-1">
+                                  {paragraph.slice(12)}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        } else if (
+                          paragraph.trim() &&
+                          !paragraph.startsWith("Here are")
+                        ) {
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-start space-x-2 mb-2"
+                            >
+                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-gray-700 leading-relaxed">
+                                {paragraph}
                               </p>
                             </div>
-                          ) : paragraph.startsWith("* Task:") ? (
-                            <div className="ml-4 mb-2">
-                              <span className="font-medium text-gray-900">
-                                Task:
-                              </span>
-                              <span className="text-gray-700">
-                                {paragraph.slice(7)}
-                              </span>
-                            </div>
-                          ) : paragraph.startsWith("* Objective:") ? (
-                            <div className="ml-4 mb-3">
-                              <span className="font-medium text-gray-900">
-                                Objective:
-                              </span>
-                              <span className="text-gray-700">
-                                {paragraph.slice(12)}
-                              </span>
-                            </div>
-                          ) : paragraph.trim() &&
-                            !paragraph.startsWith("Here are") ? (
-                            <p className="text-gray-700 leading-relaxed mb-3">
-                              {paragraph}
-                            </p>
-                          ) : null}
-                        </div>
-                      )
-                  )}
-                </div>
-              )} */}
-
-              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                {auditData.recommendations
-                  .split("\n")
-                  .map((paragraph, index) => {
-                    if (!paragraph.trim()) return null;
-
-                    if (paragraph.startsWith("**Recommendation")) {
-                      const title = paragraph.slice(
-                        2,
-                        paragraph.indexOf(":**")
-                      );
-                      const content = paragraph.slice(
-                        paragraph.indexOf(":**") + 3
-                      );
-
-                      return (
-                        <div key={index} className="mb-3">
-                          <h4 className="font-bold text-orange-900 mb-2">
-                            {title}
-                          </h4>
-                          <div className="flex items-start space-x-2">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <p className="text-gray-700 leading-relaxed">
-                              {content}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    } else if (paragraph.startsWith("* Task:")) {
-                      return (
-                        <div
-                          key={index}
-                          className="ml-4 flex items-start space-x-2 mb-2"
-                        >
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <span className="font-semibold text-blue-900">
-                              Task:
-                            </span>
-                            <span className="text-gray-700 ml-1">
-                              {paragraph.slice(7)}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    } else if (paragraph.startsWith("* Objective:")) {
-                      return (
-                        <div
-                          key={index}
-                          className="ml-4 flex items-start space-x-2 mb-3"
-                        >
-                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <span className="font-semibold text-green-900">
-                              Objective:
-                            </span>
-                            <span className="text-gray-700 ml-1">
-                              {paragraph.slice(12)}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    } else if (
-                      paragraph.trim() &&
-                      !paragraph.startsWith("Here are")
-                    ) {
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-start space-x-2 mb-2"
-                        >
-                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <p className="text-gray-700 leading-relaxed">
-                            {paragraph}
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
+                          );
+                        }
+                        return null;
+                      });
+                  }
+                })()}
               </div>
             </div>
           </CardContent>
