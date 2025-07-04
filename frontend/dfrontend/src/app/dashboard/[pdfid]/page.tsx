@@ -1060,7 +1060,46 @@ export default function AuditReportPage() {
                 handleTextSelection("originalData", originalDataRef)
               }
             >
-              {renderTextWithFLags(auditData.text, "originalData")}
+              <div className="space-y-1">
+                {auditData.text.split("\n").map((line, index) => {
+                  if (!line.trim()) return null;
+
+                  if (line.includes("Balance Sheet") || line.includes("FY")) {
+                    return (
+                      <h4
+                        key={index}
+                        className="font-bold text-gray-900 mb-2 text-base"
+                      >
+                        {renderTextWithFLags(line, "originalData")}
+                      </h4>
+                    );
+                  } else if (
+                    line.includes("Page") ||
+                    line.includes("Generated")
+                  ) {
+                    return (
+                      <p
+                        key={index}
+                        className="text-xs text-gray-500 mt-2 italic"
+                      >
+                        {renderTextWithFLags(line, "originalData")}
+                      </p>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-2 py-1"
+                      >
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p className="text-gray-700 font-mono text-sm leading-relaxed">
+                          {renderTextWithFLags(line, "originalData")}
+                        </p>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
             </div>
           </CardContent>
         </Card>

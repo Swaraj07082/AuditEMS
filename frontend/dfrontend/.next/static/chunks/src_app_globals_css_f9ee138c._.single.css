@@ -641,6 +641,10 @@
     height: calc(var(--spacing) * 9);
   }
 
+  .h-1\.5 {
+    height: calc(var(--spacing) * 1.5);
+  }
+
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
@@ -715,6 +719,10 @@
 
   .min-h-svh {
     min-height: 100svh;
+  }
+
+  .w-1\.5 {
+    width: calc(var(--spacing) * 1.5);
   }
 
   .w-2 {
@@ -1787,6 +1795,10 @@
 
   .capitalize {
     text-transform: capitalize;
+  }
+
+  .italic {
+    font-style: italic;
   }
 
   .underline {

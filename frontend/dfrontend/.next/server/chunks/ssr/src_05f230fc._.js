@@ -2602,7 +2602,60 @@ function AuditReportPage() {
                                 ref: originalDataRef,
                                 className: "bg-gray-50 p-4 rounded-lg font-mono text-sm select-text cursor-text",
                                 onMouseUp: ()=>handleTextSelection("originalData", originalDataRef),
-                                children: renderTextWithFLags(auditData.text, "originalData")
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "space-y-1",
+                                    children: auditData.text.split("\n").map((line, index)=>{
+                                        if (!line.trim()) return null;
+                                        if (line.includes("Balance Sheet") || line.includes("FY")) {
+                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                                className: "font-bold text-gray-900 mb-2 text-base",
+                                                children: renderTextWithFLags(line, "originalData")
+                                            }, index, false, {
+                                                fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                                lineNumber: 1069,
+                                                columnNumber: 23
+                                            }, this);
+                                        } else if (line.includes("Page") || line.includes("Generated")) {
+                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-xs text-gray-500 mt-2 italic",
+                                                children: renderTextWithFLags(line, "originalData")
+                                            }, index, false, {
+                                                fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                                lineNumber: 1081,
+                                                columnNumber: 23
+                                            }, this);
+                                        } else {
+                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "flex items-start space-x-2 py-1",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                                        lineNumber: 1094,
+                                                        columnNumber: 25
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-gray-700 font-mono text-sm leading-relaxed",
+                                                        children: renderTextWithFLags(line, "originalData")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                                        lineNumber: 1095,
+                                                        columnNumber: 25
+                                                    }, this)
+                                                ]
+                                            }, index, true, {
+                                                fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                                lineNumber: 1090,
+                                                columnNumber: 23
+                                            }, this);
+                                        }
+                                    })
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
+                                    lineNumber: 1063,
+                                    columnNumber: 15
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
                                 lineNumber: 1056,
@@ -2629,25 +2682,25 @@ function AuditReportPage() {
                                         className: "w-5 h-5 text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1072,
+                                        lineNumber: 1111,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Inconsistencies Identified"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1073,
+                                        lineNumber: 1112,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1071,
+                                lineNumber: 1110,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1070,
+                            lineNumber: 1109,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2659,7 +2712,7 @@ function AuditReportPage() {
                                             className: "h-4 w-4 text-red-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                            lineNumber: 1079,
+                                            lineNumber: 1118,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
@@ -2673,7 +2726,7 @@ function AuditReportPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                    lineNumber: 1081,
+                                                    lineNumber: 1120,
                                                     columnNumber: 19
                                                 }, this),
                                                 " ",
@@ -2681,24 +2734,24 @@ function AuditReportPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                            lineNumber: 1080,
+                                            lineNumber: 1119,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, index, true, {
                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                    lineNumber: 1078,
+                                    lineNumber: 1117,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1076,
+                            lineNumber: 1115,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                    lineNumber: 1069,
+                    lineNumber: 1108,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2714,20 +2767,20 @@ function AuditReportPage() {
                                                 className: "w-5 h-5 text-purple-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1093,
+                                                lineNumber: 1132,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Detailed Analysis"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1094,
+                                                lineNumber: 1133,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1092,
+                                        lineNumber: 1131,
                                         columnNumber: 15
                                     }, this),
                                     getSectionFlagCount("analysis") > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2739,18 +2792,18 @@ function AuditReportPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1097,
+                                        lineNumber: 1136,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1091,
+                                lineNumber: 1130,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1090,
+                            lineNumber: 1129,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2768,7 +2821,7 @@ function AuditReportPage() {
                                                 children: paragraph.slice(2, -2)
                                             }, index, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1144,
+                                                lineNumber: 1183,
                                                 columnNumber: 23
                                             }, this);
                                         } else if (paragraph.startsWith("**")) {
@@ -2777,7 +2830,7 @@ function AuditReportPage() {
                                                 children: paragraph.slice(2)
                                             }, index, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1153,
+                                                lineNumber: 1192,
                                                 columnNumber: 23
                                             }, this);
                                         } else if (paragraph.trim()) {
@@ -2788,7 +2841,7 @@ function AuditReportPage() {
                                                         className: "w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1163,
+                                                        lineNumber: 1202,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2796,13 +2849,13 @@ function AuditReportPage() {
                                                         children: paragraph
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1164,
+                                                        lineNumber: 1203,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1159,
+                                                lineNumber: 1198,
                                                 columnNumber: 23
                                             }, this);
                                         }
@@ -2810,23 +2863,23 @@ function AuditReportPage() {
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                    lineNumber: 1138,
+                                    lineNumber: 1177,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1104,
+                                lineNumber: 1143,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1103,
+                            lineNumber: 1142,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                    lineNumber: 1089,
+                    lineNumber: 1128,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2842,20 +2895,20 @@ function AuditReportPage() {
                                                 className: "w-5 h-5 text-orange-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1182,
+                                                lineNumber: 1221,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Audit Recommendations"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1183,
+                                                lineNumber: 1222,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1181,
+                                        lineNumber: 1220,
                                         columnNumber: 15
                                     }, this),
                                     getSectionFlagCount("recommendations") > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2867,18 +2920,18 @@ function AuditReportPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1186,
+                                        lineNumber: 1225,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1180,
+                                lineNumber: 1219,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1179,
+                            lineNumber: 1218,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2901,7 +2954,7 @@ function AuditReportPage() {
                                                         children: title
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1268,
+                                                        lineNumber: 1307,
                                                         columnNumber: 27
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2911,7 +2964,7 @@ function AuditReportPage() {
                                                                 className: "w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1272,
+                                                                lineNumber: 1311,
                                                                 columnNumber: 29
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2919,19 +2972,19 @@ function AuditReportPage() {
                                                                 children: content
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1273,
+                                                                lineNumber: 1312,
                                                                 columnNumber: 29
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1271,
+                                                        lineNumber: 1310,
                                                         columnNumber: 27
                                                     }, this)
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1267,
+                                                lineNumber: 1306,
                                                 columnNumber: 25
                                             }, this);
                                         } else if (paragraph.startsWith("* Task:")) {
@@ -2942,7 +2995,7 @@ function AuditReportPage() {
                                                         className: "w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1285,
+                                                        lineNumber: 1324,
                                                         columnNumber: 27
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2952,7 +3005,7 @@ function AuditReportPage() {
                                                                 children: "Task:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1287,
+                                                                lineNumber: 1326,
                                                                 columnNumber: 29
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2960,19 +3013,19 @@ function AuditReportPage() {
                                                                 children: paragraph.slice(7)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1290,
+                                                                lineNumber: 1329,
                                                                 columnNumber: 29
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1286,
+                                                        lineNumber: 1325,
                                                         columnNumber: 27
                                                     }, this)
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1281,
+                                                lineNumber: 1320,
                                                 columnNumber: 25
                                             }, this);
                                         } else if (paragraph.startsWith("* Objective:")) {
@@ -2983,7 +3036,7 @@ function AuditReportPage() {
                                                         className: "w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1302,
+                                                        lineNumber: 1341,
                                                         columnNumber: 27
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2993,7 +3046,7 @@ function AuditReportPage() {
                                                                 children: "Objective:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1304,
+                                                                lineNumber: 1343,
                                                                 columnNumber: 29
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3001,19 +3054,19 @@ function AuditReportPage() {
                                                                 children: paragraph.slice(12)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1307,
+                                                                lineNumber: 1346,
                                                                 columnNumber: 29
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1303,
+                                                        lineNumber: 1342,
                                                         columnNumber: 27
                                                     }, this)
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1298,
+                                                lineNumber: 1337,
                                                 columnNumber: 25
                                             }, this);
                                         } else if (paragraph.trim() && !paragraph.startsWith("Here are")) {
@@ -3024,7 +3077,7 @@ function AuditReportPage() {
                                                         className: "w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1322,
+                                                        lineNumber: 1361,
                                                         columnNumber: 27
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3032,13 +3085,13 @@ function AuditReportPage() {
                                                         children: paragraph
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1323,
+                                                        lineNumber: 1362,
                                                         columnNumber: 27
                                                     }, this)
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1318,
+                                                lineNumber: 1357,
                                                 columnNumber: 25
                                             }, this);
                                         }
@@ -3046,23 +3099,23 @@ function AuditReportPage() {
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                    lineNumber: 1251,
+                                    lineNumber: 1290,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1193,
+                                lineNumber: 1232,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1192,
+                            lineNumber: 1231,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                    lineNumber: 1178,
+                    lineNumber: 1217,
                     columnNumber: 9
                 }, this),
                 flags.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -3075,7 +3128,7 @@ function AuditReportPage() {
                                         className: "w-5 h-5 text-orange-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1341,
+                                        lineNumber: 1380,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3086,18 +3139,18 @@ function AuditReportPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1342,
+                                        lineNumber: 1381,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1340,
+                                lineNumber: 1379,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1339,
+                            lineNumber: 1378,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3122,13 +3175,13 @@ function AuditReportPage() {
                                                                         children: flag.type
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                        lineNumber: 1374,
+                                                                        lineNumber: 1413,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1362,
+                                                                lineNumber: 1401,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3137,7 +3190,7 @@ function AuditReportPage() {
                                                                 children: flag.section
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1376,
+                                                                lineNumber: 1415,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3145,7 +3198,7 @@ function AuditReportPage() {
                                                                 children: flag.priority
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1379,
+                                                                lineNumber: 1418,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3157,13 +3210,13 @@ function AuditReportPage() {
                                                                         children: flag.status
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                        lineNumber: 1388,
+                                                                        lineNumber: 1427,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1386,
+                                                                lineNumber: 1425,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3171,13 +3224,13 @@ function AuditReportPage() {
                                                                 children: flag.createdAt.toLocaleDateString()
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1392,
+                                                                lineNumber: 1431,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1361,
+                                                        lineNumber: 1400,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3189,7 +3242,7 @@ function AuditReportPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1396,
+                                                        lineNumber: 1435,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3197,7 +3250,7 @@ function AuditReportPage() {
                                                         children: flag.comment
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1399,
+                                                        lineNumber: 1438,
                                                         columnNumber: 23
                                                     }, this),
                                                     flag.resolvedAt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3208,13 +3261,13 @@ function AuditReportPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1401,
+                                                        lineNumber: 1440,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1360,
+                                                lineNumber: 1399,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3230,14 +3283,14 @@ function AuditReportPage() {
                                                                 className: "w-4 h-4 mr-1"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1413,
+                                                                lineNumber: 1452,
                                                                 columnNumber: 25
                                                             }, this),
                                                             "Edit Flag"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1407,
+                                                        lineNumber: 1446,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3255,12 +3308,12 @@ function AuditReportPage() {
                                                                             className: "w-4 h-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                            lineNumber: 1428,
+                                                                            lineNumber: 1467,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                        lineNumber: 1419,
+                                                                        lineNumber: 1458,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3273,12 +3326,12 @@ function AuditReportPage() {
                                                                             className: "w-4 h-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                            lineNumber: 1439,
+                                                                            lineNumber: 1478,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                        lineNumber: 1430,
+                                                                        lineNumber: 1469,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
@@ -3293,46 +3346,46 @@ function AuditReportPage() {
                                                                     className: "w-4 h-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                    lineNumber: 1450,
+                                                                    lineNumber: 1489,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                                lineNumber: 1443,
+                                                                lineNumber: 1482,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1416,
+                                                        lineNumber: 1455,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1406,
+                                                lineNumber: 1445,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1359,
+                                        lineNumber: 1398,
                                         columnNumber: 19
                                     }, this)
                                 }, flag.id, false, {
                                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                    lineNumber: 1347,
+                                    lineNumber: 1386,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1345,
+                            lineNumber: 1384,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                    lineNumber: 1338,
+                    lineNumber: 1377,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -3345,25 +3398,25 @@ function AuditReportPage() {
                                         className: "w-5 h-5 text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1465,
+                                        lineNumber: 1504,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Status"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1466,
+                                        lineNumber: 1505,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1464,
+                                lineNumber: 1503,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1463,
+                            lineNumber: 1502,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3380,7 +3433,7 @@ function AuditReportPage() {
                                                         className: "w-5 h-5 text-green-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1473,
+                                                        lineNumber: 1512,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3388,13 +3441,13 @@ function AuditReportPage() {
                                                         children: "Enhanced Analysis"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1474,
+                                                        lineNumber: 1513,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1472,
+                                                lineNumber: 1511,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3402,13 +3455,13 @@ function AuditReportPage() {
                                                 children: auditData.enhanced === "true" ? "Completed" : "Not Applied"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1478,
+                                                lineNumber: 1517,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1471,
+                                        lineNumber: 1510,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3421,7 +3474,7 @@ function AuditReportPage() {
                                                         className: "w-5 h-5 text-blue-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1485,
+                                                        lineNumber: 1524,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3429,13 +3482,13 @@ function AuditReportPage() {
                                                         children: "Processing Status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1486,
+                                                        lineNumber: 1525,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1484,
+                                                lineNumber: 1523,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3443,13 +3496,13 @@ function AuditReportPage() {
                                                 children: auditData.status.toLowerCase()
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1490,
+                                                lineNumber: 1529,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1483,
+                                        lineNumber: 1522,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3462,7 +3515,7 @@ function AuditReportPage() {
                                                         className: "w-5 h-5 text-gray-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1497,
+                                                        lineNumber: 1536,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3470,13 +3523,13 @@ function AuditReportPage() {
                                                         children: "Error Status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                        lineNumber: 1498,
+                                                        lineNumber: 1537,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1496,
+                                                lineNumber: 1535,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3484,30 +3537,30 @@ function AuditReportPage() {
                                                 children: auditData.error || "No errors detected"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                                lineNumber: 1502,
+                                                lineNumber: 1541,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                        lineNumber: 1495,
+                                        lineNumber: 1534,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                                lineNumber: 1470,
+                                lineNumber: 1509,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                            lineNumber: 1469,
+                            lineNumber: 1508,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/[pdfid]/page.tsx",
-                    lineNumber: 1462,
+                    lineNumber: 1501,
                     columnNumber: 9
                 }, this)
             ]
