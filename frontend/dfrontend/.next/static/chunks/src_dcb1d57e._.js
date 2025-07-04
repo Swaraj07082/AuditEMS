@@ -901,7 +901,7 @@ function PDFDashboard() {
             return false;
         }
         const matchesSearch = pdf.filename.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === "all" || pdf.status === statusFilter;
+        const matchesStatus = statusFilter === "all" || pdf.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchesStatus;
     }) : [];
     // Helper functions

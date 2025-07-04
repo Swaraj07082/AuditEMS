@@ -1,12 +1,6 @@
 {
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/getflags/[id]/route": "app/api/getflags/[id]/route.js",
-  "/api/getpdfs/[id]/route": "app/api/getpdfs/[id]/route.js",
-  "/api/getpdfs/route": "app/api/getpdfs/route.js",
-  "/api/savepdf/route": "app/api/savepdf/route.js",
-  "/auditVerify/page": "app/auditVerify/page.js",
-  "/dashboard/[pdfid]/page": "app/dashboard/[pdfid]/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
   "/page": "app/page.js"
 }

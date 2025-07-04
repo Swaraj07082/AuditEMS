@@ -185,7 +185,7 @@ export default function PDFDashboard() {
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
         const matchesStatus =
-          statusFilter === "all" || pdf.status === statusFilter;
+          statusFilter === "all" || pdf.status.toLowerCase() === statusFilter.toLowerCase();
 
         return matchesSearch && matchesStatus;
       })
