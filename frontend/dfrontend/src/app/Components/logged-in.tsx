@@ -1,4 +1,7 @@
 "use client";
+
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,11 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Shield, Clock, UserIcon } from "lucide-react";
+import { LogOut, Shield, UserIcon } from "lucide-react";
 
 export default function LoggedIn() {
+  const router = useRouter();
+
   return (
-    <div className=" flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -30,14 +35,28 @@ export default function LoggedIn() {
               Authenticated
             </Badge>
           </div>
-           <Button variant="outline" className="w-full bg-transparent" >
+
+          <Button
+            variant="outline"
+            className="w-full bg-transparent"
+            onClick={() => router.push("/dashboard")}
+          >
             <LogOut className="w-4 h-4 mr-2" />
             Go to Dashboard
           </Button>
-          {/* <Button variant="outline" className="w-full bg-transparent">
+
+          <Button
+            variant="outline"
+            className="w-full bg-transparent"
+            onClick={() =>
+              signOut({
+                callbackUrl: "/login", // Redirect after signout
+              })
+            }
+          >
             <LogOut className="w-4 h-4 mr-2" />
             Logout
-          </Button> */}
+          </Button>
         </CardContent>
       </Card>
     </div>

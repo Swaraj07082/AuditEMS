@@ -10,7 +10,7 @@ import {
   FileText,
   Calendar,
   HardDrive,
-  // LogOut,
+  User,
   MoreVertical,
   Grid3X3,
   List,
@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import AuthCheck from "./authcheck";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { PDF } from "../types/pdf";
 
 export default function PDFDashboard() {
@@ -227,15 +227,11 @@ export default function PDFDashboard() {
         setsamplePDFS((prevPDFs) => prevPDFs.filter((p) => p.id !== pdf.id));
 
         console.log(`Successfully deleted ${pdf.filename}`);
-        // Optional: Add toast notification here if you have toast setup
-        // toast.success(`Deleted: ${pdf.filename}`);
       } catch (error) {
         console.error("Delete error:", error);
         setError(
           error instanceof Error ? error.message : "Failed to delete PDF"
         );
-        // Optional: Add toast notification for error
-        // toast.error("Failed to delete file");
       }
     }
   };
@@ -274,6 +270,24 @@ export default function PDFDashboard() {
                 <p className="text-gray-600">Welcome, {session.user.name}</p>
               )}
             </div>
+
+            {/* User Profile Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-12 w-12 p-0 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors">
+                  <User className="h-6 w-6" />
+                  <span className="sr-only">User menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => router.push('/profile')}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Description */}
