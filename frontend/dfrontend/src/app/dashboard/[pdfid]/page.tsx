@@ -55,6 +55,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { resourceUsage } from "process";
 
 export default function AuditReportPage() {
   const { data: session } = useSession();
@@ -954,7 +955,7 @@ export default function AuditReportPage() {
               className="prose max-w-none select-text cursor-text"
               onMouseUp={() => handleTextSelection("summary", summaryRef)}
             >
-              {renderTextWithFLags(auditData.summary, "summary").length > 0 ? (
+              {/* {renderTextWithFLags(auditData.summary, "summary").length > 0 ? (
                 renderTextWithFLags(auditData.summary, "summary")
               ) : (
                 <div>
@@ -981,7 +982,57 @@ export default function AuditReportPage() {
                       )
                   )}
                 </div>
-              )}
+              )} */}
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                {auditData.summary.split("\n").map((paragraph, index) => {
+                  if (!paragraph.trim()) return null;
+
+                  if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+                    return (
+                      <h3
+                        key={index}
+                        className="text-lg font-bold text-gray-900 mb-3"
+                      >
+                        {paragraph.slice(2, -2)}
+                      </h3>
+                    );
+                  } else if (paragraph.startsWith("**")) {
+                    return (
+                      <h4
+                        key={index}
+                        className="text-lg font-bold text-gray-900 mb-3"
+                      >
+                        {paragraph.slice(2, -2)}
+                      </h4>
+                    );
+                  } else if (paragraph.trim().match(/^\d+\./)) {
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-2 mb-2"
+                      >
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p className="text-gray-700 leading-relaxed">
+                          {paragraph}
+                        </p>
+                      </div>
+                    );
+                  } else if (paragraph.trim()) {
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-2 mb-2"
+                      >
+                        <div className="w-2 h-2 bg-gray-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p className="text-gray-700 leading-relaxed">
+                          {paragraph}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -1055,7 +1106,7 @@ export default function AuditReportPage() {
               className="prose max-w-none select-text cursor-text"
               onMouseUp={() => handleTextSelection("analysis", analysisRef)}
             >
-              {renderTextWithFLags(auditData.rag_analysis, "analysis").length >
+              {/* {renderTextWithFLags(auditData.rag_analysis, "analysis").length >
               0 ? (
                 renderTextWithFLags(auditData.rag_analysis, "analysis")
               ) : (
@@ -1082,7 +1133,43 @@ export default function AuditReportPage() {
                       )
                   )}
                 </div>
-              )}
+              )} */}
+
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                {auditData.rag_analysis.split("\n").map((paragraph, index) => {
+                  if (!paragraph.trim()) return null;
+
+                  if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+                    return (
+                      <h3
+                        key={index}
+                        className="text-lg font-bold text-purple-900 mb-3"
+                      >
+                        {paragraph.slice(2, -2)}
+                      </h3>
+                    );
+                  } else if (paragraph.startsWith("**")) {
+                    return (
+                      <h4 key={index} className="font-bold text-gray-900 mb-2">
+                        {paragraph.slice(2)}
+                      </h4>
+                    );
+                  } else if (paragraph.trim()) {
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-2 mb-2"
+                      >
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p className="text-gray-700 leading-relaxed">
+                          {paragraph}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -1110,7 +1197,7 @@ export default function AuditReportPage() {
                 handleTextSelection("recommendations", recommendationsRef)
               }
             >
-              {renderTextWithFLags(auditData.recommendations, "recommendations")
+              {/* {renderTextWithFLags(auditData.recommendations, "recommendations")
                 .length > 0 ? (
                 renderTextWithFLags(
                   auditData.recommendations,
@@ -1159,7 +1246,89 @@ export default function AuditReportPage() {
                       )
                   )}
                 </div>
-              )}
+              )} */}
+
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                {auditData.recommendations
+                  .split("\n")
+                  .map((paragraph, index) => {
+                    if (!paragraph.trim()) return null;
+
+                    if (paragraph.startsWith("**Recommendation")) {
+                      const title = paragraph.slice(
+                        2,
+                        paragraph.indexOf(":**")
+                      );
+                      const content = paragraph.slice(
+                        paragraph.indexOf(":**") + 3
+                      );
+
+                      return (
+                        <div key={index} className="mb-3">
+                          <h4 className="font-bold text-orange-900 mb-2">
+                            {title}
+                          </h4>
+                          <div className="flex items-start space-x-2">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700 leading-relaxed">
+                              {content}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    } else if (paragraph.startsWith("* Task:")) {
+                      return (
+                        <div
+                          key={index}
+                          className="ml-4 flex items-start space-x-2 mb-2"
+                        >
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <div>
+                            <span className="font-semibold text-blue-900">
+                              Task:
+                            </span>
+                            <span className="text-gray-700 ml-1">
+                              {paragraph.slice(7)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    } else if (paragraph.startsWith("* Objective:")) {
+                      return (
+                        <div
+                          key={index}
+                          className="ml-4 flex items-start space-x-2 mb-3"
+                        >
+                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <div>
+                            <span className="font-semibold text-green-900">
+                              Objective:
+                            </span>
+                            <span className="text-gray-700 ml-1">
+                              {paragraph.slice(12)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    } else if (
+                      paragraph.trim() &&
+                      !paragraph.startsWith("Here are")
+                    ) {
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-start space-x-2 mb-2"
+                        >
+                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <p className="text-gray-700 leading-relaxed">
+                            {paragraph}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -1294,7 +1463,7 @@ export default function AuditReportPage() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <CheckCircle className="w-5 h-5 text-green-600" />
-              <span>Processing Status</span>
+              <span>Status</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
