@@ -286,7 +286,11 @@ export default function PDFDashboard() {
                 <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
                   Logout
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/admin')}>
+                  Admin Dashboard
+                </DropdownMenuItem>
               </DropdownMenuContent>
+              
             </DropdownMenu>
           </div>
 
