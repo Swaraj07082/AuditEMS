@@ -14,19 +14,20 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  name     String @unique
-  password String 
-  pdfs     PDF[]
-  flags    Flag[]
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String   @unique
+  role      Role     @default(AUDITOR)
+  password  String
+  pdfs      PDF[]
+  flags     Flag[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model PDF {
-  id              String @id @default(uuid())
-  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String    @id @default(uuid())
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
   text            String
   inconsistencies String
@@ -37,15 +38,15 @@ model PDF {
   summary         String
   filename        String
   status          Status
-  uploadedAt      DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  uploadedAt      DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   lastFlagged     DateTime? // When this PDF was last flagged
-  commentCount    Int @default(0) // Count of comments (FLAG type)
-  flagCount       Int @default(0) // Count of flags (COMMENT, QUESTION, CRITICAL types)
-  
+  commentCount    Int       @default(0) // Count of comments (FLAG type)
+  flagCount       Int       @default(0) // Count of flags (COMMENT, QUESTION, CRITICAL types)
+
   // Relations
-  flags           Flag[]
-  
+  flags Flag[]
+
   // Indexes
   @@index([userId])
   @@index([status])
@@ -56,28 +57,29 @@ model PDF {
 }
 
 model Flag {
-  id          String   @id @default(uuid())
+  id         String     @id @default(uuid())
   // Relations
-  pdf         PDF      @relation(fields: [pdfId], references: [id], onDelete: Cascade)
-  pdfId       String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
+  pdf        PDF        @relation(fields: [pdfId], references: [id], onDelete: Cascade)
+  pdfId      String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
   // Flag content
-  text        String   // The selected text that was flagged
-  comment     String   // User's comment/note about the flag
-  type        FlagType // Whether it's a flag or comment
-  section     String   // Which section of the document (originalData, analysis, etc.)
+  text       String // The selected text that was flagged
+  comment    String // User's comment/note about the flag
+  type       FlagType // Whether it's a flag or comment
+  section    String // Which section of the document (originalData, analysis, etc.)
   // Position tracking
-  startIndex  Int      // Start position of the flagged text
-  endIndex    Int      // End position of the flagged text
+  startIndex Int // Start position of the flagged text
+  endIndex   Int // End position of the flagged text
   // Status and metadata
-  status      FlagStatus @default(ACTIVE)
-  priority    Priority   @default(MEDIUM)
+  status     FlagStatus @default(ACTIVE)
+  priority   Priority   @default(MEDIUM)
   // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  resolvedAt  DateTime?
-  resolvedBy  String?   // User ID who resolved the flag
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  resolvedAt DateTime?
+  resolvedBy String? // User ID who resolved the flag
+
   // Indexes for performance
   @@index([pdfId])
   @@index([userId])
@@ -94,15 +96,15 @@ enum Status {
 }
 
 enum FlagType {
-  FLAG     // Issues/problems
-  COMMENT  // General comments/notes
+  FLAG // Issues/problems
+  COMMENT // General comments/notes
   QUESTION // Questions that need answers
   CRITICAL // Critical issues requiring immediate attention
 }
 
 enum FlagStatus {
-  ACTIVE    // Flag is active and needs attention
-  RESOLVED  // Flag has been addressed
+  ACTIVE // Flag is active and needs attention
+  RESOLVED // Flag has been addressed
   DISMISSED // Flag was dismissed as not relevant
   IN_REVIEW // Flag is being reviewed
 }
@@ -112,4 +114,10 @@ enum Priority {
   MEDIUM
   HIGH
   CRITICAL
+}
+
+enum Role {
+  AUDITOR
+  REVIEWER
+  ADMIN
 }

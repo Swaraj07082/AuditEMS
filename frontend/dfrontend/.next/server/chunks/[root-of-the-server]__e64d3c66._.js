@@ -222,32 +222,47 @@ const authOptions = {
                 return {
                     id: `${existingUser.id}`,
                     name: existingUser.name,
-                    email: existingUser.email
+                    email: existingUser.email,
+                    role: existingUser.role
                 };
             }
         })
     ],
     callbacks: {
         async jwt ({ token, user }) {
-            console.log('JWT callback:', {
+            console.log("JWT callback:", {
                 user,
                 token
             });
             if (user) {
+                // User object is available during sign-in
                 token.id = user.id;
+                token.role = user.role;
+            } else if (token.email && !token.role) {
+                // Fetch user data if we don't have role (for subsequent requests)
+                const dbUser = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique({
+                    where: {
+                        email: token.email
+                    }
+                });
+                if (dbUser) {
+                    token.id = dbUser.id;
+                    token.role = dbUser.role;
+                }
             }
-            console.log('JWT token after:', token);
+            console.log("JWT token after:", token);
             return token;
         },
         async session ({ session, token }) {
-            console.log('Session callback:', {
+            console.log("Session callback:", {
                 session,
                 token
             });
             if (token && session.user) {
                 session.user.id = token.id;
+                session.user.role = token.role;
             }
-            console.log('Session after:', session);
+            console.log("Session after:", session);
             return session;
         }
     }

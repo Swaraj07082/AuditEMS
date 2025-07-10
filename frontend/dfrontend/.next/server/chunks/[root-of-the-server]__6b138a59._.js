@@ -147,6 +147,15 @@ const authOptions = {
             });
             if (user) {
                 token.id = user.id;
+                const dbUser = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique({
+                    where: {
+                        email: user.email
+                    }
+                });
+                if (dbUser) {
+                    token.id = dbUser.id;
+                    token.role = dbUser.role;
+                }
             }
             console.log('JWT token after:', token);
             return token;
@@ -158,6 +167,7 @@ const authOptions = {
             });
             if (token && session.user) {
                 session.user.id = token.id;
+                session.user.role = token.role;
             }
             console.log('Session after:', session);
             return session;

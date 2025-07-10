@@ -56,9 +56,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { resourceUsage } from "process";
+import { date } from "zod";
 
 export default function AuditReportPage() {
   const { data: session } = useSession();
+  console.log(session)
 
   const [flags, setFlags] = useState<Flag[]>([]);
   const [selectedText, setSelectedText] = useState("");
