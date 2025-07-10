@@ -114,6 +114,7 @@ var { g: global, __dirname } = __turbopack_context__;
 // import { Repeat1 } from "lucide-react";
 // import { NextResponse  } from "next/server";
 __turbopack_context__.s({
+    "GET": (()=>GET),
     "POST": (()=>POST)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/db.ts [app-route] (ecmascript)");
@@ -124,6 +125,34 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$schema$2f$user
 ;
 ;
 ;
+async function GET() {
+    try {
+        const users = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findMany({
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                createdAt: true,
+                updatedAt: true,
+                isActive: true,
+                lastLogin: true,
+                _count: {
+                    select: {
+                        pdfs: true
+                    }
+                }
+            }
+        });
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(users);
+    } catch (error) {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: 'Failed to fetch users'
+        }, {
+            status: 500
+        });
+    }
+}
 async function POST(req) {
     try {
         const body = await req.json();

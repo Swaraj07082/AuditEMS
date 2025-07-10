@@ -1,31 +1,55 @@
+import { User } from "@prisma/client";
+
+
 export enum Status {
   VERIFIED = "VERIFIED",
   PENDING = "PENDING",
-  FAILED = "FAILED"
+  FAILED = "FAILED",
 }
-
 
 export enum FlagType {
   FLAG = "FLAG",
-  COMMENT = "COMMENT", 
+  COMMENT = "COMMENT",
   QUESTION = "QUESTION",
-  CRITICAL = "CRITICAL"
+  CRITICAL = "CRITICAL",
 }
 
 export enum FlagStatus {
   ACTIVE = "ACTIVE",
   RESOLVED = "RESOLVED",
   DISMISSED = "DISMISSED",
-  IN_REVIEW = "IN_REVIEW"
+  IN_REVIEW = "IN_REVIEW",
 }
 
 export enum Priority {
   LOW = "LOW",
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
-  CRITICAL = "CRITICAL"
+  CRITICAL = "CRITICAL",
 }
 
+export type UserType = {
+  id: string;
+  email: string;
+  name: string;
+  role: "AUDITOR" | "REVIEWER" | "ADMIN";
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type UserWithPdfCount = {
+  id: string;
+  name: string;
+  email: string;
+  role: "AUDITOR" | "REVIEWER" | "ADMIN";
+  isActive: boolean;
+  lastLogin: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    pdfs: number;
+  };
+};
 
 export type PDF = {
   id: string;
@@ -47,6 +71,10 @@ export type PDF = {
 };
 
 
+export type PdfWithUser = PDF & {
+  user: Pick<User, 'id' | 'name' | 'email' | 'role'>;
+};
+
 export type Flag = {
   id: string;
   pdfId: string;
@@ -64,4 +92,3 @@ export type Flag = {
   resolvedAt: Date | null;
   resolvedBy: string | null;
 };
-

@@ -16,6 +16,24 @@ import { LogOut, Shield, UserIcon } from "lucide-react";
 export default function LoggedIn() {
   const router = useRouter();
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/deactivate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      await signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -48,11 +66,7 @@ export default function LoggedIn() {
           <Button
             variant="outline"
             className="w-full bg-transparent"
-            onClick={() =>
-              signOut({
-                callbackUrl: "/login", // Redirect after signout
-              })
-            }
+            onClick={handleLogout}
           >
             <LogOut className="w-4 h-4 mr-2" />
             Logout

@@ -1,5 +1,9 @@
+'use client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, FileText, CheckCircle, Clock } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 const stats = [
   {
@@ -68,6 +72,24 @@ const recentActivity = [
 ]
 
 export default function AdminDashboard() {
+
+  const {data : session , status} = useSession();
+
+  const router = useRouter()
+  useEffect(() => {
+    // Wait until session is loaded
+    if (status === "loading") return;
+
+    if (session?.user.role !== "ADMIN") {
+      router.push("/");
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (session && session.user.role !== "ADMIN")) {
+    return null; // Or a loading spinner
+  }
+ 
+
   return (
     <div className="space-y-6">
       <div>

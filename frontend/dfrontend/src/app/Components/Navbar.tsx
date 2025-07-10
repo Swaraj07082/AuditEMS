@@ -15,15 +15,21 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
+      await fetch("/api/deactivate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       await signOut({
-        callbackUrl: "/", // Redirect to homepage after logout
+        callbackUrl: "/",
         redirect: true,
       });
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
-
   return (
     <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between relative">

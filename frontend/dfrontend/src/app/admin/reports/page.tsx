@@ -1,10 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,88 +25,124 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, Search, Filter, Download, Eye } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal, Search, Filter, Download, Eye } from "lucide-react";
+import { PDF, PdfWithUser } from "@/app/types/pdf";
 
-const reports = [
-  {
-    id: 1,
-    title: "Financial Audit Q3 2024",
-    submitter: "John Doe",
-    submittedDate: "2024-01-15",
-    status: "Verified",
-    type: "Financial",
-    priority: "High",
-    reviewer: "Jane Smith",
-  },
-  {
-    id: 2,
-    title: "Compliance Report 2024",
-    submitter: "Sarah Wilson",
-    submittedDate: "2024-01-14",
-    status: "Pending",
-    type: "Compliance",
-    priority: "Medium",
-    reviewer: "Unassigned",
-  },
-  {
-    id: 3,
-    title: "Internal Audit Report",
-    submitter: "Mike Johnson",
-    submittedDate: "2024-01-13",
-    status: "Under Review",
-    type: "Internal",
-    priority: "Low",
-    reviewer: "John Doe",
-  },
-  {
-    id: 4,
-    title: "Risk Assessment Q4",
-    submitter: "Jane Smith",
-    submittedDate: "2024-01-12",
-    status: "Rejected",
-    type: "Risk",
-    priority: "High",
-    reviewer: "Sarah Wilson",
-  },
-]
+// const reports = [
+//   {
+//     id: 1,
+//     title: "Financial Audit Q3 2024",
+//     submitter: "John Doe",
+//     submittedDate: "2024-01-15",
+//     status: "Verified",
+//     type: "Financial",
+//     priority: "High",
+//     reviewer: "Jane Smith",
+//   },
+//   {
+//     id: 2,
+//     title: "Compliance Report 2024",
+//     submitter: "Sarah Wilson",
+//     submittedDate: "2024-01-14",
+//     status: "Pending",
+//     type: "Compliance",
+//     priority: "Medium",
+//     reviewer: "Unassigned",
+//   },
+//   {
+//     id: 3,
+//     title: "Internal Audit Report",
+//     submitter: "Mike Johnson",
+//     submittedDate: "2024-01-13",
+//     status: "Under Review",
+//     type: "Internal",
+//     priority: "Low",
+//     reviewer: "John Doe",
+//   },
+//   {
+//     id: 4,
+//     title: "Risk Assessment Q4",
+//     submitter: "Jane Smith",
+//     submittedDate: "2024-01-12",
+//     status: "Rejected",
+//     type: "Risk",
+//     priority: "High",
+//     reviewer: "Sarah Wilson",
+//   },
+// ]
 
 export default function ReportsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [reports, setReports] = useState<PdfWithUser[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await fetch("/api/getallpdfs", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setReports(data);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredReports = reports.filter(
     (report) =>
-      report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.submitter.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      report.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Verified":
-        return "default"
+        return "default";
       case "Pending":
-        return "secondary"
+        return "secondary";
       case "Under Review":
-        return "outline"
+        return "outline";
       case "Rejected":
-        return "destructive"
+        return "destructive";
       default:
-        return "secondary"
+        return "secondary";
     }
-  }
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "High":
-        return "destructive"
+        return "destructive";
       case "Medium":
-        return "secondary"
+        return "secondary";
       case "Low":
-        return "outline"
+        return "outline";
       default:
-        return "secondary"
+        return "secondary";
     }
+  };
+
+  function formatDate(date: string | Date | null | undefined) {
+    if (!date) return "N/A";
+
+    const parsedDate = typeof date === "string" ? new Date(date) : date;
+    if (isNaN(parsedDate.getTime())) return "Invalid date";
+
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(parsedDate);
   }
 
   return (
@@ -112,7 +161,9 @@ export default function ReportsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Report Management</CardTitle>
-          <CardDescription>View and manage all audit reports in your system</CardDescription>
+          <CardDescription>
+            View and manage all audit reports in your system
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-4">
@@ -136,10 +187,10 @@ export default function ReportsPage() {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Submitter</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Priority</TableHead>
+                <TableHead>FlagCount</TableHead>
+                <TableHead>uploadedAt</TableHead>
+                <TableHead>updatedAt</TableHead>
                 <TableHead>Reviewer</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
@@ -147,19 +198,20 @@ export default function ReportsPage() {
             <TableBody>
               {filteredReports.map((report) => (
                 <TableRow key={report.id}>
-                  <TableCell className="font-medium">{report.title}</TableCell>
-                  <TableCell>{report.submitter}</TableCell>
-                  <TableCell>{report.submittedDate}</TableCell>
+                  <TableCell className="font-medium">
+                    {report.filename}
+                  </TableCell>
+                  <TableCell>{report.user.name}</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusColor(report.status)}>{report.status}</Badge>
+                    <Badge variant={getStatusColor(report.status)}>
+                      {report.status}
+                    </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{report.type}</Badge>
+                    <Badge variant="outline">{report.flagCount}</Badge>
                   </TableCell>
-                  <TableCell>
-                    <Badge variant={getPriorityColor(report.priority)}>{report.priority}</Badge>
-                  </TableCell>
-                  <TableCell>{report.reviewer}</TableCell>
+                  <TableCell>{formatDate(report.uploadedAt)}</TableCell>
+                  <TableCell>{formatDate(report.updatedAt)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -181,7 +233,9 @@ export default function ReportsPage() {
                         <DropdownMenuItem>Assign Reviewer</DropdownMenuItem>
                         <DropdownMenuItem>Change Status</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">Delete Report</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">
+                          Delete Report
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -192,5 +246,5 @@ export default function ReportsPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

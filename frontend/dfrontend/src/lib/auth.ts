@@ -84,5 +84,12 @@ export const authOptions: NextAuthOptions = {
       console.log("Session after:", session);
       return session;
     },
+    async signIn({ user }) {
+      await prisma.user.update({
+        where: { email: user.email! },
+        data: { lastLogin: new Date(), isActive: true },
+      });
+      return true;
+    },
   },
 };
