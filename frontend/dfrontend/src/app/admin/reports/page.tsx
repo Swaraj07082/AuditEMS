@@ -27,8 +27,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Search, Filter, Download, Eye } from "lucide-react";
+import { MoreHorizontal, Search, Filter, Download, Eye, Router } from "lucide-react";
 import { PDF, PdfWithUser } from "@/app/types/pdf";
+import { useRouter } from "next/navigation";
 
 // const reports = [
 //   {
@@ -95,6 +96,8 @@ export default function ReportsPage() {
     fetchUsers();
   }, []);
 
+  
+
   const filteredReports = reports.filter(
     (report) =>
       report.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -144,6 +147,27 @@ export default function ReportsPage() {
       hour12: true,
     }).format(parsedDate);
   }
+
+  const router = useRouter()
+
+ const handleDeletereport = async (reportId: string) => {
+  if (!confirm("Are you sure you want to delete this report?")) return;
+
+  try {
+    const res = await fetch(`/api/deletepdf/${reportId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      // Optimistically update UI
+      setReports((prev) => prev.filter((u) => u.id !== reportId));
+    } else {
+      console.error("Failed to delete report");
+    }
+  } catch (err) {
+    console.error("Error deleting report:", err);
+  }
+};
 
   return (
     <div className="space-y-6">
@@ -221,7 +245,9 @@ export default function ReportsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                        router.push(`/dashboard/${report.id}`)
+                        }}>
                           <Eye className="mr-2 h-4 w-4" />
                           View Report
                         </DropdownMenuItem>
@@ -233,7 +259,7 @@ export default function ReportsPage() {
                         <DropdownMenuItem>Assign Reviewer</DropdownMenuItem>
                         <DropdownMenuItem>Change Status</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-red-600" onClick={() => handleDeletereport(report.id)}>
                           Delete Report
                         </DropdownMenuItem>
                       </DropdownMenuContent>

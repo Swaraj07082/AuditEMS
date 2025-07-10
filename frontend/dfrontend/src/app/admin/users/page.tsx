@@ -96,6 +96,26 @@ export default function UsersPage() {
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDeleteUser = async (userId: string) => {
+  if (!confirm("Are you sure you want to delete this user?")) return;
+
+  try {
+    const res = await fetch(`/api/user/${userId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      // Optimistically update UI
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+    } else {
+      console.error("Failed to delete user");
+    }
+  } catch (err) {
+    console.error("Error deleting user:", err);
+  }
+};
+
+
   return (
     <div className="space-y-6">
       {/* <div className="flex justify-between items-center">
@@ -169,12 +189,12 @@ export default function UsersPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit User</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Reset Password</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          Deactivate User
+                        {/* <DropdownMenuItem>View Details</DropdownMenuItem> */}
+                        {/* <DropdownMenuItem>Edit User</DropdownMenuItem> */}
+                        {/* <DropdownMenuSeparator /> */}
+                        {/* <DropdownMenuItem>Reset Password</DropdownMenuItem> */}
+                        <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteUser(user.id)}>
+                          Delete User
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
