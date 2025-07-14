@@ -3,38 +3,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, FileText, CheckCircle, Clock } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
-const stats = [
-  {
-    title: "Total Users",
-    value: "2,847",
-    change: "+12%",
-    changeType: "positive",
-    icon: Users,
-  },
-  {
-    title: "Reports Submitted",
-    value: "1,234",
-    change: "+8%",
-    changeType: "positive",
-    icon: FileText,
-  },
-  {
-    title: "Verified Reports",
-    value: "987",
-    change: "+15%",
-    changeType: "positive",
-    icon: CheckCircle,
-  },
-  {
-    title: "Pending Review",
-    value: "156",
-    change: "-5%",
-    changeType: "negative",
-    icon: Clock,
-  },
-]
+// const stats = [
+//   {
+//     title: "Total Users",
+//     value: "2,847",
+//     change: "+12%",
+//     changeType: "positive",
+//     icon: Users,
+//   },
+//   {
+//     title: "Reports Submitted",
+//     value: "1,234",
+//     change: "+8%",
+//     changeType: "positive",
+//     icon: FileText,
+//   },
+//   {
+//     title: "Verified Reports",
+//     value: "987",
+//     change: "+15%",
+//     changeType: "positive",
+//     icon: CheckCircle,
+//   },
+//   {
+//     title: "Pending Review",
+//     value: "156",
+//     change: "-5%",
+//     changeType: "negative",
+//     icon: Clock,
+//   },
+// ]
 
 const recentActivity = [
   {
@@ -73,22 +73,70 @@ const recentActivity = [
 
 export default function AdminDashboard() {
 
+
   const {data : session , status} = useSession();
 
-  const router = useRouter()
-  useEffect(() => {
-    // Wait until session is loaded
-    if (status === "loading") return;
+  
+const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalPDFs: 0,
+    verifiedPDFs: 0,
+    pendingPDFs: 0,
+  });
 
+
+  const router = useRouter()
+ useEffect(() => {
+    if (status === "loading") return;
     if (session?.user.role !== "ADMIN") {
       router.push("/");
     }
   }, [session, status, router]);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      const res = await fetch("/api/summary");
+      const data = await res.json();
+      setStats(data);
+    };
+    fetchStats();
+  }, []);
+
   if (status === "loading" || (session && session.user.role !== "ADMIN")) {
-    return null; // Or a loading spinner
+    return null; // Or a spinner
   }
- 
+
+  const cards = [
+    {
+      title: "Total Users",
+      value: stats.totalUsers,
+      icon: Users,
+      // change: "+12%", // Optional
+      // changeType: "positive",
+    },
+    {
+      title: "Reports Submitted",
+      value: stats.totalPDFs,
+      icon: FileText,
+      // change: "+8%",
+      // changeType: "positive",
+    },
+    {
+      title: "Verified Reports",
+      value: stats.verifiedPDFs,
+      icon: CheckCircle,
+      // change: "+15%",
+      // changeType: "positive",
+    },
+    {
+      title: "Pending Review",
+      value: stats.pendingPDFs,
+      icon: Clock,
+      // change: "-5%",
+      // changeType: "negative",
+    },
+  ];
+
 
   return (
     <div className="space-y-6">
@@ -99,7 +147,7 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
+        {cards.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
@@ -107,9 +155,9 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className={`text-xs ${stat.changeType === "positive" ? "text-green-600" : "text-red-600"}`}>
+              {/* <p className={`text-xs ${stat.changeType === "positive" ? "text-green-600" : "text-red-600"}`}>
                 {stat.change} from last month
-              </p>
+              </p> */}
             </CardContent>
           </Card>
         ))}

@@ -27,52 +27,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Search, Filter, Download, Eye, Router } from "lucide-react";
+import {
+  MoreHorizontal,
+  Search,
+  Filter,
+  Download,
+  Eye,
+  Router,
+} from "lucide-react";
 import { PDF, PdfWithUser } from "@/app/types/pdf";
 import { useRouter } from "next/navigation";
-
-// const reports = [
-//   {
-//     id: 1,
-//     title: "Financial Audit Q3 2024",
-//     submitter: "John Doe",
-//     submittedDate: "2024-01-15",
-//     status: "Verified",
-//     type: "Financial",
-//     priority: "High",
-//     reviewer: "Jane Smith",
-//   },
-//   {
-//     id: 2,
-//     title: "Compliance Report 2024",
-//     submitter: "Sarah Wilson",
-//     submittedDate: "2024-01-14",
-//     status: "Pending",
-//     type: "Compliance",
-//     priority: "Medium",
-//     reviewer: "Unassigned",
-//   },
-//   {
-//     id: 3,
-//     title: "Internal Audit Report",
-//     submitter: "Mike Johnson",
-//     submittedDate: "2024-01-13",
-//     status: "Under Review",
-//     type: "Internal",
-//     priority: "Low",
-//     reviewer: "John Doe",
-//   },
-//   {
-//     id: 4,
-//     title: "Risk Assessment Q4",
-//     submitter: "Jane Smith",
-//     submittedDate: "2024-01-12",
-//     status: "Rejected",
-//     type: "Risk",
-//     priority: "High",
-//     reviewer: "Sarah Wilson",
-//   },
-// ]
 
 export default function ReportsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -95,8 +59,6 @@ export default function ReportsPage() {
 
     fetchUsers();
   }, []);
-
-  
 
   const filteredReports = reports.filter(
     (report) =>
@@ -148,26 +110,26 @@ export default function ReportsPage() {
     }).format(parsedDate);
   }
 
-  const router = useRouter()
+  const router = useRouter();
 
- const handleDeletereport = async (reportId: string) => {
-  if (!confirm("Are you sure you want to delete this report?")) return;
+  const handleDeletereport = async (reportId: string) => {
+    if (!confirm("Are you sure you want to delete this report?")) return;
 
-  try {
-    const res = await fetch(`/api/deletepdf/${reportId}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/deletepdf/${reportId}`, {
+        method: "DELETE",
+      });
 
-    if (res.ok) {
-      // Optimistically update UI
-      setReports((prev) => prev.filter((u) => u.id !== reportId));
-    } else {
-      console.error("Failed to delete report");
+      if (res.ok) {
+        // Optimistically update UI
+        setReports((prev) => prev.filter((u) => u.id !== reportId));
+      } else {
+        console.error("Failed to delete report");
+      }
+    } catch (err) {
+      console.error("Error deleting report:", err);
     }
-  } catch (err) {
-    console.error("Error deleting report:", err);
-  }
-};
+  };
 
   return (
     <div className="space-y-6">
@@ -200,10 +162,10 @@ export default function ReportsPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline">
+            {/* <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
               Filter
-            </Button>
+            </Button> */}
           </div>
 
           <Table>
@@ -245,9 +207,11 @@ export default function ReportsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => {
-                        router.push(`/dashboard/${report.id}`)
-                        }}>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push(`/dashboard/${report.id}`);
+                          }}
+                        >
                           <Eye className="mr-2 h-4 w-4" />
                           View Report
                         </DropdownMenuItem>
@@ -259,7 +223,10 @@ export default function ReportsPage() {
                         <DropdownMenuItem>Assign Reviewer</DropdownMenuItem>
                         <DropdownMenuItem>Change Status</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600" onClick={() => handleDeletereport(report.id)}>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => handleDeletereport(report.id)}
+                        >
                           Delete Report
                         </DropdownMenuItem>
                       </DropdownMenuContent>

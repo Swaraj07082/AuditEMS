@@ -1,19 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/admin/page": "app/admin/page.js",
-  "/admin/reports/page": "app/admin/reports/page.js",
-  "/admin/settings/page": "app/admin/settings/page.js",
-  "/admin/users/page": "app/admin/users/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/deletepdf/[id]/route": "app/api/deletepdf/[id]/route.js",
-  "/api/getallpdfs/route": "app/api/getallpdfs/route.js",
-  "/api/getflags/[id]/route": "app/api/getflags/[id]/route.js",
-  "/api/getpdfs/[id]/route": "app/api/getpdfs/[id]/route.js",
-  "/api/getpdfs/route": "app/api/getpdfs/route.js",
-  "/api/user/[id]/route": "app/api/user/[id]/route.js",
-  "/api/user/route": "app/api/user/route.js",
-  "/dashboard/[pdfid]/page": "app/dashboard/[pdfid]/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/summary/route": "app/api/summary/route.js",
   "/page": "app/page.js"
 }

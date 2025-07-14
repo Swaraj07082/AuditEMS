@@ -147,10 +147,10 @@ export default function UsersPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              Filter
-            </Button>
+            {/* <Button variant="outline"> */}
+              {/* <Filter className="mr-2 h-4 w-4" /> */}
+              {/* Filter */}
+            {/* </Button> */}
           </div>
 
           <Table>

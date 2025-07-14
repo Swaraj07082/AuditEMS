@@ -9,40 +9,31 @@ import "../globals.css";
 
 // Fonts (same as root layout)
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
-
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
-
 const inter = Inter({ subsets: ["latin"] });
 
 export default function DashboardLayout({
-  children,
+  children,
 }: {
-  children: ReactNode;
+  children: ReactNode;
 }) {
-  return (
- <html lang="en" suppressHydrationWarning>
-<body
-className={`${inter.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
-suppressHydrationWarning
- >
-<ThemeProvider
-attribute="class"
-defaultTheme="system"
-enableSystem
-disableTransitionOnChange
->
-            <SessionWrapper>
-                {/*  No Navbar here */}
-             <Provider>{children}</Provider>
-         </SessionWrapper>
-      </ThemeProvider>
-     </body>
-    </html>
- );
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <SessionWrapper>
+        {/*  No Navbar here */}
+        <Provider>{children}</Provider>
+      </SessionWrapper>
+    </ThemeProvider>
+  );
 }
