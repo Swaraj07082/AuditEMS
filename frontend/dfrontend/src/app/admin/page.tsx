@@ -1,228 +1,112 @@
 'use client'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, FileText, CheckCircle, Clock } from "lucide-react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
 
-// const stats = [
-//   {
-//     title: "Total Users",
-//     value: "2,847",
-//     change: "+12%",
-//     changeType: "positive",
-//     icon: Users,
-//   },
-//   {
-//     title: "Reports Submitted",
-//     value: "1,234",
-//     change: "+8%",
-//     changeType: "positive",
-//     icon: FileText,
-//   },
-//   {
-//     title: "Verified Reports",
-//     value: "987",
-//     change: "+15%",
-//     changeType: "positive",
-//     icon: CheckCircle,
-//   },
-//   {
-//     title: "Pending Review",
-//     value: "156",
-//     change: "-5%",
-//     changeType: "negative",
-//     icon: Clock,
-//   },
-// ]
-
-const recentActivity = [
-  {
-    id: 1,
-    action: "Report verified",
-    user: "John Doe",
-    report: "Financial Audit Q3 2024",
-    time: "2 minutes ago",
-    status: "success",
-  },
-  {
-    id: 2,
-    action: "New user registered",
-    user: "Jane Smith",
-    report: null,
-    time: "15 minutes ago",
-    status: "info",
-  },
-  {
-    id: 3,
-    action: "Report flagged",
-    user: "Mike Johnson",
-    report: "Compliance Report 2024",
-    time: "1 hour ago",
-    status: "warning",
-  },
-  {
-    id: 4,
-    action: "Report submitted",
-    user: "Sarah Wilson",
-    report: "Internal Audit Report",
-    time: "2 hours ago",
-    status: "info",
-  },
-]
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Users, FileText, CheckCircle, Clock } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import CountUp from 'react-countup'
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
 
-
-  const {data : session , status} = useSession();
-
-  
-const [stats, setStats] = useState({
+  const [stats, setStats] = useState({
     totalUsers: 0,
     totalPDFs: 0,
     verifiedPDFs: 0,
     pendingPDFs: 0,
-  });
+  })
 
-
-  const router = useRouter()
- useEffect(() => {
-    if (status === "loading") return;
-    if (session?.user.role !== "ADMIN") {
-      router.push("/");
+  useEffect(() => {
+    if (status === 'loading') return
+    if (session?.user.role !== 'ADMIN') {
+      router.push('/')
     }
-  }, [session, status, router]);
+  }, [session, status, router])
 
   useEffect(() => {
     const fetchStats = async () => {
-      const res = await fetch("/api/summary");
-      const data = await res.json();
-      setStats(data);
-    };
-    fetchStats();
-  }, []);
+      const res = await fetch('/api/summary')
+      const data = await res.json()
+      setStats(data)
+    }
+    fetchStats()
+  }, [])
 
-  if (status === "loading" || (session && session.user.role !== "ADMIN")) {
-    return null; // Or a spinner
+  if (status === 'loading' || (session && session.user.role !== 'ADMIN')) {
+    return null
   }
 
   const cards = [
     {
-      title: "Total Users",
+      title: 'Total Users',
       value: stats.totalUsers,
       icon: Users,
-      // change: "+12%", // Optional
-      // changeType: "positive",
+      color: 'bg-gradient-to-tr from-blue-500 to-blue-300',
     },
     {
-      title: "Reports Submitted",
+      title: 'Reports Submitted',
       value: stats.totalPDFs,
       icon: FileText,
-      // change: "+8%",
-      // changeType: "positive",
+      color: 'bg-gradient-to-tr from-green-500 to-green-300',
     },
     {
-      title: "Verified Reports",
+      title: 'Verified Reports',
       value: stats.verifiedPDFs,
       icon: CheckCircle,
-      // change: "+15%",
-      // changeType: "positive",
+      color: 'bg-gradient-to-tr from-purple-500 to-purple-300',
     },
     {
-      title: "Pending Review",
+      title: 'Pending Review',
       value: stats.pendingPDFs,
       icon: Clock,
-      // change: "-5%",
-      // changeType: "negative",
+      color: 'bg-gradient-to-tr from-yellow-500 to-yellow-300',
     },
-  ];
-
+  ]
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen w-full bg-gray-50 p-6 flex flex-col space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's what's happening with your audit system.</p>
+        <p className="text-gray-600">
+          Welcome back! Here's what's happening with your audit system.
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Full-width 2x2 grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         {cards.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              {/* <p className={`text-xs ${stat.changeType === "positive" ? "text-green-600" : "text-red-600"}`}>
-                {stat.change} from last month
-              </p> */}
+          <Card
+            key={stat.title}
+            className="h-40 w-full flex flex-col justify-between p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-md text-white ${stat.color}`}>
+                <stat.icon className="h-5 w-5" />
+              </div>
+              <div>
+                <CardTitle className="text-base font-semibold text-gray-800">
+                  {stat.title}
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-500">
+                  Total as of today
+                </CardDescription>
+              </div>
+            </div>
+            <CardContent className="pl-0">
+              <div className="text-3xl font-extrabold text-gray-900">
+                <CountUp end={stat.value} duration={1.5} separator="," />
+              </div>
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest actions in your system</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center space-x-4">
-                  <div
-                    className={`w-2 h-2 rounded-full ${
-                      activity.status === "success"
-                        ? "bg-green-500"
-                        : activity.status === "warning"
-                          ? "bg-yellow-500"
-                          : "bg-blue-500"
-                    }`}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                    <p className="text-sm text-gray-500">
-                      {activity.user} {activity.report && `• ${activity.report}`}
-                    </p>
-                  </div>
-                  <div className="text-sm text-gray-400">{activity.time}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* System Health */}
-        <Card>
-          <CardHeader>
-            <CardTitle>System Health</CardTitle>
-            <CardDescription>Current system status</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">API Response Time</span>
-                <span className="text-sm text-green-600">142ms</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Database Status</span>
-                <span className="text-sm text-green-600">Healthy</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Storage Usage</span>
-                <span className="text-sm text-yellow-600">78%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Active Sessions</span>
-                <span className="text-sm text-blue-600">234</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )
