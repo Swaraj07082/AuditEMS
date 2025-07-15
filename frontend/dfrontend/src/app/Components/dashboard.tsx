@@ -185,7 +185,8 @@ export default function PDFDashboard() {
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
         const matchesStatus =
-          statusFilter === "all" || pdf.status.toLowerCase() === statusFilter.toLowerCase();
+          statusFilter === "all" ||
+          pdf.status.toLowerCase() === statusFilter.toLowerCase();
 
         return matchesSearch && matchesStatus;
       })
@@ -242,15 +243,15 @@ export default function PDFDashboard() {
   };
 
   const formatDate = (date: Date | string) => {
-    const dateObj = typeof date === 'string' ? new Date(date) : date
+    const dateObj = typeof date === "string" ? new Date(date) : date;
     return dateObj.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    })
-  }
+    });
+  };
 
   const viewDocument = (pdfid: string) => {
     router.push(`/dashboard/${pdfid}`);
@@ -274,23 +275,27 @@ export default function PDFDashboard() {
             {/* User Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-12 w-12 p-0 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors">
+                <Button
+                  variant="ghost"
+                  className="h-12 w-12 p-0 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors"
+                >
                   <User className="h-6 w-6" />
                   <span className="sr-only">User menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push('/profile')}>
+                <DropdownMenuItem onClick={() => router.push("/profile")}>
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                >
                   Logout
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/admin')}>
+                <DropdownMenuItem onClick={() => router.push("/admin")}>
                   Admin Dashboard
                 </DropdownMenuItem>
               </DropdownMenuContent>
-              
             </DropdownMenu>
           </div>
 
@@ -480,14 +485,17 @@ export default function PDFDashboard() {
                         )}
                       </div>
                     </div>
+                    <div className="flex gap-x-2">
+                      <Button>Download</Button>
 
-                    <Button
-                      onClick={() => viewDocument(pdf.id)}
-                      className="flex items-center space-x-2"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>View Document</span>
-                    </Button>
+                      <Button
+                        onClick={() => viewDocument(pdf.id)}
+                        className="flex items-center space-x-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span>View Document</span>
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

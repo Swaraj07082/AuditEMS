@@ -325,7 +325,7 @@ function AdminDashboard() {
         columnNumber: 5
     }, this);
 }
-_s(AdminDashboard, "csPRGbrc3Q/gFVUrWDOvQOckW0E=", false, function() {
+_s(AdminDashboard, "sBTVx7SsvzEM7QaKsBT/p4Bcnv4=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSession"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]

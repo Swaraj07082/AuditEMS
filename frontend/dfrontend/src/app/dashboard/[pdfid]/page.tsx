@@ -1420,7 +1420,7 @@ export default function AuditReportPage() {
                       )}
                     </div>
                     <div className="flex flex-col space-y-2">
-                      <Button
+                      {/* <Button
                         size="sm"
                         variant="outline"
                         onClick={() => openEditDialog(flag)}
@@ -1428,9 +1428,9 @@ export default function AuditReportPage() {
                       >
                         <Edit3 className="w-4 h-4 mr-1" />
                         Edit Flag
-                      </Button>
+                      </Button> */}
                       <div className="flex space-x-1">
-                        {flag.status === FlagStatus.ACTIVE && (
+                        {/* {flag.status === FlagStatus.ACTIVE && (
                           <>
                             <Button
                               size="sm"
@@ -1455,7 +1455,7 @@ export default function AuditReportPage() {
                               <Eye className="w-4 h-4" />
                             </Button>
                           </>
-                        )}
+                        )} */}
                         <Button
                           size="sm"
                           variant="ghost"
@@ -1474,7 +1474,7 @@ export default function AuditReportPage() {
           </Card>
         )}
 
-        {/* Status Information */}
+        {/* Status Information
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -1521,7 +1521,7 @@ export default function AuditReportPage() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

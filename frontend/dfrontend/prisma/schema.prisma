@@ -14,23 +14,28 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String   @unique
-  role      Role     @default(AUDITOR)
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String    @unique
+  role      Role      @default(AUDITOR)
   password  String
   pdfs      PDF[]
+  reviews   PDF[]     @relation("ReviewedPDFs") // ✅ PDFs assigned to them for review
   flags     Flag[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  lastLogin  DateTime? 
-  isActive   Boolean   @default(false) 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  lastLogin DateTime?
+  isActive  Boolean   @default(false)
 }
 
 model PDF {
-  id              String    @id @default(uuid())
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  reviewer   User?   @relation("ReviewedPDFs", fields: [reviewerId], references: [id])
+  reviewerId String? // Nullable: unassigned by default
+
   text            String
   inconsistencies String
   rag_analysis    String
@@ -45,9 +50,9 @@ model PDF {
   lastFlagged     DateTime? // When this PDF was last flagged
   commentCount    Int       @default(0) // Count of comments (FLAG type)
   flagCount       Int       @default(0) // Count of flags (COMMENT, QUESTION, CRITICAL types)
-
+  pdfURL          String    @default("")
   // Relations
-  flags Flag[]
+  flags           Flag[]
 
   // Indexes
   @@index([userId])

@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-
+import { NeverToUnknown } from "@prisma/client/runtime/library";
 
 export enum Status {
   VERIFIED = "VERIFIED",
@@ -68,13 +68,13 @@ export type PDF = {
   lastFlagged: Date | null; // null if never flagged
   commentCount: number; // Count of COMMENT type flags
   flagCount: number; // Count of FLAG, QUESTION, CRITICAL type flags
+  // pdfURL: string | null;
 };
-
-
 export type PdfWithUser = PDF & {
-  user: Pick<User, 'id' | 'name' | 'email' | 'role'>;
+  user: Pick<User, "id" | "name" | "email" | "role">;
+  reviewerId?: string | null;
+  reviewer?: Pick<User, "id" | "name" | "email" | "role"> | null;
 };
-
 export type Flag = {
   id: string;
   pdfId: string;

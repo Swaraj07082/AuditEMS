@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
-
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -30,6 +29,7 @@ export async function POST(req: NextRequest) {
       summary,
       filename,
       status,
+      pdfURL,
     } = await req.json();
 
     const newPDF = await prisma.pDF.create({
@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         summary,
         filename,
         status,
+        pdfURL,
       },
     });
 

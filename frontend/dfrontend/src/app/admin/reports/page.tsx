@@ -34,36 +34,75 @@ import {
   Download,
   Eye,
   Router,
+  User,
+  Check,
 } from "lucide-react";
-import { PDF, PdfWithUser } from "@/app/types/pdf";
+import { PDF, PdfWithUser, UserWithPdfCount } from "@/app/types/pdf";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ReportsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-
   const [reports, setReports] = useState<PdfWithUser[]>([]);
+  const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<string>("");
+  const [reviewerSearchTerm, setReviewerSearchTerm] = useState("");
+  const [reviewers, setReviewers] = useState<UserWithPdfCount[]>([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch("/api/getallpdfs", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const fetchData = async () => {
+      try {
+        // Kick off both fetches at the same time
+        const [reviewersRes, reportsRes] = await Promise.all([
+          fetch("/api/reviewers", {
+            headers: { "Content-Type": "application/json" },
+          }),
+          fetch("/api/getallpdfs", {
+            headers: { "Content-Type": "application/json" },
+          }),
+        ]);
 
-      if (response.ok) {
-        const data = await response.json();
-        setReports(data);
+        // Parse JSON only for successful responses
+        if (reviewersRes.ok) {
+          const reviewersData = await reviewersRes.json();
+          setReviewers(reviewersData);
+        } else {
+          console.error("Failed to load reviewers");
+        }
+
+        if (reportsRes.ok) {
+          const reportsData = await reportsRes.json();
+          setReports(reportsData);
+        } else {
+          console.error("Failed to load reports");
+        }
+      } catch (err) {
+        console.error("Network error:", err);
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, []);
 
   const filteredReports = reports.filter(
     (report) =>
       report.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
       report.user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Fixed: Use actual reviewers data instead of mockReviewers
+  const filteredReviewers = reviewers.filter(
+    (reviewer) =>
+      reviewer.name.toLowerCase().includes(reviewerSearchTerm.toLowerCase()) ||
+      reviewer.email.toLowerCase().includes(reviewerSearchTerm.toLowerCase())
   );
 
   const getStatusColor = (status: string) => {
@@ -123,12 +162,89 @@ export default function ReportsPage() {
       if (res.ok) {
         // Optimistically update UI
         setReports((prev) => prev.filter((u) => u.id !== reportId));
+        toast({
+          title: "Report Deleted",
+          description: "The report has been successfully deleted.",
+        });
       } else {
         console.error("Failed to delete report");
+        toast({
+          title: "Deletion Failed",
+          description: "Failed to delete the report. Please try again.",
+          variant: "destructive",
+        });
       }
     } catch (err) {
       console.error("Error deleting report:", err);
+      toast({
+        title: "Deletion Failed",
+        description: "An error occurred while deleting the report.",
+        variant: "destructive",
+      });
     }
+  };
+
+  const handleAssignReviewer = (reportId: string) => {
+    setSelectedReportId(reportId);
+    setIsAssignDialogOpen(true);
+    setReviewerSearchTerm("");
+  };
+
+  const assignReviewer = async (reviewerId: string, reviewerName: string) => {
+    try {
+      const response = await fetch(`/api/reviewers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reportId: selectedReportId,
+          reviewerId: reviewerId,
+        }),
+      });
+
+      if (response.ok) {
+        // Update the reports state to reflect the assignment
+        setReports((prev) =>
+          prev.map((report) =>
+            report.id === selectedReportId
+              ? {
+                  ...report,
+                  reviewerId: reviewerId,
+                  reviewerName: reviewerName,
+                }
+              : report
+          )
+        );
+
+        toast({
+          title: "Reviewer Assigned",
+          description: `${reviewerName} has been assigned to review this report.`,
+        });
+      } else {
+        toast({
+          title: "Assignment Failed",
+          description: "Failed to assign reviewer. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Assignment Failed",
+        description: "An error occurred while assigning the reviewer.",
+        variant: "destructive",
+      });
+    }
+
+    setIsAssignDialogOpen(false);
+    setSelectedReportId("");
+  };
+
+  // Helper function to get reviewer name by ID
+  const getReviewerName = (reviewerId: string | null | undefined) => {
+    if (!reviewerId) return "Unassigned";
+    const reviewer = reviewers.find((r) => r.id === reviewerId);
+    return reviewer ? reviewer.name : "Unknown Reviewer";
   };
 
   return (
@@ -162,10 +278,6 @@ export default function ReportsPage() {
                 className="pl-10"
               />
             </div>
-            {/* <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              Filter
-            </Button> */}
           </div>
 
           <Table>
@@ -178,7 +290,7 @@ export default function ReportsPage() {
                 <TableHead>uploadedAt</TableHead>
                 <TableHead>updatedAt</TableHead>
                 <TableHead>Reviewer</TableHead>
-                <TableHead className="w-[70px]"></TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -198,6 +310,11 @@ export default function ReportsPage() {
                   </TableCell>
                   <TableCell>{formatDate(report.uploadedAt)}</TableCell>
                   <TableCell>{formatDate(report.updatedAt)}</TableCell>
+                  <TableCell>
+                    <span className="text-sm">
+                      {getReviewerName(report.reviewerId)}
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -220,7 +337,12 @@ export default function ReportsPage() {
                           Download
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Assign Reviewer</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleAssignReviewer(report.id)}
+                        >
+                          <User className="mr-2 h-4 w-4" />
+                          {report.reviewerId ? "Reassign Reviewer" : "Assign Reviewer"}
+                        </DropdownMenuItem>
                         <DropdownMenuItem>Change Status</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -238,6 +360,53 @@ export default function ReportsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Assign Reviewer Dialog */}
+      <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Assign Reviewer</DialogTitle>
+            <DialogDescription>
+              Search and select a reviewer for this report.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search reviewers..."
+                value={reviewerSearchTerm}
+                onChange={(e) => setReviewerSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="max-h-60 overflow-y-auto space-y-2">
+              {filteredReviewers.map((reviewer) => (
+                <div
+                  key={reviewer.id}
+                  className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => assignReviewer(reviewer.id, reviewer.name)}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {reviewer.name}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {reviewer.email}
+                    </p>
+                  </div>
+                  <Check className="h-4 w-4 text-gray-400" />
+                </div>
+              ))}
+              {filteredReviewers.length === 0 && (
+                <div className="text-center py-4 text-gray-500">
+                  No reviewers found
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
