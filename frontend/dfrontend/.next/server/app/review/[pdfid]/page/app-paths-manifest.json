@@ -1,0 +1,3 @@
+{
+  "/review/[pdfid]/page": "app/review/[pdfid]/page.js"
+}

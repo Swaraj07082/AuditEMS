@@ -1,0 +1,3 @@
+{
+  "/api/getreviewerflags/[id]/route": "app/api/getreviewerflags/[id]/route.js"
+}

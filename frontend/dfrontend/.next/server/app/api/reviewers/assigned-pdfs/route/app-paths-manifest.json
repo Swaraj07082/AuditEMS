@@ -1,0 +1,3 @@
+{
+  "/api/reviewers/assigned-pdfs/route": "app/api/reviewers/assigned-pdfs/route.js"
+}
