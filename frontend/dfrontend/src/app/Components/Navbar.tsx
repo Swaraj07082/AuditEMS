@@ -1,16 +1,13 @@
 "use client";
 import React, { useState } from "react";
-
 import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Badge } from "@/components/ui/badge"
-// import { Separator } from "@/components/ui/separator"
-import { Shield } from "lucide-react";
+import { Shield, Sun, Moon } from "lucide-react"; // Import icons
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false); // State for dark mode
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
@@ -30,6 +27,12 @@ export default function Navbar() {
       console.error("Logout error:", error);
     }
   };
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle("dark", !darkMode);
+  };
+
   return (
     <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between relative">
@@ -63,6 +66,19 @@ export default function Navbar() {
 
         {/* Right: Login/Logout button and mobile menu toggle */}
         <div className="flex items-center space-x-3">
+          {/* Theme Toggle Button */}
+          <button 
+            onClick={toggleTheme}
+            className="p-2 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            aria-label="Toggle theme"
+          >
+            {darkMode ? (
+              <Sun className="h-6 w-6 text-yellow-500" />
+            ) : (
+              <Moon className="h-6 w-6 text-gray-700" />
+            )}
+          </button>
+
           {status === "authenticated" ? (
             <Button
               variant="ghost"

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, Shield, UserIcon } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle"; // Import the ThemeToggle component
 
 export default function LoggedIn() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function LoggedIn() {
 
   return (
     <div className="flex items-center justify-center p-4">
+      <ThemeToggle /> {/* Add the ThemeToggle component here */}
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">

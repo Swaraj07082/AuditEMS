@@ -7,7 +7,7 @@ runtime.loadChunk("server/chunks/ssr/[root-of-the-server]__14b3071e._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_96715ba7._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_next_dist_client_components_forbidden-error_ea7ea172.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_next_dist_client_components_unauthorized-error_c8949b27.js");
-runtime.loadChunk("server/chunks/ssr/src_app_9d60cb60._.js");
+runtime.loadChunk("server/chunks/ssr/src_app_admin_layout_tsx_b033ed98._.js");
 runtime.loadChunk("server/chunks/ssr/src_app_admin_reports_loading_tsx_f7860b04._.js");
 runtime.loadChunk("server/chunks/ssr/_29583b04._.js");
 runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/admin/reports/page/actions.js [app-rsc] (server actions loader, ecmascript)", CHUNK_PUBLIC_PATH);
