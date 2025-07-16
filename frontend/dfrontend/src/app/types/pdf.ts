@@ -81,6 +81,7 @@ export type Flag = {
   userId: string;
   text: string;
   comment: string;
+  reviewComment?: string;
   type: FlagType;
   section: string;
   startIndex: number;
@@ -92,3 +93,56 @@ export type Flag = {
   resolvedAt: Date | null;
   resolvedBy: string | null;
 };
+
+export interface ReviewComment {
+  id: string;
+  flagId: string;
+  reviewerId: string;
+  comment: string;
+  createdAt: Date;
+  reviewerName: string;
+}
+
+
+export interface FlagReview {
+  id: string;
+  flagId: string;
+  reviewerId: string;
+  status: "APPROVED" | "REJECTED" | "NEEDS_CLARIFICATION";
+  comment: string;
+  createdAt: Date;
+}
+
+
+export interface ReviewComment {
+  id: string;
+  flagId: string;
+  reviewerId: string;
+  comment: string;
+  createdAt: Date;
+  reviewerName: string;
+}
+
+
+export interface DocumentReview {
+  id: string;
+  pdfId: string;
+  reviewerId: string;
+  status: "APPROVED" | "REJECTED" | "NEEDS_REVISION";
+  comment: string;
+  createdAt: Date;
+  updatedAt : Date
+}
+
+export enum FlagReviewStatus {
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  NEEDS_CLARIFICATION = "NEEDS_CLARIFICATION",
+}
+
+export enum DocumentReviewStatus {
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  NEEDS_REVISION = "NEEDS_REVISION",
+}
+

@@ -2286,10 +2286,6 @@
     color: var(--foreground);
   }
 
-  .text-gray-300 {
-    color: var(--color-gray-300);
-  }
-
   .text-gray-400 {
     color: var(--color-gray-400);
   }
@@ -2452,6 +2448,14 @@
 
   .capitalize {
     text-transform: capitalize;
+  }
+
+  .lowercase {
+    text-transform: lowercase;
+  }
+
+  .uppercase {
+    text-transform: uppercase;
   }
 
   .italic {

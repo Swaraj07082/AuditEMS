@@ -214,6 +214,8 @@ function AlertDescription({ className, ...props }) {
 var { g: global, __dirname } = __turbopack_context__;
 {
 __turbopack_context__.s({
+    "DocumentReviewStatus": (()=>DocumentReviewStatus),
+    "FlagReviewStatus": (()=>FlagReviewStatus),
     "FlagStatus": (()=>FlagStatus),
     "FlagType": (()=>FlagType),
     "Priority": (()=>Priority),
@@ -245,6 +247,18 @@ var Priority = /*#__PURE__*/ function(Priority) {
     Priority["HIGH"] = "HIGH";
     Priority["CRITICAL"] = "CRITICAL";
     return Priority;
+}({});
+var FlagReviewStatus = /*#__PURE__*/ function(FlagReviewStatus) {
+    FlagReviewStatus["APPROVED"] = "APPROVED";
+    FlagReviewStatus["REJECTED"] = "REJECTED";
+    FlagReviewStatus["NEEDS_CLARIFICATION"] = "NEEDS_CLARIFICATION";
+    return FlagReviewStatus;
+}({});
+var DocumentReviewStatus = /*#__PURE__*/ function(DocumentReviewStatus) {
+    DocumentReviewStatus["APPROVED"] = "APPROVED";
+    DocumentReviewStatus["REJECTED"] = "REJECTED";
+    DocumentReviewStatus["NEEDS_REVISION"] = "NEEDS_REVISION";
+    return DocumentReviewStatus;
 }({});
 }}),
 "[project]/src/components/ui/dialog.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {

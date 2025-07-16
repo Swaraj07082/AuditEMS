@@ -32,7 +32,16 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { type Flag, FlagType, type PDF, Priority } from "@/app/types/pdf";
+import {
+  DocumentReview,
+  type Flag,
+  FlagReview,
+  FlagStatus,
+  FlagType,
+  type PDF,
+  Priority,
+  ReviewComment,
+} from "@/app/types/pdf";
 import { useSession } from "next-auth/react";
 import type { JSX } from "react/jsx-runtime";
 import { Button } from "@/components/ui/button";
@@ -60,33 +69,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-
-interface ReviewComment {
-  id: string;
-  flagId: string;
-  reviewerId: string;
-  comment: string;
-  createdAt: Date;
-  reviewerName: string;
-}
-
-interface FlagReview {
-  id: string;
-  flagId: string;
-  reviewerId: string;
-  status: "approved" | "rejected" | "needs_clarification";
-  comment: string;
-  createdAt: Date;
-}
-
-interface DocumentReview {
-  id: string;
-  pdfId: string;
-  reviewerId: string;
-  status: "approved" | "rejected" | "needs_revision";
-  comment: string;
-  createdAt: Date;
-}
+import { stat } from "fs";
+import { FlagReviewStatus } from "@prisma/client";
 
 // Demo flags for testing
 const DEMO_FLAGS = [
@@ -252,8 +236,9 @@ export default function ReviewerPage() {
   const [auditData, setAuditData] = useState<PDF | null>(); // Using demo data
   const [loading, setLoading] = useState(false); // Set to false since we're using demo data
   const [error, setError] = useState<string | null>(null);
-  const [reviewComments, setReviewComments] = useState<ReviewComment[]>([]);
+  // const [reviewComments, setReviewComments] = useState<ReviewComment[]>([]);
   const [flagReviews, setFlagReviews] = useState<FlagReview[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
   const [documentReview, setDocumentReview] = useState<DocumentReview | null>(
     null
   );
@@ -262,9 +247,9 @@ export default function ReviewerPage() {
   const [selectedFlag, setSelectedFlag] = useState<Flag | null>(null);
   const [showFlagReviewDialog, setShowFlagReviewDialog] = useState(false);
   const [flagReviewComment, setFlagReviewComment] = useState("");
-  const [flagReviewStatus, setFlagReviewStatus] = useState<
-    "approved" | "rejected" | "needs_clarification"
-  >("approved");
+  const [flagReviewStatus, setFlagReviewStatus] = useState<FlagReviewStatus>(
+    FlagReviewStatus.APPROVED
+  );
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // Overall document review
@@ -272,8 +257,8 @@ export default function ReviewerPage() {
     useState(false);
   const [documentReviewComment, setDocumentReviewComment] = useState("");
   const [documentReviewStatus, setDocumentReviewStatus] = useState<
-    "approved" | "rejected" | "needs_revision"
-  >("approved");
+    "APPROVED" | "REJECTED" | "NEEDS_REVISION"
+  >("APPROVED");
   const [isSubmittingDocumentReview, setIsSubmittingDocumentReview] =
     useState(false);
 
@@ -315,6 +300,9 @@ export default function ReviewerPage() {
             resolvedAt: flag.resolvedAt ? new Date(flag.resolvedAt) : null,
           }))
         );
+
+        await loadFlagReviews();
+        await loadDocumentReview();
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -326,6 +314,62 @@ export default function ReviewerPage() {
       fetchAuditData();
     }
   }, [pdfId]);
+
+  const loadDocumentReview = async () => {
+    try {
+      const response = await fetch(`/api/document-reviews?pdfId=${pdfId}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to load document review");
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.review) {
+        setDocumentReview({
+          ...data.review,
+          createdAt: new Date(data.review.createdAt),
+        });
+        // Pre-populate the form with existing review
+        setDocumentReviewComment(data.review.comment);
+        setDocumentReviewStatus(data.review.status);
+      }
+    } catch (error) {
+      console.error("Error loading document review:", error);
+      // Don't show error toast for missing reviews (first time)
+    }
+  };
+
+  const loadFlagReviews = async () => {
+    try {
+      setLoadingReviews(true);
+      const response = await fetch(`/api/flag-reviews?pdfId=${pdfId}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to load flag reviews");
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setFlagReviews(
+          data.reviews.map((review: any) => ({
+            ...review,
+            createdAt: new Date(review.createdAt),
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error loading flag reviews:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load existing reviews",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -483,45 +527,60 @@ export default function ReviewerPage() {
 
     setIsSubmittingReview(true);
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     try {
-      const newReview: FlagReview = {
-        id: `review_${Date.now()}`,
-        flagId: selectedFlag.id,
-        reviewerId: session?.user?.id || "demo_reviewer",
-        status: flagReviewStatus,
-        comment: flagReviewComment,
-        createdAt: new Date(),
-      };
-
-      // Update or add the review
-      setFlagReviews((prev) => {
-        const existingIndex = prev.findIndex(
-          (r) => r.flagId === selectedFlag.id
-        );
-        if (existingIndex >= 0) {
-          const updated = [...prev];
-          updated[existingIndex] = newReview;
-          return updated;
-        }
-        return [...prev, newReview];
+      const response = await fetch("/api/flag-reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          flagId: selectedFlag.id,
+          status: flagReviewStatus,
+          reviewComment: flagReviewComment,
+        }),
       });
 
-      toast({
-        title: "Flag Review Submitted",
-        description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`,
-      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit review");
+      }
+      const data = await response.json();
+      if (data.success) {
+        const newReview: FlagReview = {
+          ...data.review,
+          createdAt: new Date(data.review.createdAt),
+        };
 
-      setShowFlagReviewDialog(false);
-      setFlagReviewComment("");
-      setSelectedFlag(null);
-      setFlagReviewStatus("approved");
-    } catch (error) {
+        setFlagReviews((prev) => {
+          const existingIndex = prev.findIndex(
+            (r) => r.flagId === selectedFlag.id
+          );
+          if (existingIndex >= 0) {
+            const updated = [...prev];
+            updated[existingIndex] = newReview;
+            return updated;
+          }
+          return [...prev, newReview];
+        });
+
+        toast({
+          title: "Flag Review Submitted",
+          description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`,
+        });
+
+        setShowFlagReviewDialog(false);
+        setFlagReviewComment("");
+        setSelectedFlag(null);
+        setFlagReviewStatus(FlagReviewStatus.APPROVED);
+      }
+    } catch {
+      console.error("Error submitting flag review:", error);
       toast({
         title: "Review Failed",
-        description: "Failed to submit flag review. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to submit flag review. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -529,44 +588,115 @@ export default function ReviewerPage() {
     }
   };
 
+  // try {
+  //   const newReview: FlagReview = {
+  //     id: `review_${Date.now()}`,
+  //     flagId: selectedFlag.id,
+  //     reviewerId: session?.user?.id || "demo_reviewer",
+  //     status: flagReviewStatus,
+  //     comment: flagReviewComment,
+  //     createdAt: new Date(),
+  //   };
+
+  // Update or add the review
+  //   setFlagReviews((prev) => {
+  //     const existingIndex = prev.findIndex(
+  //       (r) => r.flagId === selectedFlag.id
+  //     );
+  //     if (existingIndex >= 0) {
+  //       const updated = [...prev];
+  //       updated[existingIndex] = newReview;
+  //       return updated;
+  //     }
+  //     return [...prev, newReview];
+  //   });
+
+  //   toast({
+  //     title: "Flag Review Submitted",
+  //     description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`,
+  //   });
+
+  //   setShowFlagReviewDialog(false);
+  //   setFlagReviewComment("");
+  //   setSelectedFlag(null);
+  //   setFlagReviewStatus("approved");
+  // } catch (error) {
+  //   toast({
+  //     title: "Review Failed",
+  //     description: "Failed to submit flag review. Please try again.",
+  //     variant: "destructive",
+  //   });
+  // } finally {
+  //   setIsSubmittingReview(false);
+  // }
+  // };
+
   const handleDocumentReview = async () => {
     if (!documentReviewComment.trim()) return;
 
     setIsSubmittingDocumentReview(true);
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     try {
-      const newDocumentReview: DocumentReview = {
-        id: `doc_review_${Date.now()}`,
-        pdfId: pdfId,
-        reviewerId: session?.user?.id || "demo_reviewer",
-        status: documentReviewStatus,
-        comment: documentReviewComment,
-        createdAt: new Date(),
-      };
-
-      setDocumentReview(newDocumentReview);
-
-      toast({
-        title: "Document Review Submitted",
-        description: `Document has been ${documentReviewStatus.replace(
-          "_",
-          " "
-        )}.`,
+      console.log(pdfId, documentReviewStatus, documentReviewComment);
+      const response = await fetch(`/api/document-reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pdfId: pdfId,
+          status: documentReviewStatus,
+          comment: documentReviewComment,
+        }),
       });
 
-      setShowDocumentReviewDialog(false);
+      console.log(response);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit document review");
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        const newDocumentReview: DocumentReview = {
+          ...data.review,
+          createdAt: new Date(data.review.createdAt),
+        };
+
+        setDocumentReview(newDocumentReview);
+
+        toast({
+          title: "Document Review Submitted",
+          description: `Document has been ${documentReviewStatus.replace(
+            "_",
+            " "
+          )}.`,
+        });
+
+        setShowDocumentReviewDialog(false);
+      }
     } catch (error) {
+      console.error("Error submitting document review:", error);
       toast({
         title: "Review Failed",
-        description: "Failed to submit document review. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to submit document review. Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsSubmittingDocumentReview(false);
     }
+  };
+
+  const openDocumentReviewDialog = () => {
+    if (documentReview) {
+      setDocumentReviewComment(documentReview.comment);
+      setDocumentReviewStatus(documentReview.status);
+    }
+    setShowDocumentReviewDialog(true);
   };
 
   const openFlagReview = (flag: Flag) => {
@@ -577,7 +707,7 @@ export default function ReviewerPage() {
       setFlagReviewStatus(existingReview.status);
     } else {
       setFlagReviewComment("");
-      setFlagReviewStatus("approved");
+      setFlagReviewStatus(FlagReviewStatus.APPROVED);
     }
     setShowFlagReviewDialog(true);
   };
@@ -604,8 +734,8 @@ export default function ReviewerPage() {
       }
 
       const flagReview = flagReviews.find((r) => r.flagId === flag.id);
-      const reviewStatus = flagReview?.status;
-
+      // const reviewStatus = flagReview?.status;
+      // const flagStatus = flag.status.toLowerCase();
       elements.push(
         <TooltipProvider key={flag.id}>
           <Tooltip>
@@ -614,18 +744,18 @@ export default function ReviewerPage() {
                 className={`relative inline-block ${getFlagTypeColor(
                   flag.type
                 )} px-1 rounded cursor-pointer border-b-2 ${
-                  reviewStatus === "approved"
+                  flag.status === FlagStatus.ACTIVE
                     ? "border-green-500"
-                    : reviewStatus === "rejected"
+                    : flag.status === FlagStatus.DISMISSED
                     ? "border-red-500"
-                    : reviewStatus === "needs_clarification"
+                    : flag.status === FlagStatus.IN_REVIEW
                     ? "border-yellow-500"
                     : "border-gray-400"
                 } hover:opacity-80 transition-opacity`}
                 onClick={() => openFlagReview(flag)}
               >
                 {flag.text}
-                {reviewStatus && (
+                {flag.status != FlagStatus.ACTIVE && (
                   <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-current opacity-75"></span>
                 )}
               </span>
@@ -650,7 +780,8 @@ export default function ReviewerPage() {
                     <div className="flex items-center space-x-1 mb-1">
                       {getReviewStatusIcon(flagReview.status)}
                       <span className="text-xs font-medium">
-                        Your Review: {flagReview.status.replace("_", " ")}
+                        Your Review:{" "}
+                        {flagReview.status.toLowerCase().replace("_", " ")}
                       </span>
                     </div>
                     <p className="text-xs">{flagReview.comment}</p>
@@ -677,34 +808,38 @@ export default function ReviewerPage() {
     return elements;
   };
 
- const getFlagCountsByStatus = () => {
-  if (!flagReviews || !flags) {
+  const getFlagCountsByStatus = () => {
+    if (!flagReviews || !flags) {
+      return {
+        total: 0,
+        reviewed: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0,
+        needsClarification: 0,
+      };
+    }
+
+    const reviewed = flagReviews.length;
+    const approved = flagReviews.filter(
+      (r) => FlagReviewStatus.APPROVED
+    ).length;
+    const rejected = flagReviews.filter(
+      (r) => FlagReviewStatus.REJECTED
+    ).length;
+    const needsClarification = flagReviews.filter(
+      (r) => FlagReviewStatus.NEEDS_CLARIFICATION
+    ).length;
+
     return {
-      total: 0,
-      reviewed: 0,
-      pending: 0,
-      approved: 0,
-      rejected: 0,
-      needsClarification: 0,
+      total: flags.length,
+      reviewed,
+      pending: flags.length - reviewed,
+      approved,
+      rejected,
+      needsClarification,
     };
-  }
-
-  const reviewed = flagReviews.length;
-  const approved = flagReviews.filter((r) => r.status === "approved").length;
-  const rejected = flagReviews.filter((r) => r.status === "rejected").length;
-  const needsClarification = flagReviews.filter(
-    (r) => r.status === "needs_clarification"
-  ).length;
-
-  return {
-    total: flags.length,
-    reviewed,
-    pending: flags.length - reviewed,
-    approved,
-    rejected,
-    needsClarification,
   };
-};
 
   const flagStats = getFlagCountsByStatus();
 
@@ -825,6 +960,7 @@ export default function ReviewerPage() {
                           ? "bg-green-600 hover:bg-green-700"
                           : "bg-purple-600 hover:bg-purple-700"
                       }
+                      onClick={openDocumentReviewDialog}
                     >
                       <FileCheck className="w-4 h-4 mr-2" />
                       {documentReview
@@ -923,7 +1059,8 @@ export default function ReviewerPage() {
                   {documentReview.comment}
                 </p>
                 <p className="text-blue-600 text-xs mt-1">
-                  Reviewed on {formatDate(documentReview.createdAt)}
+                  Reviewed on {formatDate(documentReview.createdAt)} (Last
+                  updated {formatDate(documentReview.updatedAt)})
                 </p>
               </div>
             )}
@@ -1254,10 +1391,14 @@ export default function ReviewerPage() {
                 <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant={
-                      flagReviewStatus === "approved" ? "default" : "outline"
+                      flagReviewStatus === FlagReviewStatus.APPROVED
+                        ? "default"
+                        : "outline"
                     }
                     size="sm"
-                    onClick={() => setFlagReviewStatus("approved")}
+                    onClick={() =>
+                      setFlagReviewStatus(FlagReviewStatus.APPROVED)
+                    }
                     className="flex items-center space-x-1"
                   >
                     <ThumbsUp className="w-3 h-3" />
@@ -1265,12 +1406,12 @@ export default function ReviewerPage() {
                   </Button>
                   <Button
                     variant={
-                      flagReviewStatus === "rejected"
-                        ? "destructive"
-                        : "outline"
+                      FlagReviewStatus.REJECTED ? "destructive" : "outline"
                     }
                     size="sm"
-                    onClick={() => setFlagReviewStatus("rejected")}
+                    onClick={() =>
+                      setFlagReviewStatus(FlagReviewStatus.REJECTED)
+                    }
                     className="flex items-center space-x-1"
                   >
                     <ThumbsDown className="w-3 h-3" />
@@ -1278,12 +1419,14 @@ export default function ReviewerPage() {
                   </Button>
                   <Button
                     variant={
-                      flagReviewStatus === "needs_clarification"
+                      flagReviewStatus === FlagReviewStatus.NEEDS_CLARIFICATION
                         ? "secondary"
                         : "outline"
                     }
                     size="sm"
-                    onClick={() => setFlagReviewStatus("needs_clarification")}
+                    onClick={() =>
+                      setFlagReviewStatus(FlagReviewStatus.NEEDS_CLARIFICATION)
+                    }
                     className="flex items-center space-x-1"
                   >
                     <HelpCircle className="w-3 h-3" />

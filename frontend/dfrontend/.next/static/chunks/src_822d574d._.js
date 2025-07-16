@@ -248,6 +248,8 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 __turbopack_context__.s({
+    "DocumentReviewStatus": (()=>DocumentReviewStatus),
+    "FlagReviewStatus": (()=>FlagReviewStatus),
     "FlagStatus": (()=>FlagStatus),
     "FlagType": (()=>FlagType),
     "Priority": (()=>Priority),
@@ -279,6 +281,18 @@ var Priority = /*#__PURE__*/ function(Priority) {
     Priority["HIGH"] = "HIGH";
     Priority["CRITICAL"] = "CRITICAL";
     return Priority;
+}({});
+var FlagReviewStatus = /*#__PURE__*/ function(FlagReviewStatus) {
+    FlagReviewStatus["APPROVED"] = "APPROVED";
+    FlagReviewStatus["REJECTED"] = "REJECTED";
+    FlagReviewStatus["NEEDS_CLARIFICATION"] = "NEEDS_CLARIFICATION";
+    return FlagReviewStatus;
+}({});
+var DocumentReviewStatus = /*#__PURE__*/ function(DocumentReviewStatus) {
+    DocumentReviewStatus["APPROVED"] = "APPROVED";
+    DocumentReviewStatus["REJECTED"] = "REJECTED";
+    DocumentReviewStatus["NEEDS_REVISION"] = "NEEDS_REVISION";
+    return DocumentReviewStatus;
 }({});
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
@@ -902,9 +916,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$s
 // import { useToast } from "@/hooks/use-toast"
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/tooltip.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@prisma/client/index-browser.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -1072,19 +1088,20 @@ function ReviewerPage() {
     const [auditData, setAuditData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(); // Using demo data
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false); // Set to false since we're using demo data
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [reviewComments, setReviewComments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    // const [reviewComments, setReviewComments] = useState<ReviewComment[]>([]);
     const [flagReviews, setFlagReviews] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [loadingReviews, setLoadingReviews] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [documentReview, setDocumentReview] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Review states
     const [selectedFlag, setSelectedFlag] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [showFlagReviewDialog, setShowFlagReviewDialog] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [flagReviewComment, setFlagReviewComment] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [flagReviewStatus, setFlagReviewStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("approved");
+    const [flagReviewStatus, setFlagReviewStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED);
     const [isSubmittingReview, setIsSubmittingReview] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     // Overall document review
     const [showDocumentReviewDialog, setShowDocumentReviewDialog] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [documentReviewComment, setDocumentReviewComment] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [documentReviewStatus, setDocumentReviewStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("approved");
+    const [documentReviewStatus, setDocumentReviewStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("APPROVED");
     const [isSubmittingDocumentReview, setIsSubmittingDocumentReview] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"])();
     const pdfId = params.pdfid;
@@ -1119,6 +1136,8 @@ function ReviewerPage() {
                                     resolvedAt: flag.resolvedAt ? new Date(flag.resolvedAt) : null
                                 })
                         }["ReviewerPage.useEffect.fetchAuditData"]));
+                        await loadFlagReviews();
+                        await loadDocumentReview();
                     } catch (err) {
                         setError(err instanceof Error ? err.message : "An error occurred");
                     } finally{
@@ -1133,6 +1152,52 @@ function ReviewerPage() {
     }["ReviewerPage.useEffect"], [
         pdfId
     ]);
+    const loadDocumentReview = async ()=>{
+        try {
+            const response = await fetch(`/api/document-reviews?pdfId=${pdfId}`);
+            if (!response.ok) {
+                throw new Error("Failed to load document review");
+            }
+            const data = await response.json();
+            if (data.success && data.review) {
+                setDocumentReview({
+                    ...data.review,
+                    createdAt: new Date(data.review.createdAt)
+                });
+                // Pre-populate the form with existing review
+                setDocumentReviewComment(data.review.comment);
+                setDocumentReviewStatus(data.review.status);
+            }
+        } catch (error) {
+            console.error("Error loading document review:", error);
+        // Don't show error toast for missing reviews (first time)
+        }
+    };
+    const loadFlagReviews = async ()=>{
+        try {
+            setLoadingReviews(true);
+            const response = await fetch(`/api/flag-reviews?pdfId=${pdfId}`);
+            if (!response.ok) {
+                throw new Error("Failed to load flag reviews");
+            }
+            const data = await response.json();
+            if (data.success) {
+                setFlagReviews(data.reviews.map((review)=>({
+                        ...review,
+                        createdAt: new Date(review.createdAt)
+                    })));
+            }
+        } catch (error) {
+            console.error("Error loading flag reviews:", error);
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
+                title: "Error",
+                description: "Failed to load existing reviews",
+                variant: "destructive"
+            });
+        } finally{
+            setLoadingReviews(false);
+        }
+    };
     const getStatusColor = (status)=>{
         switch(status.toLowerCase()){
             case "pending":
@@ -1175,7 +1240,7 @@ function ReviewerPage() {
                                     className: "w-6 h-6 animate-spin text-blue-600"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 366,
+                                    lineNumber: 410,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1183,33 +1248,33 @@ function ReviewerPage() {
                                     children: "Loading session..."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 367,
+                                    lineNumber: 411,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 365,
+                            lineNumber: 409,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 364,
+                        lineNumber: 408,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 363,
+                    lineNumber: 407,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 362,
+                lineNumber: 406,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 361,
+            lineNumber: 405,
             columnNumber: 7
         }, this);
     }
@@ -1229,7 +1294,7 @@ function ReviewerPage() {
                                     className: "h-4 w-4 text-red-600"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 386,
+                                    lineNumber: 430,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
@@ -1239,40 +1304,40 @@ function ReviewerPage() {
                                             children: "Access Denied:"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 388,
+                                            lineNumber: 432,
                                             columnNumber: 19
                                         }, this),
                                         " You must be logged in to access this page."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 387,
+                                    lineNumber: 431,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 385,
+                            lineNumber: 429,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 384,
+                        lineNumber: 428,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 383,
+                    lineNumber: 427,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 382,
+                lineNumber: 426,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 381,
+            lineNumber: 425,
             columnNumber: 7
         }, this);
     }
@@ -1293,7 +1358,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 413,
+                    lineNumber: 457,
                     columnNumber: 16
                 }, this);
             case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagType"].COMMENT:
@@ -1301,7 +1366,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 415,
+                    lineNumber: 459,
                     columnNumber: 16
                 }, this);
             case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagType"].QUESTION:
@@ -1309,7 +1374,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 417,
+                    lineNumber: 461,
                     columnNumber: 16
                 }, this);
             case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagType"].CRITICAL:
@@ -1317,7 +1382,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 419,
+                    lineNumber: 463,
                     columnNumber: 16
                 }, this);
             default:
@@ -1325,7 +1390,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 421,
+                    lineNumber: 465,
                     columnNumber: 16
                 }, this);
         }
@@ -1377,7 +1442,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 471,
+                    lineNumber: 515,
                     columnNumber: 16
                 }, this);
             case "rejected":
@@ -1385,7 +1450,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 473,
+                    lineNumber: 517,
                     columnNumber: 16
                 }, this);
             case "needs_clarification":
@@ -1393,7 +1458,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 475,
+                    lineNumber: 519,
                     columnNumber: 16
                 }, this);
             default:
@@ -1401,7 +1466,7 @@ function ReviewerPage() {
                     className: "w-3 h-3"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 477,
+                    lineNumber: 521,
                     columnNumber: 16
                 }, this);
         }
@@ -1409,79 +1474,152 @@ function ReviewerPage() {
     const handleFlagReview = async ()=>{
         if (!selectedFlag || !flagReviewComment.trim()) return;
         setIsSubmittingReview(true);
-        // Simulate API call delay
-        await new Promise((resolve)=>setTimeout(resolve, 1000));
         try {
-            const newReview = {
-                id: `review_${Date.now()}`,
-                flagId: selectedFlag.id,
-                reviewerId: session?.user?.id || "demo_reviewer",
-                status: flagReviewStatus,
-                comment: flagReviewComment,
-                createdAt: new Date()
-            };
-            // Update or add the review
-            setFlagReviews((prev)=>{
-                const existingIndex = prev.findIndex((r)=>r.flagId === selectedFlag.id);
-                if (existingIndex >= 0) {
-                    const updated = [
-                        ...prev
+            const response = await fetch("/api/flag-reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    flagId: selectedFlag.id,
+                    status: flagReviewStatus,
+                    reviewComment: flagReviewComment
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit review");
+            }
+            const data = await response.json();
+            if (data.success) {
+                const newReview = {
+                    ...data.review,
+                    createdAt: new Date(data.review.createdAt)
+                };
+                setFlagReviews((prev)=>{
+                    const existingIndex = prev.findIndex((r)=>r.flagId === selectedFlag.id);
+                    if (existingIndex >= 0) {
+                        const updated = [
+                            ...prev
+                        ];
+                        updated[existingIndex] = newReview;
+                        return updated;
+                    }
+                    return [
+                        ...prev,
+                        newReview
                     ];
-                    updated[existingIndex] = newReview;
-                    return updated;
-                }
-                return [
-                    ...prev,
-                    newReview
-                ];
-            });
-            (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
-                title: "Flag Review Submitted",
-                description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`
-            });
-            setShowFlagReviewDialog(false);
-            setFlagReviewComment("");
-            setSelectedFlag(null);
-            setFlagReviewStatus("approved");
-        } catch (error) {
+                });
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
+                    title: "Flag Review Submitted",
+                    description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`
+                });
+                setShowFlagReviewDialog(false);
+                setFlagReviewComment("");
+                setSelectedFlag(null);
+                setFlagReviewStatus(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED);
+            }
+        } catch  {
+            console.error("Error submitting flag review:", error);
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
                 title: "Review Failed",
-                description: "Failed to submit flag review. Please try again.",
+                description: error instanceof Error ? error.message : "Failed to submit flag review. Please try again.",
                 variant: "destructive"
             });
         } finally{
             setIsSubmittingReview(false);
         }
     };
+    // try {
+    //   const newReview: FlagReview = {
+    //     id: `review_${Date.now()}`,
+    //     flagId: selectedFlag.id,
+    //     reviewerId: session?.user?.id || "demo_reviewer",
+    //     status: flagReviewStatus,
+    //     comment: flagReviewComment,
+    //     createdAt: new Date(),
+    //   };
+    // Update or add the review
+    //   setFlagReviews((prev) => {
+    //     const existingIndex = prev.findIndex(
+    //       (r) => r.flagId === selectedFlag.id
+    //     );
+    //     if (existingIndex >= 0) {
+    //       const updated = [...prev];
+    //       updated[existingIndex] = newReview;
+    //       return updated;
+    //     }
+    //     return [...prev, newReview];
+    //   });
+    //   toast({
+    //     title: "Flag Review Submitted",
+    //     description: `Flag has been ${flagReviewStatus.replace("_", " ")}.`,
+    //   });
+    //   setShowFlagReviewDialog(false);
+    //   setFlagReviewComment("");
+    //   setSelectedFlag(null);
+    //   setFlagReviewStatus("approved");
+    // } catch (error) {
+    //   toast({
+    //     title: "Review Failed",
+    //     description: "Failed to submit flag review. Please try again.",
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    //   setIsSubmittingReview(false);
+    // }
+    // };
     const handleDocumentReview = async ()=>{
         if (!documentReviewComment.trim()) return;
         setIsSubmittingDocumentReview(true);
-        // Simulate API call delay
-        await new Promise((resolve)=>setTimeout(resolve, 1000));
         try {
-            const newDocumentReview = {
-                id: `doc_review_${Date.now()}`,
-                pdfId: pdfId,
-                reviewerId: session?.user?.id || "demo_reviewer",
-                status: documentReviewStatus,
-                comment: documentReviewComment,
-                createdAt: new Date()
-            };
-            setDocumentReview(newDocumentReview);
-            (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
-                title: "Document Review Submitted",
-                description: `Document has been ${documentReviewStatus.replace("_", " ")}.`
+            console.log(pdfId, documentReviewStatus, documentReviewComment);
+            const response = await fetch(`/api/document-reviews`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pdfId: pdfId,
+                    status: documentReviewStatus,
+                    comment: documentReviewComment
+                })
             });
-            setShowDocumentReviewDialog(false);
+            console.log(response);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit document review");
+            }
+            const data = await response.json();
+            if (data.success) {
+                const newDocumentReview = {
+                    ...data.review,
+                    createdAt: new Date(data.review.createdAt)
+                };
+                setDocumentReview(newDocumentReview);
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
+                    title: "Document Review Submitted",
+                    description: `Document has been ${documentReviewStatus.replace("_", " ")}.`
+                });
+                setShowDocumentReviewDialog(false);
+            }
         } catch (error) {
+            console.error("Error submitting document review:", error);
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
                 title: "Review Failed",
-                description: "Failed to submit document review. Please try again.",
+                description: error instanceof Error ? error.message : "Failed to submit document review. Please try again.",
                 variant: "destructive"
             });
         } finally{
             setIsSubmittingDocumentReview(false);
         }
+    };
+    const openDocumentReviewDialog = ()=>{
+        if (documentReview) {
+            setDocumentReviewComment(documentReview.comment);
+            setDocumentReviewStatus(documentReview.status);
+        }
+        setShowDocumentReviewDialog(true);
     };
     const openFlagReview = (flag)=>{
         setSelectedFlag(flag);
@@ -1491,7 +1629,7 @@ function ReviewerPage() {
             setFlagReviewStatus(existingReview.status);
         } else {
             setFlagReviewComment("");
-            setFlagReviewStatus("approved");
+            setFlagReviewStatus(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED);
         }
         setShowFlagReviewDialog(true);
     };
@@ -1508,38 +1646,39 @@ function ReviewerPage() {
                     children: text.slice(lastIndex, flag.startIndex)
                 }, `text_${section}_${index}`, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 600,
+                    lineNumber: 730,
                     columnNumber: 11
                 }, this));
             }
             const flagReview = flagReviews.find((r)=>r.flagId === flag.id);
-            const reviewStatus = flagReview?.status;
+            // const reviewStatus = flagReview?.status;
+            // const flagStatus = flag.status.toLowerCase();
             elements.push(/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipProvider"], {
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tooltip"], {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipTrigger"], {
                             asChild: true,
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: `relative inline-block ${getFlagTypeColor(flag.type)} px-1 rounded cursor-pointer border-b-2 ${reviewStatus === "approved" ? "border-green-500" : reviewStatus === "rejected" ? "border-red-500" : reviewStatus === "needs_clarification" ? "border-yellow-500" : "border-gray-400"} hover:opacity-80 transition-opacity`,
+                                className: `relative inline-block ${getFlagTypeColor(flag.type)} px-1 rounded cursor-pointer border-b-2 ${flag.status === __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagStatus"].ACTIVE ? "border-green-500" : flag.status === __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagStatus"].DISMISSED ? "border-red-500" : flag.status === __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagStatus"].IN_REVIEW ? "border-yellow-500" : "border-gray-400"} hover:opacity-80 transition-opacity`,
                                 onClick: ()=>openFlagReview(flag),
                                 children: [
                                     flag.text,
-                                    reviewStatus && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    flag.status != __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$types$2f$pdf$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagStatus"].ACTIVE && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "absolute -top-1 -right-1 w-2 h-2 rounded-full bg-current opacity-75"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 629,
+                                        lineNumber: 759,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 613,
+                                lineNumber: 743,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 612,
+                            lineNumber: 742,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1556,7 +1695,7 @@ function ReviewerPage() {
                                                 children: flag.type
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 637,
+                                                lineNumber: 767,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1565,13 +1704,13 @@ function ReviewerPage() {
                                                 children: flag.priority
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 638,
+                                                lineNumber: 768,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 635,
+                                        lineNumber: 765,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1581,7 +1720,7 @@ function ReviewerPage() {
                                                 children: "Auditor's Comment:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 646,
+                                                lineNumber: 776,
                                                 columnNumber: 19
                                             }, this),
                                             " ",
@@ -1589,7 +1728,7 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 645,
+                                        lineNumber: 775,
                                         columnNumber: 17
                                     }, this),
                                     flagReview && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1602,18 +1741,19 @@ function ReviewerPage() {
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: "text-xs font-medium",
                                                         children: [
-                                                            "Your Review: ",
-                                                            flagReview.status.replace("_", " ")
+                                                            "Your Review:",
+                                                            " ",
+                                                            flagReview.status.toLowerCase().replace("_", " ")
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 652,
+                                                        lineNumber: 782,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 650,
+                                                lineNumber: 780,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1621,13 +1761,13 @@ function ReviewerPage() {
                                                 children: flagReview.comment
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 656,
+                                                lineNumber: 787,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 649,
+                                        lineNumber: 779,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1635,29 +1775,29 @@ function ReviewerPage() {
                                         children: "Click to review this flag"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 659,
+                                        lineNumber: 790,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 634,
+                                lineNumber: 764,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 633,
+                            lineNumber: 763,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 611,
+                    lineNumber: 741,
                     columnNumber: 11
                 }, this)
             }, flag.id, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 610,
+                lineNumber: 740,
                 columnNumber: 9
             }, this));
             lastIndex = flag.endIndex;
@@ -1667,7 +1807,7 @@ function ReviewerPage() {
                 children: text.slice(lastIndex)
             }, `text_${section}_end`, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 673,
+                lineNumber: 804,
                 columnNumber: 9
             }, this));
         }
@@ -1685,9 +1825,9 @@ function ReviewerPage() {
             };
         }
         const reviewed = flagReviews.length;
-        const approved = flagReviews.filter((r)=>r.status === "approved").length;
-        const rejected = flagReviews.filter((r)=>r.status === "rejected").length;
-        const needsClarification = flagReviews.filter((r)=>r.status === "needs_clarification").length;
+        const approved = flagReviews.filter((r)=>__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED).length;
+        const rejected = flagReviews.filter((r)=>__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].REJECTED).length;
+        const needsClarification = flagReviews.filter((r)=>__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].NEEDS_CLARIFICATION).length;
         return {
             total: flags.length,
             reviewed,
@@ -1713,7 +1853,7 @@ function ReviewerPage() {
                                     className: "w-6 h-6 animate-spin text-blue-600"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 718,
+                                    lineNumber: 853,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1721,33 +1861,33 @@ function ReviewerPage() {
                                     children: "Loading audit report..."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 719,
+                                    lineNumber: 854,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 717,
+                            lineNumber: 852,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 716,
+                        lineNumber: 851,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 715,
+                    lineNumber: 850,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 714,
+                lineNumber: 849,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 713,
+            lineNumber: 848,
             columnNumber: 7
         }, this);
     }
@@ -1766,7 +1906,7 @@ function ReviewerPage() {
                                     className: "h-4 w-4 text-red-600"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 737,
+                                    lineNumber: 872,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
@@ -1776,7 +1916,7 @@ function ReviewerPage() {
                                             children: "Error:"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 739,
+                                            lineNumber: 874,
                                             columnNumber: 19
                                         }, this),
                                         " ",
@@ -1784,33 +1924,33 @@ function ReviewerPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 738,
+                                    lineNumber: 873,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 736,
+                            lineNumber: 871,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 735,
+                        lineNumber: 870,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 734,
+                    lineNumber: 869,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 733,
+                lineNumber: 868,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 732,
+            lineNumber: 867,
             columnNumber: 7
         }, this);
     }
@@ -1829,7 +1969,7 @@ function ReviewerPage() {
                                     className: "w-16 h-16 text-gray-400 mx-auto mb-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 756,
+                                    lineNumber: 891,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1837,7 +1977,7 @@ function ReviewerPage() {
                                     children: "No audit data found"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 757,
+                                    lineNumber: 892,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1845,33 +1985,33 @@ function ReviewerPage() {
                                     children: "The requested audit report could not be found."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 760,
+                                    lineNumber: 895,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 755,
+                            lineNumber: 890,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 754,
+                        lineNumber: 889,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 753,
+                    lineNumber: 888,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                lineNumber: 752,
+                lineNumber: 887,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 751,
+            lineNumber: 886,
             columnNumber: 7
         }, this);
     }
@@ -1906,12 +2046,12 @@ function ReviewerPage() {
                                                     className: "w-6 h-6 text-purple-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 797,
+                                                    lineNumber: 932,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 796,
+                                                lineNumber: 931,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1921,7 +2061,7 @@ function ReviewerPage() {
                                                         children: "Review Audit Report"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 800,
+                                                        lineNumber: 935,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -1929,7 +2069,7 @@ function ReviewerPage() {
                                                         children: auditData.filename
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 803,
+                                                        lineNumber: 938,
                                                         columnNumber: 19
                                                     }, this),
                                                     session?.user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1940,7 +2080,7 @@ function ReviewerPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 807,
+                                                        lineNumber: 942,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1949,19 +2089,19 @@ function ReviewerPage() {
                                                         children: "Demo Mode - Using Sample Data"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 811,
+                                                        lineNumber: 946,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 799,
+                                                lineNumber: 934,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 795,
+                                        lineNumber: 930,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1974,24 +2114,25 @@ function ReviewerPage() {
                                                     asChild: true,
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                                         className: documentReview ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700",
+                                                        onClick: openDocumentReviewDialog,
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileCheck$3e$__["FileCheck"], {
                                                                 className: "w-4 h-4 mr-2"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 829,
+                                                                lineNumber: 965,
                                                                 columnNumber: 23
                                                             }, this),
                                                             documentReview ? "Update Document Review" : "Submit Document Review"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 822,
+                                                        lineNumber: 957,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 821,
+                                                    lineNumber: 956,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -2005,20 +2146,20 @@ function ReviewerPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                    lineNumber: 837,
+                                                                    lineNumber: 973,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                                                     children: "Provide your overall review of this audit document."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                    lineNumber: 840,
+                                                                    lineNumber: 976,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 836,
+                                                            lineNumber: 972,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2032,7 +2173,7 @@ function ReviewerPage() {
                                                                             children: "Review Status"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                            lineNumber: 846,
+                                                                            lineNumber: 982,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -2042,12 +2183,12 @@ function ReviewerPage() {
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {}, void 0, false, {
                                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                        lineNumber: 856,
+                                                                                        lineNumber: 992,
                                                                                         columnNumber: 29
                                                                                     }, this)
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                    lineNumber: 855,
+                                                                                    lineNumber: 991,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2057,7 +2198,7 @@ function ReviewerPage() {
                                                                                             children: "Approved"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                            lineNumber: 859,
+                                                                                            lineNumber: 995,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2065,7 +2206,7 @@ function ReviewerPage() {
                                                                                             children: "Rejected"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                            lineNumber: 860,
+                                                                                            lineNumber: 996,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2073,25 +2214,25 @@ function ReviewerPage() {
                                                                                             children: "Needs Revision"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                            lineNumber: 861,
+                                                                                            lineNumber: 997,
                                                                                             columnNumber: 29
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                    lineNumber: 858,
+                                                                                    lineNumber: 994,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                            lineNumber: 849,
+                                                                            lineNumber: 985,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                    lineNumber: 845,
+                                                                    lineNumber: 981,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -2101,7 +2242,7 @@ function ReviewerPage() {
                                                                     rows: 4
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                    lineNumber: 867,
+                                                                    lineNumber: 1003,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2113,7 +2254,7 @@ function ReviewerPage() {
                                                                             children: "Cancel"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                            lineNumber: 876,
+                                                                            lineNumber: 1012,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2125,7 +2266,7 @@ function ReviewerPage() {
                                                                                         className: "w-4 h-4 mr-2 animate-spin"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                        lineNumber: 891,
+                                                                                        lineNumber: 1027,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     "Submitting..."
@@ -2136,7 +2277,7 @@ function ReviewerPage() {
                                                                                         className: "w-4 h-4 mr-2"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                                        lineNumber: 896,
+                                                                                        lineNumber: 1032,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     documentReview ? "Update" : "Submit",
@@ -2145,42 +2286,42 @@ function ReviewerPage() {
                                                                             }, void 0, true)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                            lineNumber: 882,
+                                                                            lineNumber: 1018,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                    lineNumber: 875,
+                                                                    lineNumber: 1011,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 844,
+                                                            lineNumber: 980,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 835,
+                                                    lineNumber: 971,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 817,
+                                            lineNumber: 952,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 816,
+                                        lineNumber: 951,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 794,
+                                lineNumber: 929,
                                 columnNumber: 13
                             }, this),
                             documentReview && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2193,7 +2334,7 @@ function ReviewerPage() {
                                                 className: "w-4 h-4 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 912,
+                                                lineNumber: 1048,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2201,7 +2342,7 @@ function ReviewerPage() {
                                                 children: "Your Document Review"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 913,
+                                                lineNumber: 1049,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2209,13 +2350,13 @@ function ReviewerPage() {
                                                 children: documentReview.status.replace("_", " ")
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 916,
+                                                lineNumber: 1052,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 911,
+                                        lineNumber: 1047,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2223,24 +2364,27 @@ function ReviewerPage() {
                                         children: documentReview.comment
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 922,
+                                        lineNumber: 1058,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-blue-600 text-xs mt-1",
                                         children: [
                                             "Reviewed on ",
-                                            formatDate(documentReview.createdAt)
+                                            formatDate(documentReview.createdAt),
+                                            " (Last updated ",
+                                            formatDate(documentReview.updatedAt),
+                                            ")"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 925,
+                                        lineNumber: 1061,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 910,
+                                lineNumber: 1046,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2254,7 +2398,7 @@ function ReviewerPage() {
                                                 children: flagStats.total
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 934,
+                                                lineNumber: 1071,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2262,13 +2406,13 @@ function ReviewerPage() {
                                                 children: "Total Flags"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 937,
+                                                lineNumber: 1074,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 933,
+                                        lineNumber: 1070,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2279,7 +2423,7 @@ function ReviewerPage() {
                                                 children: flagStats.pending
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 940,
+                                                lineNumber: 1077,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2287,13 +2431,13 @@ function ReviewerPage() {
                                                 children: "Pending Review"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 943,
+                                                lineNumber: 1080,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 939,
+                                        lineNumber: 1076,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2304,7 +2448,7 @@ function ReviewerPage() {
                                                 children: flagStats.approved
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 946,
+                                                lineNumber: 1083,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2312,13 +2456,13 @@ function ReviewerPage() {
                                                 children: "Approved"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 949,
+                                                lineNumber: 1086,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 945,
+                                        lineNumber: 1082,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2329,7 +2473,7 @@ function ReviewerPage() {
                                                 children: flagStats.rejected
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 952,
+                                                lineNumber: 1089,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2337,13 +2481,13 @@ function ReviewerPage() {
                                                 children: "Rejected"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 955,
+                                                lineNumber: 1092,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 951,
+                                        lineNumber: 1088,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2354,7 +2498,7 @@ function ReviewerPage() {
                                                 children: flagStats.needsClarification
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 958,
+                                                lineNumber: 1095,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2362,13 +2506,13 @@ function ReviewerPage() {
                                                 children: "Needs Clarification"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 961,
+                                                lineNumber: 1098,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 957,
+                                        lineNumber: 1094,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2379,7 +2523,7 @@ function ReviewerPage() {
                                                 children: flagStats.reviewed
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 966,
+                                                lineNumber: 1103,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2387,30 +2531,30 @@ function ReviewerPage() {
                                                 children: "Reviewed"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 969,
+                                                lineNumber: 1106,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 965,
+                                        lineNumber: 1102,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 932,
+                                lineNumber: 1069,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 793,
+                        lineNumber: 928,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 792,
+                    lineNumber: 927,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2423,14 +2567,14 @@ function ReviewerPage() {
                                         className: "w-5 h-5 text-blue-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 980,
+                                        lineNumber: 1117,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Executive Summary"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 981,
+                                        lineNumber: 1118,
                                         columnNumber: 15
                                     }, this),
                                     flags.filter((f)=>f.section === "summary").length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2442,18 +2586,18 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 983,
+                                        lineNumber: 1120,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 979,
+                                lineNumber: 1116,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 978,
+                            lineNumber: 1115,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2467,28 +2611,28 @@ function ReviewerPage() {
                                         children: renderTextWithFlags(auditData.summary, "summary")
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 992,
+                                        lineNumber: 1129,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 991,
+                                    lineNumber: 1128,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 990,
+                                lineNumber: 1127,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 989,
+                            lineNumber: 1126,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 977,
+                    lineNumber: 1114,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2501,14 +2645,14 @@ function ReviewerPage() {
                                         className: "w-5 h-5 text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1004,
+                                        lineNumber: 1141,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Original Balance Sheet Data"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1005,
+                                        lineNumber: 1142,
                                         columnNumber: 15
                                     }, this),
                                     flags.filter((f)=>f.section === "originalData").length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2521,18 +2665,18 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1007,
+                                        lineNumber: 1144,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1003,
+                                lineNumber: 1140,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1002,
+                            lineNumber: 1139,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2544,23 +2688,23 @@ function ReviewerPage() {
                                     children: renderTextWithFlags(auditData.text, "originalData")
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1019,
+                                    lineNumber: 1156,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1015,
+                                lineNumber: 1152,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1014,
+                            lineNumber: 1151,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1001,
+                    lineNumber: 1138,
                     columnNumber: 9
                 }, this),
                 inconsistenciesList.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2573,25 +2717,25 @@ function ReviewerPage() {
                                         className: "w-5 h-5 text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1031,
+                                        lineNumber: 1168,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Inconsistencies Identified"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1032,
+                                        lineNumber: 1169,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1030,
+                                lineNumber: 1167,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1029,
+                            lineNumber: 1166,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2603,7 +2747,7 @@ function ReviewerPage() {
                                             className: "h-4 w-4 text-red-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 1039,
+                                            lineNumber: 1176,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
@@ -2617,7 +2761,7 @@ function ReviewerPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 1041,
+                                                    lineNumber: 1178,
                                                     columnNumber: 23
                                                 }, this),
                                                 " ",
@@ -2625,24 +2769,24 @@ function ReviewerPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 1040,
+                                            lineNumber: 1177,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, index, true, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1038,
+                                    lineNumber: 1175,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1035,
+                            lineNumber: 1172,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1028,
+                    lineNumber: 1165,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2655,14 +2799,14 @@ function ReviewerPage() {
                                         className: "w-5 h-5 text-purple-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1054,
+                                        lineNumber: 1191,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Detailed Analysis"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1055,
+                                        lineNumber: 1192,
                                         columnNumber: 15
                                     }, this),
                                     flags.filter((f)=>f.section === "analysis").length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2674,18 +2818,18 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1057,
+                                        lineNumber: 1194,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1053,
+                                lineNumber: 1190,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1052,
+                            lineNumber: 1189,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2699,28 +2843,28 @@ function ReviewerPage() {
                                         children: renderTextWithFlags(auditData.rag_analysis, "analysis")
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1066,
+                                        lineNumber: 1203,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1065,
+                                    lineNumber: 1202,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1064,
+                                lineNumber: 1201,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1063,
+                            lineNumber: 1200,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1051,
+                    lineNumber: 1188,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2733,14 +2877,14 @@ function ReviewerPage() {
                                         className: "w-5 h-5 text-orange-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1078,
+                                        lineNumber: 1215,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Audit Recommendations"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1079,
+                                        lineNumber: 1216,
                                         columnNumber: 15
                                     }, this),
                                     flags.filter((f)=>f.section === "recommendations").length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2753,18 +2897,18 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1082,
+                                        lineNumber: 1219,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1077,
+                                lineNumber: 1214,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1076,
+                            lineNumber: 1213,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2778,28 +2922,28 @@ function ReviewerPage() {
                                         children: renderTextWithFlags(auditData.recommendations, "recommendations")
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1092,
+                                        lineNumber: 1229,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1091,
+                                    lineNumber: 1228,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1090,
+                                lineNumber: 1227,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1089,
+                            lineNumber: 1226,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1075,
+                    lineNumber: 1212,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -2813,7 +2957,7 @@ function ReviewerPage() {
                                             className: "w-5 h-5 text-orange-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 1107,
+                                            lineNumber: 1244,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2824,26 +2968,26 @@ function ReviewerPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                            lineNumber: 1108,
+                                            lineNumber: 1245,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1106,
+                                    lineNumber: 1243,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                     children: "Review each flag individually and provide your assessment."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1110,
+                                    lineNumber: 1247,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1105,
+                            lineNumber: 1242,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2870,13 +3014,13 @@ function ReviewerPage() {
                                                                         children: flag.type
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                        lineNumber: 1145,
+                                                                        lineNumber: 1282,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1133,
+                                                                lineNumber: 1270,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2885,7 +3029,7 @@ function ReviewerPage() {
                                                                 children: flag.section
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1147,
+                                                                lineNumber: 1284,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2893,7 +3037,7 @@ function ReviewerPage() {
                                                                 children: flag.priority
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1150,
+                                                                lineNumber: 1287,
                                                                 columnNumber: 25
                                                             }, this),
                                                             review && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2904,19 +3048,19 @@ function ReviewerPage() {
                                                                         children: review.status.replace("_", " ")
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                        lineNumber: 1164,
+                                                                        lineNumber: 1301,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1158,
+                                                                lineNumber: 1295,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1132,
+                                                        lineNumber: 1269,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2928,7 +3072,7 @@ function ReviewerPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1168,
+                                                        lineNumber: 1305,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2938,7 +3082,7 @@ function ReviewerPage() {
                                                                 children: "Auditor's Comment:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1172,
+                                                                lineNumber: 1309,
                                                                 columnNumber: 25
                                                             }, this),
                                                             " ",
@@ -2946,7 +3090,7 @@ function ReviewerPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1171,
+                                                        lineNumber: 1308,
                                                         columnNumber: 23
                                                     }, this),
                                                     review && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2959,7 +3103,7 @@ function ReviewerPage() {
                                                                         className: "w-4 h-4 text-gray-500"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                        lineNumber: 1178,
+                                                                        lineNumber: 1315,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2967,13 +3111,13 @@ function ReviewerPage() {
                                                                         children: "Your Review:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                        lineNumber: 1179,
+                                                                        lineNumber: 1316,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1177,
+                                                                lineNumber: 1314,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2981,7 +3125,7 @@ function ReviewerPage() {
                                                                 children: review.comment
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1183,
+                                                                lineNumber: 1320,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2992,19 +3136,19 @@ function ReviewerPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1186,
+                                                                lineNumber: 1323,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1176,
+                                                        lineNumber: 1313,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1131,
+                                                lineNumber: 1268,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3018,14 +3162,14 @@ function ReviewerPage() {
                                                             className: "w-4 h-4 mr-1"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 1199,
+                                                            lineNumber: 1336,
                                                             columnNumber: 27
                                                         }, this),
                                                         "Review Flag"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 1194,
+                                                    lineNumber: 1331,
                                                     columnNumber: 25
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                                     size: "sm",
@@ -3036,42 +3180,42 @@ function ReviewerPage() {
                                                             className: "w-4 h-4 mr-1"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 1208,
+                                                            lineNumber: 1345,
                                                             columnNumber: 27
                                                         }, this),
                                                         "Edit Review"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                    lineNumber: 1203,
+                                                    lineNumber: 1340,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1192,
+                                                lineNumber: 1329,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1130,
+                                        lineNumber: 1267,
                                         columnNumber: 19
                                     }, this)
                                 }, flag.id, false, {
                                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                    lineNumber: 1118,
+                                    lineNumber: 1255,
                                     columnNumber: 17
                                 }, this);
                             })
                         }, void 0, false, {
                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                            lineNumber: 1114,
+                            lineNumber: 1251,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1104,
+                    lineNumber: 1241,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -3086,7 +3230,7 @@ function ReviewerPage() {
                                         children: "Review Flag"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1227,
+                                        lineNumber: 1364,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
@@ -3097,13 +3241,13 @@ function ReviewerPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1228,
+                                        lineNumber: 1365,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1226,
+                                lineNumber: 1363,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3120,7 +3264,7 @@ function ReviewerPage() {
                                                         children: selectedFlag.type
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1237,
+                                                        lineNumber: 1374,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3128,7 +3272,7 @@ function ReviewerPage() {
                                                         children: selectedFlag.section
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1238,
+                                                        lineNumber: 1375,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3136,13 +3280,13 @@ function ReviewerPage() {
                                                         children: selectedFlag.priority
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1239,
+                                                        lineNumber: 1376,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1236,
+                                                lineNumber: 1373,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3154,7 +3298,7 @@ function ReviewerPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1243,
+                                                lineNumber: 1380,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3164,7 +3308,7 @@ function ReviewerPage() {
                                                         children: "Auditor's Comment:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1247,
+                                                        lineNumber: 1384,
                                                         columnNumber: 21
                                                     }, this),
                                                     " ",
@@ -3172,13 +3316,13 @@ function ReviewerPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1246,
+                                                lineNumber: 1383,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1235,
+                                        lineNumber: 1372,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3189,100 +3333,100 @@ function ReviewerPage() {
                                                 children: "Review Decision"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1253,
+                                                lineNumber: 1390,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "grid grid-cols-3 gap-2",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                                        variant: flagReviewStatus === "approved" ? "default" : "outline",
+                                                        variant: flagReviewStatus === __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED ? "default" : "outline",
                                                         size: "sm",
-                                                        onClick: ()=>setFlagReviewStatus("approved"),
+                                                        onClick: ()=>setFlagReviewStatus(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].APPROVED),
                                                         className: "flex items-center space-x-1",
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$thumbs$2d$up$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ThumbsUp$3e$__["ThumbsUp"], {
                                                                 className: "w-3 h-3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1263,
+                                                                lineNumber: 1404,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 children: "Approve"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1264,
+                                                                lineNumber: 1405,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1255,
+                                                        lineNumber: 1392,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                                        variant: flagReviewStatus === "rejected" ? "destructive" : "outline",
+                                                        variant: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].REJECTED ? "destructive" : "outline",
                                                         size: "sm",
-                                                        onClick: ()=>setFlagReviewStatus("rejected"),
+                                                        onClick: ()=>setFlagReviewStatus(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].REJECTED),
                                                         className: "flex items-center space-x-1",
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$thumbs$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ThumbsDown$3e$__["ThumbsDown"], {
                                                                 className: "w-3 h-3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1276,
+                                                                lineNumber: 1417,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 children: "Reject"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1277,
+                                                                lineNumber: 1418,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1266,
+                                                        lineNumber: 1407,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                                        variant: flagReviewStatus === "needs_clarification" ? "secondary" : "outline",
+                                                        variant: flagReviewStatus === __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].NEEDS_CLARIFICATION ? "secondary" : "outline",
                                                         size: "sm",
-                                                        onClick: ()=>setFlagReviewStatus("needs_clarification"),
+                                                        onClick: ()=>setFlagReviewStatus(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$prisma$2f$client$2f$index$2d$browser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlagReviewStatus"].NEEDS_CLARIFICATION),
                                                         className: "flex items-center space-x-1",
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$help$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__HelpCircle$3e$__["HelpCircle"], {
                                                                 className: "w-3 h-3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1289,
+                                                                lineNumber: 1432,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 children: "Clarify"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                                lineNumber: 1290,
+                                                                lineNumber: 1433,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                        lineNumber: 1279,
+                                                        lineNumber: 1420,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1254,
+                                                lineNumber: 1391,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1252,
+                                        lineNumber: 1389,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -3292,7 +3436,7 @@ function ReviewerPage() {
                                         rows: 4
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1295,
+                                        lineNumber: 1438,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3304,7 +3448,7 @@ function ReviewerPage() {
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1303,
+                                                lineNumber: 1446,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3316,7 +3460,7 @@ function ReviewerPage() {
                                                             className: "w-4 h-4 mr-2 animate-spin"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 1315,
+                                                            lineNumber: 1458,
                                                             columnNumber: 23
                                                         }, this),
                                                         "Submitting..."
@@ -3327,7 +3471,7 @@ function ReviewerPage() {
                                                             className: "w-4 h-4 mr-2"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                            lineNumber: 1320,
+                                                            lineNumber: 1463,
                                                             columnNumber: 23
                                                         }, this),
                                                         "Submit Review"
@@ -3335,45 +3479,45 @@ function ReviewerPage() {
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                                lineNumber: 1309,
+                                                lineNumber: 1452,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                        lineNumber: 1302,
+                                        lineNumber: 1445,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                                lineNumber: 1233,
+                                lineNumber: 1370,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                        lineNumber: 1225,
+                        lineNumber: 1362,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-                    lineNumber: 1221,
+                    lineNumber: 1358,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-            lineNumber: 790,
+            lineNumber: 925,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/reviewer/[pdfid]/page.tsx",
-        lineNumber: 789,
+        lineNumber: 924,
         columnNumber: 5
     }, this);
 }
-_s(ReviewerPage, "lipe9aA10nlJPr/rL09qYYtvynA=", false, function() {
+_s(ReviewerPage, "G4ytFk7oUPhCO9I0LXDABydi0bY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSession"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"]

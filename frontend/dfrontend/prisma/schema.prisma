@@ -22,6 +22,10 @@ model User {
   pdfs      PDF[]
   reviews   PDF[]     @relation("ReviewedPDFs") // ✅ PDFs assigned to them for review
   flags     Flag[]
+
+  flagReviews     FlagReview[]
+  documentReviews DocumentReview[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   lastLogin DateTime?
@@ -52,7 +56,12 @@ model PDF {
   flagCount       Int       @default(0) // Count of flags (COMMENT, QUESTION, CRITICAL types)
   pdfURL          String    @default("")
   // Relations
+
+  reviewText       String?   // Or use Json? for structured reviews
+  reviewedAt       DateTime?
+
   flags           Flag[]
+  documentReviews DocumentReview[]
 
   // Indexes
   @@index([userId])
@@ -73,6 +82,7 @@ model Flag {
   // Flag content
   text       String // The selected text that was flagged
   comment    String // User's comment/note about the flag
+  reviewComment String? 
   type       FlagType // Whether it's a flag or comment
   section    String // Which section of the document (originalData, analysis, etc.)
   // Position tracking
@@ -87,6 +97,8 @@ model Flag {
   resolvedAt DateTime?
   resolvedBy String? // User ID who resolved the flag
 
+  flagReviews FlagReview[]
+
   // Indexes for performance
   @@index([pdfId])
   @@index([userId])
@@ -95,6 +107,42 @@ model Flag {
   @@index([section])
   @@index([createdAt])
 }
+
+model FlagReview {
+  id         String   @id @default(uuid())
+  flag       Flag     @relation(fields: [flagId], references: [id], onDelete: Cascade)
+  flagId     String
+  reviewer   User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewerId String
+  
+  status     FlagReviewStatus
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([flagId])
+  @@index([reviewerId])
+  @@index([createdAt])
+}
+
+model DocumentReview {
+  id         String   @id @default(uuid())
+  pdf        PDF      @relation(fields: [pdfId], references: [id], onDelete: Cascade)
+  pdfId      String
+  reviewer   User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewerId String
+  
+  status     DocumentReviewStatus
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([pdfId, reviewerId]) // One review per PDF per reviewer
+  @@index([pdfId])
+  @@index([reviewerId])
+  @@index([createdAt])
+}
+
 
 enum Status {
   VERIFIED
@@ -127,4 +175,17 @@ enum Role {
   AUDITOR
   REVIEWER
   ADMIN
+}
+
+
+enum FlagReviewStatus {
+  APPROVED
+  REJECTED
+  NEEDS_CLARIFICATION
+}
+
+enum DocumentReviewStatus {
+  APPROVED
+  REJECTED
+  NEEDS_REVISION
 }
