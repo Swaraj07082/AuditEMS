@@ -71,6 +71,7 @@ import {
 import { toast } from "sonner";
 import { stat } from "fs";
 import { FlagReviewStatus } from "@prisma/client";
+import { count } from "console";
 
 // Demo flags for testing
 const DEMO_FLAGS = [
@@ -243,6 +244,15 @@ export default function ReviewerPage() {
     null
   );
 
+  const [counts, setCounts] = useState({
+    total: 0,
+    reviewed: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    needsClarification: 0,
+  });
+
   // Review states
   const [selectedFlag, setSelectedFlag] = useState<Flag | null>(null);
   const [showFlagReviewDialog, setShowFlagReviewDialog] = useState(false);
@@ -291,6 +301,8 @@ export default function ReviewerPage() {
         }
 
         const flagData = await flagres.json();
+        console.log(flagData.needsClarification);
+        setCounts(flagData.counts);
 
         setFlags(
           flagData.flags.map((flag: any) => ({
@@ -809,35 +821,35 @@ export default function ReviewerPage() {
   };
 
   const getFlagCountsByStatus = () => {
-    if (!flagReviews || !flags) {
-      return {
-        total: 0,
-        reviewed: 0,
-        pending: 0,
-        approved: 0,
-        rejected: 0,
-        needsClarification: 0,
-      };
-    }
+    // if (!flagReviews || !flags) {
+    //   return {
+    //     total: 0,
+    //     reviewed: 0,
+    //     pending: 0,
+    //     approved: 0,
+    //     rejected: 0,
+    //     needsClarification: 0,
+    //   };
+    // }
 
-    const reviewed = flagReviews.length;
-    const approved = flagReviews.filter(
-      (r) => FlagReviewStatus.APPROVED
-    ).length;
-    const rejected = flagReviews.filter(
-      (r) => FlagReviewStatus.REJECTED
-    ).length;
-    const needsClarification = flagReviews.filter(
-      (r) => FlagReviewStatus.NEEDS_CLARIFICATION
-    ).length;
+    // const reviewed = flagReviews.length;
+    // const approved = flagReviews.filter(
+    //   (r) => FlagReviewStatus.APPROVED
+    // ).length;
+    // const rejected = flagReviews.filter(
+    //   (r) => FlagReviewStatus.REJECTED
+    // ).length;
+    // const needsClarification = flagReviews.filter(
+    //   (r) => FlagReviewStatus.NEEDS_CLARIFICATION
+    // ).length;
 
     return {
-      total: flags.length,
-      reviewed,
-      pending: flags.length - reviewed,
-      approved,
-      rejected,
-      needsClarification,
+      total: counts.total,
+      reviewed: counts.reviewed,
+      pending: counts.pending,
+      approved: counts.approved,
+      rejected: counts.rejected,
+      needsClarification: counts.needsClarification,
     };
   };
 
@@ -943,9 +955,9 @@ export default function ReviewerPage() {
                       Reviewer: {session.user.name || session.user.email}
                     </p>
                   )}
-                  <Badge variant="outline" className="mt-2">
+                  {/* <Badge variant="outline" className="mt-2">
                     Demo Mode - Using Sample Data
-                  </Badge>
+                  </Badge> */}
                 </div>
               </div>
               <div className="flex items-center space-x-2">

@@ -342,10 +342,40 @@ async function GET(req, { params }) {
         },
         orderBy: {
             createdAt: "desc"
+        },
+        include: {
+            flagReviews: {
+                where: {
+                    reviewerId: user.id
+                },
+                select: {
+                    status: true
+                }
+            }
         }
     });
+    const counts = {
+        total: flags.length,
+        reviewed: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0,
+        needsClarification: 0
+    };
+    for (const flag of flags){
+        if (flag.flagReviews.length > 0) {
+            counts.reviewed += 1;
+            const status = flag.flagReviews[0].status;
+            if (status === "APPROVED") counts.approved += 1;
+            else if (status === "REJECTED") counts.rejected += 1;
+            else if (status === "NEEDS_CLARIFICATION") counts.needsClarification += 1;
+        } else {
+            counts.pending += 1;
+        }
+    }
     return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-        flags
+        flags,
+        counts
     }); // 200 OK
 }
 }}),

@@ -50,7 +50,6 @@ import { ThemeToggle } from "./theme-toggle"; // Import the ThemeToggle componen
 export default function PDFDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
