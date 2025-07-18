@@ -57,10 +57,16 @@ import {
 } from "@/components/ui/select";
 import { resourceUsage } from "process";
 import { date } from "zod";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AuditReportPage() {
   const { data: session } = useSession();
-  console.log(session)
+  console.log(session);
 
   const [flags, setFlags] = useState<Flag[]>([]);
   const [selectedText, setSelectedText] = useState("");
@@ -535,16 +541,62 @@ export default function AuditReportPage() {
 
       // Add the flagged text with highlighting
       elements.push(
-        <span
-          key={flag.id}
-          className={`relative inline-block ${getFlagTypeColor(
-            flag.type
-          )} px-1 rounded cursor-pointer border-b-2`}
-          title={`${flag.type}: ${flag.comment}`}
-          onClick={() => openEditDialog(flag)}
-        >
-          {flag.text}
-        </span>
+        <TooltipProvider key={flag.id}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span
+                key={flag.id}
+                className={`relative inline-block ${getFlagTypeColor(
+                  flag.type
+                )} px-1 rounded cursor-pointer border-b-2  ${
+                  flag.status === FlagStatus.ACTIVE
+                    ? "border-green-500"
+                    : flag.status === FlagStatus.DISMISSED
+                    ? "border-red-500"
+                    : flag.status === FlagStatus.IN_REVIEW
+                    ? "border-yellow-500"
+                    : "border-gray-400"
+                } hover:opacity-80 transition-opacity`}
+                title={`${flag.type}: ${flag.comment}`}
+                // onClick={() => openEditDialog(flag)}
+              >
+                {flag.text}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-sm">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  {getFlagTypeIcon(flag.type)}
+                  <span className="font-medium">{flag.type}</span>
+                  <Badge
+                    className={getPriorityColor(flag.priority)}
+                    variant="outline"
+                  >
+                    {flag.priority}
+                  </Badge>
+                </div>
+                <p className="text-sm">
+                  <strong>Auditor's Comment:</strong> {flag.comment}
+                </p>
+                {flag.text && (
+                  <div className="border-t pt-2">
+                    {/* <div className="flex items-center space-x-1 mb-1">
+                      {getReviewStatusIcon(flagReview.status)}
+                      <span className="text-xs font-medium">
+                        Your Review:{" "}
+                        {flagReview.status.toLowerCase().replace("_", " ")}
+                      </span>
+                    </div> */}
+                    <p className="text-xs">{flag.text}</p>
+                  </div>
+                )}
+                {/* <p className="text-xs text-gray-500">
+                  Click to review this flag
+                </p> */}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
 
       lastIndex = flag.endIndex;

@@ -1113,7 +1113,7 @@ function PDFDashboard() {
                         className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 149,
+                        lineNumber: 148,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1121,18 +1121,18 @@ function PDFDashboard() {
                         children: "Loading..."
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 150,
+                        lineNumber: 149,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                lineNumber: 148,
+                lineNumber: 147,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/Components/dashboard.tsx",
-            lineNumber: 147,
+            lineNumber: 146,
             columnNumber: 7
         }, this);
     }
@@ -1150,7 +1150,7 @@ function PDFDashboard() {
                                 className: "h-12 w-12 mx-auto mb-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 162,
+                                lineNumber: 161,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1158,7 +1158,7 @@ function PDFDashboard() {
                                 children: "Error loading PDFs"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 163,
+                                lineNumber: 162,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1166,13 +1166,13 @@ function PDFDashboard() {
                                 children: error
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 164,
+                                lineNumber: 163,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 161,
+                        lineNumber: 160,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1180,18 +1180,18 @@ function PDFDashboard() {
                         children: "Try Again"
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 166,
+                        lineNumber: 165,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                lineNumber: 160,
+                lineNumber: 159,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/Components/dashboard.tsx",
-            lineNumber: 159,
+            lineNumber: 158,
             columnNumber: 7
         }, this);
     }
@@ -1276,7 +1276,7 @@ function PDFDashboard() {
                                         children: "PDF Dashboard"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 266,
+                                        lineNumber: 265,
                                         columnNumber: 15
                                     }, this),
                                     session?.user?.name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1287,13 +1287,13 @@ function PDFDashboard() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 270,
+                                        lineNumber: 269,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 265,
+                                lineNumber: 264,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DropdownMenu"], {
@@ -1308,7 +1308,7 @@ function PDFDashboard() {
                                                     className: "h-6 w-6"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 283,
+                                                    lineNumber: 282,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1316,18 +1316,18 @@ function PDFDashboard() {
                                                     children: "User  menu"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 284,
+                                                    lineNumber: 283,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 279,
+                                            lineNumber: 278,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 278,
+                                        lineNumber: 277,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DropdownMenuContent"], {
@@ -1338,7 +1338,7 @@ function PDFDashboard() {
                                                 children: "Profile"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 288,
+                                                lineNumber: 287,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DropdownMenuItem"], {
@@ -1346,7 +1346,7 @@ function PDFDashboard() {
                                                 children: "Admin Dashboard"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 291,
+                                                lineNumber: 290,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DropdownMenuItem"], {
@@ -1356,39 +1356,39 @@ function PDFDashboard() {
                                                 children: "Logout"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 294,
+                                                lineNumber: 293,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DropdownMenuItem"], {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$Components$2f$theme$2d$toggle$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ThemeToggle"], {}, void 0, false, {
                                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                        lineNumber: 301,
+                                                        lineNumber: 300,
                                                         columnNumber: 19
                                                     }, this),
                                                     " "
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 300,
+                                                lineNumber: 299,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 287,
+                                        lineNumber: 286,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 277,
+                                lineNumber: 276,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 264,
+                        lineNumber: 263,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1396,7 +1396,7 @@ function PDFDashboard() {
                         children: "Manage and access your uploaded audit reports"
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 308,
+                        lineNumber: 307,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1412,20 +1412,20 @@ function PDFDashboard() {
                                                 children: "Total PDFs"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 316,
+                                                lineNumber: 315,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
                                                 className: "h-4 w-4 text-muted-foreground"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 319,
+                                                lineNumber: 318,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 315,
+                                        lineNumber: 314,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1434,18 +1434,18 @@ function PDFDashboard() {
                                             children: samplePDFs.length
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 322,
+                                            lineNumber: 321,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 321,
+                                        lineNumber: 320,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 314,
+                                lineNumber: 313,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1458,7 +1458,7 @@ function PDFDashboard() {
                                                 children: "Verified"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 328,
+                                                lineNumber: 327,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1466,13 +1466,13 @@ function PDFDashboard() {
                                                 children: "✓"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 329,
+                                                lineNumber: 328,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 327,
+                                        lineNumber: 326,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1481,18 +1481,18 @@ function PDFDashboard() {
                                             children: samplePDFs.filter((pdf)=>pdf.status === "VERIFIED").length
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 332,
+                                            lineNumber: 331,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 331,
+                                        lineNumber: 330,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 326,
+                                lineNumber: 325,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1505,7 +1505,7 @@ function PDFDashboard() {
                                                 children: "Pending"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 340,
+                                                lineNumber: 339,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1513,13 +1513,13 @@ function PDFDashboard() {
                                                 children: "⏳"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 341,
+                                                lineNumber: 340,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 339,
+                                        lineNumber: 338,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1528,24 +1528,24 @@ function PDFDashboard() {
                                             children: samplePDFs.filter((pdf)=>pdf.status === "PENDING").length
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 344,
+                                            lineNumber: 343,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 343,
+                                        lineNumber: 342,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 338,
+                                lineNumber: 337,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 313,
+                        lineNumber: 312,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1558,7 +1558,7 @@ function PDFDashboard() {
                                         className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 354,
+                                        lineNumber: 353,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1568,13 +1568,13 @@ function PDFDashboard() {
                                         className: "pl-10"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 355,
+                                        lineNumber: 354,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 353,
+                                lineNumber: 352,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1590,12 +1590,12 @@ function PDFDashboard() {
                                                     placeholder: "Status"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 366,
+                                                    lineNumber: 365,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 365,
+                                                lineNumber: 364,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1605,7 +1605,7 @@ function PDFDashboard() {
                                                         children: "All Status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                        lineNumber: 369,
+                                                        lineNumber: 368,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1613,7 +1613,7 @@ function PDFDashboard() {
                                                         children: "Verified"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                        lineNumber: 370,
+                                                        lineNumber: 369,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1621,7 +1621,7 @@ function PDFDashboard() {
                                                         children: "Pending"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                        lineNumber: 371,
+                                                        lineNumber: 370,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1629,19 +1629,19 @@ function PDFDashboard() {
                                                         children: "Failed"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                        lineNumber: 372,
+                                                        lineNumber: 371,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 368,
+                                                lineNumber: 367,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 364,
+                                        lineNumber: 363,
                                         columnNumber: 15
                                     }, this),
                                     (searchTerm || statusFilter !== "all") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1653,14 +1653,14 @@ function PDFDashboard() {
                                                 className: "h-4 w-4 mr-1"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 378,
+                                                lineNumber: 377,
                                                 columnNumber: 19
                                             }, this),
                                             "Clear"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 377,
+                                        lineNumber: 376,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Separator"], {
@@ -1668,7 +1668,7 @@ function PDFDashboard() {
                                         className: "h-8"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 383,
+                                        lineNumber: 382,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1683,12 +1683,12 @@ function PDFDashboard() {
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 392,
+                                                    lineNumber: 391,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 386,
+                                                lineNumber: 385,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1700,18 +1700,18 @@ function PDFDashboard() {
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 400,
+                                                    lineNumber: 399,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 394,
+                                                lineNumber: 393,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 385,
+                                        lineNumber: 384,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1722,26 +1722,26 @@ function PDFDashboard() {
                                                 className: "h-4 w-4 mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                lineNumber: 408,
+                                                lineNumber: 407,
                                                 columnNumber: 17
                                             }, this),
                                             "Upload PDF"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 404,
+                                        lineNumber: 403,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 363,
+                                lineNumber: 362,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 352,
+                        lineNumber: 351,
                         columnNumber: 11
                     }, this),
                     (searchTerm || statusFilter !== "all") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1757,12 +1757,12 @@ function PDFDashboard() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                            lineNumber: 417,
+                            lineNumber: 416,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 416,
+                        lineNumber: 415,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1783,12 +1783,12 @@ function PDFDashboard() {
                                                                 className: "w-6 h-6 text-blue-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                lineNumber: 437,
+                                                                lineNumber: 436,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 436,
+                                                            lineNumber: 435,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1798,7 +1798,7 @@ function PDFDashboard() {
                                                                     children: pdf.filename
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 440,
+                                                                    lineNumber: 439,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -1811,7 +1811,7 @@ function PDFDashboard() {
                                                                                     className: "w-3 h-3"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                                    lineNumber: 445,
+                                                                                    lineNumber: 444,
                                                                                     columnNumber: 29
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1821,13 +1821,13 @@ function PDFDashboard() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                                    lineNumber: 446,
+                                                                                    lineNumber: 445,
                                                                                     columnNumber: 29
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                            lineNumber: 444,
+                                                                            lineNumber: 443,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         pdf.lastFlagged && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1837,7 +1837,7 @@ function PDFDashboard() {
                                                                                     className: "w-3 h-3"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                                    lineNumber: 450,
+                                                                                    lineNumber: 449,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1847,31 +1847,31 @@ function PDFDashboard() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                                    lineNumber: 451,
+                                                                                    lineNumber: 450,
                                                                                     columnNumber: 31
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                            lineNumber: 449,
+                                                                            lineNumber: 448,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 443,
+                                                                    lineNumber: 442,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 439,
+                                                            lineNumber: 438,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 435,
+                                                    lineNumber: 434,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1879,18 +1879,18 @@ function PDFDashboard() {
                                                     children: pdf.status
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 459,
+                                                    lineNumber: 458,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 434,
+                                            lineNumber: 433,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 433,
+                                        lineNumber: 432,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1907,7 +1907,7 @@ function PDFDashboard() {
                                                                     className: "w-4 h-4 text-red-500"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 468,
+                                                                    lineNumber: 467,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1919,7 +1919,7 @@ function PDFDashboard() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 469,
+                                                                    lineNumber: 468,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 pdf.flagCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1928,13 +1928,13 @@ function PDFDashboard() {
                                                                     children: pdf.flagCount
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 474,
+                                                                    lineNumber: 473,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 467,
+                                                            lineNumber: 466,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1944,7 +1944,7 @@ function PDFDashboard() {
                                                                     className: "w-4 h-4 text-blue-500"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 480,
+                                                                    lineNumber: 479,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1956,7 +1956,7 @@ function PDFDashboard() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 481,
+                                                                    lineNumber: 480,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 pdf.commentCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1965,19 +1965,19 @@ function PDFDashboard() {
                                                                     children: pdf.commentCount
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 487,
+                                                                    lineNumber: 486,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 479,
+                                                            lineNumber: 478,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 466,
+                                                    lineNumber: 465,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1987,7 +1987,7 @@ function PDFDashboard() {
                                                             children: "Download"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 494,
+                                                            lineNumber: 493,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1998,48 +1998,48 @@ function PDFDashboard() {
                                                                     className: "w-4 h-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 500,
+                                                                    lineNumber: 499,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "View Document"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                                    lineNumber: 501,
+                                                                    lineNumber: 500,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                            lineNumber: 496,
+                                                            lineNumber: 495,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/Components/dashboard.tsx",
-                                                    lineNumber: 493,
+                                                    lineNumber: 492,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/Components/dashboard.tsx",
-                                            lineNumber: 465,
+                                            lineNumber: 464,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                                        lineNumber: 464,
+                                        lineNumber: 463,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, pdf.id, true, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 432,
+                                lineNumber: 431,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 424,
+                        lineNumber: 423,
                         columnNumber: 11
                     }, this),
                     filteredPDFs.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2049,7 +2049,7 @@ function PDFDashboard() {
                                 className: "h-12 w-12 text-gray-400 mx-auto mb-4"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 513,
+                                lineNumber: 512,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2057,7 +2057,7 @@ function PDFDashboard() {
                                 children: "No PDFs found"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 514,
+                                lineNumber: 513,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2065,7 +2065,7 @@ function PDFDashboard() {
                                 children: searchTerm || statusFilter !== " all" ? "Try adjusting your search or filters" : "Upload your first PDF to get started"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 517,
+                                lineNumber: 516,
                                 columnNumber: 15
                             }, this),
                             (searchTerm || statusFilter !== "all") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2074,31 +2074,31 @@ function PDFDashboard() {
                                 children: "Clear Filters"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                                lineNumber: 523,
+                                lineNumber: 522,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/Components/dashboard.tsx",
-                        lineNumber: 512,
+                        lineNumber: 511,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                lineNumber: 262,
+                lineNumber: 261,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/Components/dashboard.tsx",
-            lineNumber: 261,
+            lineNumber: 260,
             columnNumber: 7
         }, this);
     } else {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$Components$2f$authcheck$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/src/app/Components/dashboard.tsx",
-                lineNumber: 535,
+                lineNumber: 534,
                 columnNumber: 9
             }, this)
         }, void 0, false);
